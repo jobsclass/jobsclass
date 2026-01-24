@@ -390,10 +390,3 @@ function PricingCard({
     </div>
   )
 }
-    }`}
-      >
-        시작하기
-      </Link>
-    </div>
-  )
-}

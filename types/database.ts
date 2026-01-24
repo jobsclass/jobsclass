@@ -1,38 +1,55 @@
-// 서비스 카테고리 (6개)
+// 서비스 카테고리 (8개 대분류)
 export type ServiceCategory = 
-  | 'education'          // 교육 서비스
-  | 'mentoring'          // 멘토링
-  | 'intensive'          // 집중 프로그램
-  | 'professional'       // 전문 서비스
-  | 'collaboration'      // 협업 & 홍보
-  | 'digital'            // 디지털 상품
+  | 'it-dev'                // IT·개발
+  | 'design-creative'       // 디자인·크리에이티브
+  | 'business-marketing'    // 비즈니스·마케팅
+  | 'finance-investment'    // 재테크·금융
+  | 'startup-sidejob'       // 창업·부업
+  | 'life-hobby'            // 라이프·취미
+  | 'self-improvement'      // 자기계발·교양
+  | 'consulting'            // 전문 컨설팅
 
-// 서비스 세부 타입
-export type ServiceSubtype = 
-  // 교육 서비스
-  | 'online-course'
-  | 'offline-lecture'
-  | 'workshop'
-  // 멘토링
-  | '1on1-mentoring'
-  | 'group-mentoring'
-  | 'longterm-mentoring'
-  // 집중 프로그램
-  | 'bootcamp'
-  | 'retreat'
-  | 'challenge'
-  // 전문 서비스
-  | 'design'
-  | 'development'
-  | 'marketing'
-  // 협업 & 홍보
-  | 'youtube-promo'
-  | 'instagram-promo'
-  | 'blog-collab'
-  // 디지털 상품
-  | 'ebook'
-  | 'template'
-  | 'membership'
+// 서비스 세부 분류 (Depth 2)
+export type ServiceSubcategory = 
+  // IT·개발
+  | 'web-dev'
+  | 'app-dev'
+  | 'data-ai'
+  | 'game-dev'
+  | 'programming-basics'
+  // 디자인·크리에이티브
+  | 'uiux'
+  | 'graphic'
+  | 'video'
+  | '3d'
+  // 비즈니스·마케팅
+  | 'sns-marketing'
+  | 'performance-marketing'
+  | 'branding'
+  | 'content-creation'
+  // 재테크·금융
+  | 'stock'
+  | 'realestate'
+  | 'economy'
+  // 창업·부업
+  | 'online-business'
+  | 'offline-business'
+  | 'freelance'
+  // 라이프·취미
+  | 'cooking'
+  | 'fitness'
+  | 'craft'
+  | 'pet'
+  // 자기계발·교양
+  | 'language'
+  | 'reading'
+  | 'psychology'
+  | 'career'
+  // 전문 컨설팅
+  | 'legal'
+  | 'tax'
+  | 'labor'
+  | 'patent'
 
 // 가격 모델
 export type PricingModel = 
@@ -68,8 +85,9 @@ export interface Service {
   title: string
   slug: string
   description: string
-  category: ServiceCategory
-  service_subtype: ServiceSubtype
+  category_1: ServiceCategory          // 대분류
+  category_2?: ServiceSubcategory      // 세부 분류
+  tags?: string[]                      // 태그
   base_price?: number
   discount_price?: number
   instructor_name: string

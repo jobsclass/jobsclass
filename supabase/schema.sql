@@ -37,35 +37,44 @@ CREATE TABLE services (
   slug TEXT NOT NULL,
   description TEXT NOT NULL,
   
-  -- 카테고리 (6개)
-  category TEXT NOT NULL CHECK (
-    category IN (
-      'education',          -- 교육 서비스
-      'mentoring',          -- 멘토링
-      'intensive',          -- 집중 프로그램
-      'professional',       -- 전문 서비스
-      'collaboration',      -- 협업 & 홍보
-      'digital'             -- 디지털 상품
+  -- 카테고리 (8개 대분류)
+  category_1 TEXT NOT NULL CHECK (
+    category_1 IN (
+      'it-dev',                -- IT·개발
+      'design-creative',       -- 디자인·크리에이티브
+      'business-marketing',    -- 비즈니스·마케팅
+      'finance-investment',    -- 재테크·금융
+      'startup-sidejob',       -- 창업·부업
+      'life-hobby',            -- 라이프·취미
+      'self-improvement',      -- 자기계발·교양
+      'consulting'             -- 전문 컨설팅
     )
   ),
   
-  -- 세부 타입
-  service_subtype TEXT NOT NULL CHECK (
-    service_subtype IN (
-      -- 교육 서비스
-      'online-course', 'offline-lecture', 'workshop',
-      -- 멘토링
-      '1on1-mentoring', 'group-mentoring', 'longterm-mentoring',
-      -- 집중 프로그램
-      'bootcamp', 'retreat', 'challenge',
-      -- 전문 서비스
-      'design', 'development', 'marketing',
-      -- 협업 & 홍보
-      'youtube-promo', 'instagram-promo', 'blog-collab',
-      -- 디지털 상품
-      'ebook', 'template', 'membership'
+  -- 세부 분류 (Depth 2)
+  category_2 TEXT CHECK (
+    category_2 IN (
+      -- IT·개발
+      'web-dev', 'app-dev', 'data-ai', 'game-dev', 'programming-basics',
+      -- 디자인·크리에이티브
+      'uiux', 'graphic', 'video', '3d',
+      -- 비즈니스·마케팅
+      'sns-marketing', 'performance-marketing', 'branding', 'content-creation',
+      -- 재테크·금융
+      'stock', 'realestate', 'economy',
+      -- 창업·부업
+      'online-business', 'offline-business', 'freelance',
+      -- 라이프·취미
+      'cooking', 'fitness', 'craft', 'pet',
+      -- 자기계발·교양
+      'language', 'reading', 'psychology', 'career',
+      -- 전문 컨설팅
+      'legal', 'tax', 'labor', 'patent'
     )
   ),
+  
+  -- 태그 (검색 및 필터링용)
+  tags JSONB,
   
   -- 가격 (기본값, pricing 테이블에서 상세 설정)
   base_price NUMERIC(12, 2),
@@ -93,8 +102,8 @@ CREATE TABLE services (
 -- Indexes
 CREATE INDEX idx_services_partner_id ON services(partner_id);
 CREATE INDEX idx_services_slug ON services(slug);
-CREATE INDEX idx_services_category ON services(category);
-CREATE INDEX idx_services_service_subtype ON services(service_subtype);
+CREATE INDEX idx_services_category_1 ON services(category_1);
+CREATE INDEX idx_services_category_2 ON services(category_2);
 CREATE INDEX idx_services_is_published ON services(is_published);
 
 -- ============================================

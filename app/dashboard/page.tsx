@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { formatCurrency } from '@/lib/utils'
-import { DollarSign, ShoppingBag, Package, Plus } from 'lucide-react'
+import { DollarSign, ShoppingBag, Package, Plus, TrendingUp, ArrowUpRight, Eye } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -53,135 +53,131 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+      {/* 헤더 */}
+      <div className="mb-10">
+        <h1 className="text-4xl font-bold text-white mb-2">
           안녕하세요, {profile?.display_name}님! 👋
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-gray-400 text-lg">
           오늘도 멋진 하루 보내세요!
         </p>
       </div>
 
       {/* 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <StatCard
           title="총 매출"
           value={formatCurrency(totalRevenue)}
           icon={<DollarSign className="w-6 h-6" />}
-          color="green"
+          trend="+12.5%"
+          gradient="from-emerald-500 to-teal-600"
         />
         <StatCard
           title="이번 달 주문"
           value={`${thisMonthOrders}건`}
           icon={<ShoppingBag className="w-6 h-6" />}
-          color="blue"
+          trend="+8.2%"
+          gradient="from-blue-500 to-cyan-600"
         />
         <StatCard
           title="운영 중인 서비스"
           value={`${services?.length || 0}개`}
           icon={<Package className="w-6 h-6" />}
-          color="purple"
+          gradient="from-purple-500 to-pink-600"
         />
       </div>
 
       {/* 빠른 액션 */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">빠른 액션</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mb-10">
+        <h2 className="text-2xl font-bold text-white mb-6">빠른 액션</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <ActionCard
             title="새 서비스 등록"
+            description="새로운 강의나 서비스를 등록하세요"
             href="/dashboard/services/new"
-            icon={<Plus className="w-5 h-5" />}
-          />
-          <ActionCard
-            title="쿠폰 만들기"
-            href="/dashboard/coupons"
-            icon={<Plus className="w-5 h-5" />}
+            icon={<Plus className="w-6 h-6" />}
+            gradient="from-primary-500 to-purple-600"
           />
           <ActionCard
             title="내 페이지 보기"
+            description="고객이 보는 페이지를 확인하세요"
             href={`/p/${profile?.profile_url}`}
-            icon={<Package className="w-5 h-5" />}
+            icon={<Eye className="w-6 h-6" />}
+            gradient="from-blue-500 to-cyan-600"
+          />
+          <ActionCard
+            title="쿠폰 만들기"
+            description="할인 쿠폰을 생성하세요"
+            href="/dashboard/coupons"
+            icon={<TrendingUp className="w-6 h-6" />}
+            gradient="from-emerald-500 to-teal-600"
           />
         </div>
       </div>
 
       {/* 최근 주문 */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">최근 주문</h2>
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <h2 className="text-2xl font-bold text-white mb-6">최근 주문</h2>
+        <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl overflow-hidden">
           {!recentOrders || recentOrders.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              <ShoppingBag className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-              <p>아직 주문이 없습니다</p>
+            <div className="p-12 text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-800 rounded-2xl mb-6">
+                <ShoppingBag className="w-10 h-10 text-gray-600" />
+              </div>
+              <p className="text-gray-400 text-lg mb-4">아직 주문이 없습니다</p>
               <Link
                 href="/dashboard/services/new"
-                className="inline-block mt-4 text-primary-600 hover:text-primary-700 font-semibold"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-primary-500/20 transition-all font-semibold"
               >
-                첫 서비스 등록하기 →
+                첫 서비스 등록하기
+                <ArrowUpRight className="w-5 h-5" />
               </Link>
             </div>
           ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    주문번호
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    서비스
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    구매자
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    금액
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    상태
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {recentOrders.map((order: any) => (
-                  <tr key={order.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {order.order_number}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {order.service?.title || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {order.buyer?.name || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatCurrency(order.final_amount)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                          order.status === 'completed'
-                            ? 'bg-green-100 text-green-800'
-                            : order.status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : order.status === 'cancelled'
-                            ? 'bg-gray-100 text-gray-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}
-                      >
-                        {order.status === 'completed'
-                          ? '완료'
-                          : order.status === 'pending'
-                          ? '대기중'
-                          : order.status === 'cancelled'
-                          ? '취소'
-                          : '환불'}
-                      </span>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-800">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      주문번호
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      서비스
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      구매자
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      금액
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      상태
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-800">
+                  {recentOrders.map((order: any) => (
+                    <tr key={order.id} className="hover:bg-gray-800/30 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                        {order.order_number}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        {order.service?.title || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                        {order.buyer?.name || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">
+                        {formatCurrency(order.final_amount)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <StatusBadge status={order.status} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
@@ -193,50 +189,104 @@ function StatCard({
   title,
   value,
   icon,
-  color,
+  trend,
+  gradient,
 }: {
   title: string
   value: string
   icon: React.ReactNode
-  color: 'green' | 'blue' | 'purple'
+  trend?: string
+  gradient: string
 }) {
-  const colorClasses = {
-    green: 'bg-green-500',
-    blue: 'bg-blue-500',
-    purple: 'bg-purple-500',
-  }
-
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-medium text-gray-600">{title}</span>
-        <div className={`p-2 rounded-lg ${colorClasses[color]} text-white`}>
-          {icon}
+    <div className="relative group">
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+      <div className="relative bg-gray-900/50 backdrop-blur-sm border border-gray-800 p-6 rounded-2xl hover:border-gray-700 transition-all">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-sm font-medium text-gray-400 mb-1">{title}</p>
+            <p className="text-3xl font-bold text-white">{value}</p>
+          </div>
+          <div className={`p-3 bg-gradient-to-br ${gradient} rounded-xl shadow-lg`}>
+            {icon}
+          </div>
         </div>
+        {trend && (
+          <div className="flex items-center gap-1 text-emerald-400 text-sm font-semibold">
+            <TrendingUp className="w-4 h-4" />
+            <span>{trend}</span>
+            <span className="text-gray-500">이번 달</span>
+          </div>
+        )}
       </div>
-      <div className="text-2xl font-bold text-gray-900">{value}</div>
     </div>
   )
 }
 
 function ActionCard({
   title,
+  description,
   href,
   icon,
+  gradient,
 }: {
   title: string
+  description: string
   href: string
   icon: React.ReactNode
+  gradient: string
 }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200 hover:border-primary-300"
+      className="group relative"
     >
-      <div className="p-2 bg-primary-100 text-primary-600 rounded-lg">
-        {icon}
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-purple-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition duration-300"></div>
+      <div className="relative bg-gray-900/50 backdrop-blur-sm border border-gray-800 p-6 rounded-2xl hover:border-gray-700 transition-all">
+        <div className="flex items-start gap-4">
+          <div className={`p-3 bg-gradient-to-br ${gradient} rounded-xl shadow-lg flex-shrink-0`}>
+            {icon}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">
+              {title}
+            </h3>
+            <p className="text-sm text-gray-400 line-clamp-2">{description}</p>
+          </div>
+          <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-primary-400 transition-colors flex-shrink-0" />
+        </div>
       </div>
-      <span className="font-medium text-gray-900">{title}</span>
     </Link>
+  )
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const statusConfig = {
+    completed: {
+      label: '완료',
+      className: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    },
+    pending: {
+      label: '대기중',
+      className: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+    },
+    cancelled: {
+      label: '취소',
+      className: 'bg-gray-500/10 text-gray-400 border-gray-500/20',
+    },
+    refunded: {
+      label: '환불',
+      className: 'bg-red-500/10 text-red-400 border-red-500/20',
+    },
+  }
+
+  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
+
+  return (
+    <span
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${config.className}`}
+    >
+      {config.label}
+    </span>
   )
 }

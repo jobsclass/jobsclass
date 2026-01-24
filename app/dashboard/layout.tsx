@@ -18,7 +18,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       <DashboardSidebar />
       <div className="flex-1 overflow-auto">
         {children}

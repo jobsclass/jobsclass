@@ -1,11 +1,47 @@
-export type ServiceType = 
+// 서비스 카테고리 (6개)
+export type ServiceCategory = 
+  | 'education'          // 교육 서비스
+  | 'mentoring'          // 멘토링
+  | 'intensive'          // 집중 프로그램
+  | 'professional'       // 전문 서비스
+  | 'collaboration'      // 협업 & 홍보
+  | 'digital'            // 디지털 상품
+
+// 서비스 세부 타입
+export type ServiceSubtype = 
+  // 교육 서비스
   | 'online-course'
-  | 'offline-course'
-  | 'consulting'
+  | 'offline-lecture'
+  | 'workshop'
+  // 멘토링
+  | '1on1-mentoring'
+  | 'group-mentoring'
+  | 'longterm-mentoring'
+  // 집중 프로그램
   | 'bootcamp'
-  | 'coaching'
-  | 'event'
-  | 'professional-service'
+  | 'retreat'
+  | 'challenge'
+  // 전문 서비스
+  | 'design'
+  | 'development'
+  | 'marketing'
+  // 협업 & 홍보
+  | 'youtube-promo'
+  | 'instagram-promo'
+  | 'blog-collab'
+  // 디지털 상품
+  | 'ebook'
+  | 'template'
+  | 'membership'
+
+// 가격 모델
+export type PricingModel = 
+  | 'fixed'              // 고정 가격
+  | 'hourly'             // 시간당
+  | 'daily'              // 일당
+  | 'package'            // 패키지
+  | 'quote'              // 견적 문의
+  | 'subscription'       // 구독
 
 export type SubscriptionPlan = 'FREE' | 'STARTER' | 'PRO'
 
@@ -32,8 +68,9 @@ export interface Service {
   title: string
   slug: string
   description: string
-  service_type: ServiceType
-  price: number
+  category: ServiceCategory
+  service_subtype: ServiceSubtype
+  base_price?: number
   discount_price?: number
   instructor_name: string
   instructor_bio?: string
@@ -42,7 +79,35 @@ export interface Service {
   schedule?: any
   requirements?: string[]
   expected_outcomes?: string[]
+  portfolio_images?: string[]
+  channel_stats?: {
+    platform?: string
+    followers?: number
+    avg_views?: number
+    engagement_rate?: number
+  }
   is_published: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface ServicePricing {
+  id: string
+  service_id: string
+  pricing_model: PricingModel
+  fixed_price?: number
+  hourly_rate?: number
+  daily_rate?: number
+  packages?: {
+    name: string
+    price: number
+    features: string[]
+    duration_days?: number
+  }[]
+  subscription_monthly?: number
+  subscription_yearly?: number
+  delivery_days?: number
+  revisions_included?: number
   created_at: string
   updated_at: string
 }

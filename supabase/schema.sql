@@ -36,26 +36,54 @@ CREATE TABLE services (
   title TEXT NOT NULL,
   slug TEXT NOT NULL,
   description TEXT NOT NULL,
-  service_type TEXT NOT NULL CHECK (
-    service_type IN (
-      'online-course',
-      'offline-course',
-      'consulting',
-      'bootcamp',
-      'coaching',
-      'event',
-      'professional-service'
+  
+  -- 카테고리 (6개)
+  category TEXT NOT NULL CHECK (
+    category IN (
+      'education',          -- 교육 서비스
+      'mentoring',          -- 멘토링
+      'intensive',          -- 집중 프로그램
+      'professional',       -- 전문 서비스
+      'collaboration',      -- 협업 & 홍보
+      'digital'             -- 디지털 상품
     )
   ),
-  price NUMERIC(12, 2) NOT NULL,
+  
+  -- 세부 타입
+  service_subtype TEXT NOT NULL CHECK (
+    service_subtype IN (
+      -- 교육 서비스
+      'online-course', 'offline-lecture', 'workshop',
+      -- 멘토링
+      '1on1-mentoring', 'group-mentoring', 'longterm-mentoring',
+      -- 집중 프로그램
+      'bootcamp', 'retreat', 'challenge',
+      -- 전문 서비스
+      'design', 'development', 'marketing',
+      -- 협업 & 홍보
+      'youtube-promo', 'instagram-promo', 'blog-collab',
+      -- 디지털 상품
+      'ebook', 'template', 'membership'
+    )
+  ),
+  
+  -- 가격 (기본값, pricing 테이블에서 상세 설정)
+  base_price NUMERIC(12, 2),
   discount_price NUMERIC(12, 2),
+  
+  -- 기본 정보
   instructor_name TEXT NOT NULL,
   instructor_bio TEXT,
   thumbnail_url TEXT,
-  curriculum JSONB,
-  schedule JSONB,
-  requirements TEXT[],
-  expected_outcomes TEXT[],
+  
+  -- 추가 정보 (JSONB)
+  curriculum JSONB,              -- 커리큘럼
+  schedule JSONB,                -- 일정
+  requirements TEXT[],           -- 선수 지식
+  expected_outcomes TEXT[],      -- 기대 효과
+  portfolio_images TEXT[],       -- 포트폴리오 (전문 서비스용)
+  channel_stats JSONB,           -- 채널 통계 (협업용)
+  
   is_published BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -65,7 +93,8 @@ CREATE TABLE services (
 -- Indexes
 CREATE INDEX idx_services_partner_id ON services(partner_id);
 CREATE INDEX idx_services_slug ON services(slug);
-CREATE INDEX idx_services_service_type ON services(service_type);
+CREATE INDEX idx_services_category ON services(category);
+CREATE INDEX idx_services_service_subtype ON services(service_subtype);
 CREATE INDEX idx_services_is_published ON services(is_published);
 
 -- ============================================
@@ -84,6 +113,43 @@ CREATE TABLE course_videos (
 -- Index
 CREATE INDEX idx_course_videos_service_id ON course_videos(service_id);
 CREATE INDEX idx_course_videos_order ON course_videos(service_id, order_index);
+
+-- ============================================
+-- 3-1. Service Pricing (서비스 가격 모델)
+-- ============================================
+CREATE TABLE service_pricing (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  service_id UUID NOT NULL REFERENCES services(id) ON DELETE CASCADE UNIQUE,
+  
+  -- 가격 모델
+  pricing_model TEXT NOT NULL CHECK (
+    pricing_model IN ('fixed', 'hourly', 'daily', 'package', 'quote', 'subscription')
+  ),
+  
+  -- 고정가
+  fixed_price NUMERIC(12, 2),
+  
+  -- 시간당/일당
+  hourly_rate NUMERIC(12, 2),
+  daily_rate NUMERIC(12, 2),
+  
+  -- 패키지 (JSONB)
+  packages JSONB, -- [{ name, price, features[], duration_days }]
+  
+  -- 구독
+  subscription_monthly NUMERIC(12, 2),
+  subscription_yearly NUMERIC(12, 2),
+  
+  -- 추가 정보
+  delivery_days INTEGER,
+  revisions_included INTEGER,
+  
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Index
+CREATE INDEX idx_service_pricing_service_id ON service_pricing(service_id);
 
 -- ============================================
 -- 4. Buyers (구매자 - 파트너별 독립)

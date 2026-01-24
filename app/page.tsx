@@ -45,15 +45,15 @@ export default function HomePage() {
           </div>
           
           <h1 className="text-6xl md:text-7xl font-bold mb-6 animate-slide-up">
-            <span className="text-gradient">폼만 작성하면</span>
+            <span className="text-gradient">1인 비즈니스</span>를 위한
             <br />
-            <span className="text-white">웹사이트 완성</span>
+            <span className="text-white">올인원 플랫폼</span>
           </h1>
           
           <p className="text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-            드래그앤드롭 없이 <span className="text-white font-semibold">내용만 입력</span>하면<br />
-            자동으로 <span className="text-primary-400 font-semibold">프로페셔널한 홈페이지</span>가 만들어집니다.<br />
-            온라인 강의, 컨설팅, 멘토링을 <span className="text-white font-semibold">30분 만에 판매 시작</span>하세요.
+            온라인 강의, 멘토링, 외주, 협업까지<br />
+            <span className="text-white font-semibold">당신의 모든 수익 모델</span>을 한 곳에서 관리하세요<br />
+            폼만 작성하면 <span className="text-primary-400 font-semibold">30분 만에 비즈니스 홈페이지</span> 완성
           </p>
           
           <div className="flex items-center justify-center gap-4 mb-16">
@@ -98,45 +98,45 @@ export default function HomePage() {
               왜 <span className="text-gradient">Corefy</span>인가요?
             </h2>
             <p className="text-xl text-gray-400">
-              비즈니스 본질에 집중하세요. 나머지는 저희가 해결합니다.
+              1인 프리랜서, 1인 창업가, 1인 에이전시를 위한 맞춤 솔루션
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FeatureCard
               icon={<Zap className="w-8 h-8" />}
-              title="초고속 셋업"
-              description="폼만 작성하면 30분 만에 판매 시작. 복잡한 디자인 설정 제로."
+              title="다양한 수익 모델"
+              description="온라인 강의, 멘토링, 외주, 협업까지. 당신의 모든 비즈니스를 한 곳에서."
               gradient="from-yellow-500 to-orange-500"
             />
             <FeatureCard
               icon={<Sparkles className="w-8 h-8" />}
               title="AI 자동 생성"
-              description="AI가 자동으로 웹사이트, 마케팅 문구, 가격까지 추천해드립니다."
+              description="서비스 설명, 커리큘럼, 가격까지 AI가 추천. 고민하지 말고 바로 시작하세요."
               gradient="from-primary-500 to-accent-500"
             />
             <FeatureCard
               icon={<LayoutGrid className="w-8 h-8" />}
-              title="7가지 서비스 타입"
-              description="온라인강의, 컨설팅, 멘토링, 부트캠프 등 모든 비즈니스 지원."
+              title="폼 기반 간편 등록"
+              description="드래그앤드롭 없이 내용만 입력. 30분 만에 프로페셔널한 홈페이지 완성."
               gradient="from-cyan-500 to-blue-500"
             />
             <FeatureCard
               icon={<Shield className="w-8 h-8" />}
               title="투명한 수수료"
-              description="FREE 10%, STARTER 7%, PRO 5%. 숨겨진 비용 일체 없음."
+              description="FREE 10%, STARTER 7%, PRO 5%. 숨겨진 비용 제로."
               gradient="from-green-500 to-emerald-500"
             />
             <FeatureCard
               icon={<Rocket className="w-8 h-8" />}
-              title="완전 자동화"
-              description="결제, 수강 관리, 쿠폰, 환불까지. 모든 프로세스 자동화."
+              title="독립 쇼핑몰"
+              description="플랫폼 종속 없이 나만의 브랜드로. 고객 데이터도 내 것."
               gradient="from-pink-500 to-rose-500"
             />
             <FeatureCard
               icon={<TrendingUp className="w-8 h-8" />}
               title="성장 도구"
-              description="실시간 분석, 매출 대시보드, 고객 관리까지 올인원."
+              description="실시간 분석, 쿠폰, 멤버십까지. 비즈니스 성장을 위한 모든 도구."
               gradient="from-purple-500 to-indigo-500"
             />
           </div>
@@ -193,11 +193,11 @@ export default function HomePage() {
               price="₩0"
               period="/월"
               commission="10%"
-              description="시작하는 크리에이터를 위한"
+              description="시작하는 1인 비즈니스"
               features={[
                 '무제한 서비스 등록',
-                '기본 웹사이트 템플릿',
-                '결제 연동 (Toss)',
+                '6가지 카테고리 지원',
+                '기본 결제 연동',
                 '이메일 지원',
                 '기본 통계',
               ]}
@@ -384,6 +384,13 @@ function PricingCard({
             ? 'bg-primary-500 text-white hover:bg-primary-600 hover:scale-105 hover:shadow-glow'
             : 'bg-dark-800 text-white hover:bg-dark-700 border border-dark-700'
         }`}
+      >
+        시작하기
+      </Link>
+    </div>
+  )
+}
+    }`}
       >
         시작하기
       </Link>

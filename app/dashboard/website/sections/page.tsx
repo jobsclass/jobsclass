@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { GripVertical, Eye, EyeOff } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: '섹션 관리 | Corefy',
+  title: '섹션 관리 | Jobs Build',
   description: '웹사이트 섹션 표시/숨김 및 순서 조정',
 }
 

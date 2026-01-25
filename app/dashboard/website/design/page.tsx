@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '디자인 설정 | Corefy',
+  title: '디자인 설정 | Jobs Build',
 }
 
 export default function DesignPage() {

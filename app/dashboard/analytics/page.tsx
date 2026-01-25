@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { BarChart3, TrendingUp, Users, Eye } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: '통계/분석 | Corefy',
+  title: '통계/분석 | Jobs Build',
 }
 
 export default function AnalyticsPage() {

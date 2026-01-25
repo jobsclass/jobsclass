@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { CreditCard, TrendingUp, Package, DollarSign } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: '결제 관리 | Corefy',
+  title: '결제 관리 | Jobs Build',
 }
 
 export default function OrdersPage() {

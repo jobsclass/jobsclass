@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Users, Search, Mail } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: '고객 관리 | Corefy',
+  title: '고객 관리 | Jobs Build',
 }
 
 export default function CustomersPage() {

@@ -13,7 +13,7 @@ export default function HomePage() {
             <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
               <span className="text-white font-bold text-xl">C</span>
             </div>
-            <span className="text-2xl font-bold text-white">Corefy</span>
+            <span className="text-2xl font-bold text-white">Jobs Build</span>
           </Link>
           
           <div className="flex items-center gap-3">
@@ -97,7 +97,7 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              왜 <span className="text-gradient">Corefy</span>인가요?
+              왜 <span className="text-gradient">Jobs Build</span>인가요?
             </h2>
             <p className="text-xl text-gray-400">
               리틀리와 아임웹의 중간, AI로 더 쉽게
@@ -199,7 +199,7 @@ export default function HomePage() {
                 '웹사이트 3개',
                 '기본 템플릿 3가지',
                 '폼 기반 편집',
-                'Corefy 서브도메인',
+                'Jobs Build 서브도메인',
                 '기본 지원',
               ]}
             />
@@ -263,11 +263,11 @@ export default function HomePage() {
               <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
                 <span className="text-white font-bold">C</span>
               </div>
-              <span className="text-xl font-bold text-white">Corefy</span>
+              <span className="text-xl font-bold text-white">Jobs Build</span>
             </div>
             
             <p className="text-gray-500 text-sm">
-              © 2026 Corefy. AI로 1분 만에 웹사이트 완성.
+              © 2026 Jobs Build. AI로 1분 만에 웹사이트 완성.
             </p>
           </div>
         </div>

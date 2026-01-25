@@ -92,9 +92,14 @@ export default async function WebsitePage({ params }: PageProps) {
     .eq('id', website.template_id)
     .single()
 
-  // 4. 콘텐츠 파싱
-  const content = website.content as any || {}
-  const settings = website.settings as any || {}
+  // 4. 콘텐츠 파싱 (안전하게)
+  const content = typeof website.content === 'string' 
+    ? JSON.parse(website.content) 
+    : (website.content || {})
+  
+  const settings = typeof website.settings === 'string'
+    ? JSON.parse(website.settings)
+    : (website.settings || {})
 
   // 템플릿별로 다른 렌더링
   if (template?.id === 'modern') {

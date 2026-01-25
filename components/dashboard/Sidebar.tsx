@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react'
 const navigation = [
   { name: '대시보드', href: '/dashboard', icon: LayoutDashboard },
   { name: '내 웹사이트', href: '/dashboard/websites', icon: Globe },
+  { name: '쿠폰 관리', href: '/dashboard/coupons', icon: Ticket },
   { name: '설정', href: '/dashboard/settings', icon: Settings },
 ]
 

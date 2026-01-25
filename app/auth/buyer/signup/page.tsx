@@ -45,7 +45,7 @@ export default function BuyerSignupPage() {
       if (insertError) throw insertError
 
       alert('회원가입이 완료되었습니다!')
-      router.push('/')
+      router.push('/explore')
     } catch (err: any) {
       console.error('Signup error:', err)
       setError(err.message || '회원가입 중 오류가 발생했습니다')

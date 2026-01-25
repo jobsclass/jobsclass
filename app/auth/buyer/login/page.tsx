@@ -29,7 +29,7 @@ export default function BuyerLoginPage() {
 
       if (signInError) throw signInError
 
-      router.push('/')
+      router.push('/explore')
     } catch (err: any) {
       console.error('Login error:', err)
       setError(err.message || '로그인에 실패했습니다')

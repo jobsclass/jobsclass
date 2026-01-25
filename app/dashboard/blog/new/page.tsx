@@ -35,10 +35,35 @@ export default function NewBlogPage() {
     setFormData(newData)
   }
 
+  const [loading, setLoading] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Blog submitted:', formData)
-    router.push('/dashboard/blog')
+    setLoading(true)
+
+    try {
+      const response = await fetch('/api/blog/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          isPublished: true,
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || '저장 실패')
+      }
+
+      alert('블로그 글이 성공적으로 발행되었습니다!')
+      router.push('/dashboard/blog')
+    } catch (error: any) {
+      console.error('Error:', error)
+      alert(error.message || '블로그 글 발행에 실패했습니다')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -154,9 +179,10 @@ export default function NewBlogPage() {
           </button>
           <button
             type="submit"
-            className="px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-500 hover:to-purple-500 text-white rounded-xl font-medium shadow-lg shadow-primary-500/20 transition-all"
+            disabled={loading}
+            className="px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-500 hover:to-purple-500 text-white rounded-xl font-medium shadow-lg shadow-primary-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            발행하기
+            {loading ? '발행 중...' : '발행하기'}
           </button>
         </div>
       </form>

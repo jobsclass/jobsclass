@@ -1,0 +1,40 @@
+import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = await createClient()
+    
+    // 인증 확인
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: '인증이 필요합니다' },
+        { status: 401 }
+      )
+    }
+
+    // 블로그 글 목록 조회
+    const { data: posts, error: postsError } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+
+    if (postsError) {
+      console.error('Posts fetch error:', postsError)
+      return NextResponse.json(
+        { error: '블로그 글 목록을 불러오는데 실패했습니다' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ posts: posts || [] })
+  } catch (error) {
+    console.error('Unexpected error:', error)
+    return NextResponse.json(
+      { error: '서버 오류가 발생했습니다' },
+      { status: 500 }
+    )
+  }
+}

@@ -18,9 +18,7 @@ import { useEffect, useState } from 'react'
 
 const navigation = [
   { name: '대시보드', href: '/dashboard', icon: LayoutDashboard },
-  { name: '서비스 관리', href: '/dashboard/services', icon: Package },
-  { name: '주문 관리', href: '/dashboard/orders', icon: ShoppingCart },
-  { name: '쿠폰 관리', href: '/dashboard/coupons', icon: Ticket },
+  { name: '내 웹사이트', href: '/dashboard/websites', icon: Globe },
   { name: '설정', href: '/dashboard/settings', icon: Settings },
 ]
 
@@ -35,13 +33,13 @@ export function DashboardSidebar() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         const { data: profile } = await supabase
-          .from('partner_profiles')
-          .select('profile_url')
+          .from('user_profiles')
+          .select('username')
           .eq('user_id', user.id)
           .single()
         
         if (profile) {
-          setProfileUrl(profile.profile_url)
+          setProfileUrl(profile.username)
         }
       }
     }
@@ -62,7 +60,7 @@ export function DashboardSidebar() {
           </div>
           <div>
             <h1 className="text-xl font-bold">Corefy</h1>
-            <p className="text-xs text-gray-400">Partner Dashboard</p>
+            <p className="text-xs text-gray-400">WebBuilder</p>
           </div>
         </Link>
       </div>

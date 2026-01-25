@@ -6,105 +6,105 @@ import { ArrowRight, Zap, Sparkles, Layout, TrendingUp, Shield, Rocket } from 'l
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-dark-950">
-      {/* Navbar */}
+      {/* Navbar - 모바일 최적화 */}
       <nav className="fixed top-0 w-full z-50 glass border-b border-dark-800/50">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
-              <span className="text-white font-bold text-xl">잡</span>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-primary flex items-center justify-center">
+              <span className="text-white font-bold text-lg sm:text-xl">J</span>
             </div>
-            <span className="text-2xl font-bold text-white">잡스빌드</span>
+            <span className="text-xl sm:text-2xl font-bold text-white">잡스빌드</span>
           </Link>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/auth/user/login"
-              className="btn-ghost text-sm"
+              className="btn-ghost text-xs sm:text-sm px-3 sm:px-4 py-2"
             >
               로그인
             </Link>
             <Link
               href="/auth/user/signup"
-              className="btn-primary text-sm"
+              className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-2"
             >
-              무료로 시작하기
+              무료시작
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+      {/* Hero Section - 모바일 최적화 */}
+      <section className="relative pt-24 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 overflow-hidden">
         {/* Animated Background Gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900/20 via-dark-950 to-accent-900/20"></div>
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-primary-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] bg-accent-500/10 rounded-full blur-3xl"></div>
         
         <div className="container mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full mb-8">
-            <Sparkles className="w-4 h-4 text-primary-400" />
-            <span className="text-sm text-primary-300 font-medium">AI 기반 1분 완성 웹빌더</span>
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-500/10 border border-primary-500/20 rounded-full mb-6 sm:mb-8">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" />
+            <span className="text-xs sm:text-sm text-primary-300 font-medium">AI 기반 1분 완성 웹빌더</span>
           </div>
           
-          <h1 className="text-6xl md:text-7xl font-bold mb-6">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6 px-2">
             <span className="text-gradient">AI로 1분 만에</span>
             <br />
             <span className="text-white">웹사이트 완성</span>
           </h1>
           
-          <p className="text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-            복잡한 코딩 없이 폼만 작성하면<br />
-            <span className="text-white font-semibold">AI가 자동으로 웹사이트 생성</span><br />
+          <p className="text-base sm:text-xl text-gray-400 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
+            복잡한 코딩 없이 폼만 작성하면<br className="hidden sm:block" />
+            <span className="text-white font-semibold">AI가 자동으로 웹사이트 생성</span><br className="hidden sm:block" />
             <span className="text-primary-400 font-semibold">포트폴리오, 카페, 비즈니스 사이트까지</span>
           </p>
           
-          <div className="flex items-center justify-center gap-4 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 px-4">
             <Link
               href="/auth/user/signup"
-              className="btn-primary text-lg flex items-center gap-2 group"
+              className="btn-primary w-full sm:w-auto text-base sm:text-lg flex items-center justify-center gap-2 group"
             >
               무료로 시작하기
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="#features"
-              className="btn-secondary text-lg"
+              className="btn-secondary w-full sm:w-auto text-base sm:text-lg"
             >
               더 알아보기
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div className="card text-center">
-              <div className="text-4xl font-bold text-gradient mb-2">1분</div>
-              <div className="text-sm text-gray-400">평균 생성 시간</div>
+          {/* Stats - 모바일 최적화 */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-8 max-w-3xl mx-auto px-2">
+            <div className="card text-center p-3 sm:p-6">
+              <div className="text-2xl sm:text-4xl font-bold text-gradient mb-1 sm:mb-2">1분</div>
+              <div className="text-xs sm:text-sm text-gray-400">평균 생성 시간</div>
             </div>
-            <div className="card text-center">
-              <div className="text-4xl font-bold text-gradient mb-2">0원</div>
-              <div className="text-sm text-gray-400">시작 비용</div>
+            <div className="card text-center p-3 sm:p-6">
+              <div className="text-2xl sm:text-4xl font-bold text-gradient mb-1 sm:mb-2">0원</div>
+              <div className="text-xs sm:text-sm text-gray-400">시작 비용</div>
             </div>
-            <div className="card text-center">
-              <div className="text-4xl font-bold text-gradient mb-2">3가지</div>
-              <div className="text-sm text-gray-400">프리미엄 템플릿</div>
+            <div className="card text-center p-3 sm:p-6">
+              <div className="text-2xl sm:text-4xl font-bold text-gradient mb-1 sm:mb-2">3가지</div>
+              <div className="text-xs sm:text-sm text-gray-400">프리미엄 템플릿</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 px-6">
+      {/* Features Section - 모바일 최적화 */}
+      <section id="features" className="py-16 sm:py-20 px-4 sm:px-6">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
               왜 <span className="text-gradient">잡스빌드</span>인가요?
             </h2>
-            <p className="text-xl text-gray-400">
+            <p className="text-base sm:text-xl text-gray-400">
               리틀리와 아임웹의 중간, AI로 더 쉽게
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <FeatureCard
               icon={<Sparkles className="w-8 h-8" />}
               title="AI 자동 생성"
@@ -145,19 +145,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-20 px-6 bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950">
+      {/* How It Works - 모바일 최적화 */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
               3단계로 시작하세요
             </h2>
-            <p className="text-xl text-gray-400">
+            <p className="text-base sm:text-xl text-gray-400">
               복잡한 과정 없이 누구나 쉽게 만들 수 있습니다
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             <StepCard
               step="1"
               title="템플릿 선택"
@@ -177,19 +177,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="py-20 px-6">
+      {/* Pricing - 모바일 최적화 */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
               간단한 요금제
             </h2>
-            <p className="text-xl text-gray-400">
+            <p className="text-base sm:text-xl text-gray-400">
               언제든 업그레이드 가능. 위험 부담 제로.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
             <PricingCard
               name="FREE"
               price="₩0"
@@ -255,18 +255,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-dark-800 py-12 px-6">
+      {/* Footer - 모바일 최적화 */}
+      <footer className="border-t border-dark-800 py-8 sm:py-12 px-4 sm:px-6">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
-                <span className="text-white font-bold">잡</span>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-primary flex items-center justify-center">
+                <span className="text-white font-bold text-sm sm:text-base">J</span>
               </div>
-              <span className="text-xl font-bold text-white">잡스빌드</span>
+              <span className="text-lg sm:text-xl font-bold text-white">잡스빌드</span>
             </div>
             
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 text-xs sm:text-sm text-center">
               © 2026 잡스빌드. AI로 1분 만에 웹사이트 완성.
             </p>
           </div>

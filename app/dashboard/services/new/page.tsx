@@ -23,6 +23,8 @@ export default function NewServicePage() {
     category_2: '' as ServiceSubcategory | '',
     tags: [] as string[],
     base_price: '',
+    discount_price: '',
+    thumbnail_url: '',
     instructor_name: '',
     instructor_bio: '',
   })
@@ -57,6 +59,8 @@ export default function NewServicePage() {
           category_2: formData.category_2 || null,
           tags: formData.tags.length > 0 ? JSON.stringify(formData.tags) : null,
           base_price: formData.base_price ? parseFloat(formData.base_price) : null,
+          discount_price: formData.discount_price ? parseFloat(formData.discount_price) : null,
+          thumbnail_url: formData.thumbnail_url || null,
           instructor_name: formData.instructor_name,
           instructor_bio: formData.instructor_bio || null,
           is_published: true,
@@ -218,15 +222,54 @@ export default function NewServicePage() {
               </div>
 
               {/* 가격 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-200 mb-2">기본 가격 (원)</label>
+                  <input
+                    type="number"
+                    value={formData.base_price}
+                    onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
+                    placeholder="100000"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-200 mb-2">할인 가격 (원)</label>
+                  <input
+                    type="number"
+                    value={formData.discount_price}
+                    onChange={(e) => setFormData({ ...formData, discount_price: e.target.value })}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
+                    placeholder="80000"
+                  />
+                </div>
+              </div>
+
+              {/* 썸네일 */}
               <div>
-                <label className="block text-sm font-medium text-gray-200 mb-2">가격 (원)</label>
+                <label className="block text-sm font-medium text-gray-200 mb-2">썸네일 이미지 URL</label>
                 <input
-                  type="number"
-                  value={formData.base_price}
-                  onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
+                  type="url"
+                  value={formData.thumbnail_url}
+                  onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
-                  placeholder="100000"
+                  placeholder="https://example.com/thumbnail.jpg"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  이미지 URL을 입력하세요 (추천: 1200x630px)
+                </p>
+                {formData.thumbnail_url && (
+                  <div className="mt-3">
+                    <img
+                      src={formData.thumbnail_url}
+                      alt="Thumbnail preview"
+                      className="w-full max-w-md rounded-lg border-2 border-gray-700"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* 강사명 */}

@@ -16,6 +16,7 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
     description: '',
     base_price: '',
     discount_price: '',
+    thumbnail_url: '',
     instructor_name: '',
     instructor_bio: '',
     is_published: false,
@@ -53,6 +54,7 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
         description: data.description,
         base_price: data.base_price || '',
         discount_price: data.discount_price || '',
+        thumbnail_url: data.thumbnail_url || '',
         instructor_name: data.instructor_name,
         instructor_bio: data.instructor_bio || '',
         is_published: data.is_published,
@@ -76,6 +78,7 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
           description: formData.description,
           base_price: formData.base_price ? parseFloat(formData.base_price) : null,
           discount_price: formData.discount_price ? parseFloat(formData.discount_price) : null,
+          thumbnail_url: formData.thumbnail_url || null,
           instructor_name: formData.instructor_name,
           instructor_bio: formData.instructor_bio,
           is_published: formData.is_published,
@@ -89,6 +92,32 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
     } catch (err: any) {
       console.error('Update error:', err)
       setError(err.message || '수정 중 오류가 발생했습니다')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!confirm('정말 이 서비스를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+      return
+    }
+
+    setSaving(true)
+    setError('')
+
+    try {
+      const { error: deleteError } = await supabase
+        .from('services')
+        .delete()
+        .eq('id', serviceId)
+
+      if (deleteError) throw deleteError
+
+      alert('서비스가 삭제되었습니다')
+      router.push('/dashboard/services')
+    } catch (err: any) {
+      console.error('Delete error:', err)
+      setError(err.message || '삭제 중 오류가 발생했습니다')
     } finally {
       setSaving(false)
     }
@@ -221,6 +250,22 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
               />
             </div>
           </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              썸네일 이미지 URL
+            </label>
+            <input
+              type="url"
+              value={formData.thumbnail_url}
+              onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
+              className="input w-full"
+              placeholder="https://example.com/image.jpg"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              서비스 목록에 표시될 썸네일 이미지 URL을 입력하세요
+            </p>
+          </div>
         </div>
 
         <div className="card">
@@ -257,6 +302,14 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
           >
             취소
           </Link>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={saving}
+            className="px-6 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-red-400 font-medium transition-all"
+          >
+            삭제
+          </button>
         </div>
       </form>
     </div>

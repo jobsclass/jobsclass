@@ -1,24 +1,71 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 
-export default async function CouponsPage() {
-  const supabase = await createClient()
-  
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user) {
-    redirect('/auth/partner/login')
+export default function CouponsPage() {
+  const router = useRouter()
+  const supabase = createClient()
+  const [coupons, setCoupons] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/auth/partner/login')
+        return
+      }
+      
+      // Fetch coupons
+      const { data } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('partner_id', user.id)
+        .order('created_at', { ascending: false })
+      
+      setCoupons(data || [])
+      setLoading(false)
+    }
+    checkAuth()
+  }, [])
+
+  const handleDelete = async (couponId: string, couponCode: string) => {
+    if (!confirm(`정말 '${couponCode}' 쿠폰을 삭제하시겠습니까?`)) {
+      return
+    }
+
+    try {
+      const { error } = await supabase
+        .from('coupons')
+        .delete()
+        .eq('id', couponId)
+
+      if (error) throw error
+
+      alert('쿠폰이 삭제되었습니다')
+      // 목록 새로고침
+      setCoupons(coupons.filter(c => c.id !== couponId))
+    } catch (err: any) {
+      console.error('Delete error:', err)
+      alert('삭제 중 오류가 발생했습니다: ' + err.message)
+    }
   }
 
-  // Fetch coupons
-  const { data: coupons } = await supabase
-    .from('coupons')
-    .select('*')
-    .eq('partner_id', user.id)
-    .order('created_at', { ascending: false })
+  if (loading) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">불러오는 중...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-8">
@@ -70,8 +117,18 @@ export default async function CouponsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="btn-secondary text-sm">수정</button>
-                  <button className="btn-secondary text-sm text-red-400 hover:bg-red-500/10">삭제</button>
+                  <Link 
+                    href={`/dashboard/coupons/${coupon.id}/edit`}
+                    className="btn-secondary text-sm"
+                  >
+                    수정
+                  </Link>
+                  <button 
+                    onClick={() => handleDelete(coupon.id, coupon.code)}
+                    className="btn-secondary text-sm text-red-400 hover:bg-red-500/10"
+                  >
+                    삭제
+                  </button>
                 </div>
               </div>
             </div>

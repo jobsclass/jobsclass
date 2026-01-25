@@ -5,6 +5,7 @@ import { ShoppingCart, Tag, Clock, Users, Star } from 'lucide-react'
 import { getCategoryById, getSubcategoryById } from '@/lib/categories'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import AddToCartButton from '@/components/cart/AddToCartButton'
 
 interface PageProps {
   params: Promise<{ partner: string; service: string }>
@@ -219,13 +220,13 @@ export default async function PublicServicePage({ params }: PageProps) {
 
                     {/* CTA 버튼 */}
                     <div className="space-y-3">
-                      <button className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl text-lg font-semibold hover:shadow-lg hover:shadow-primary-500/20 transition-all">
-                        <ShoppingCart className="w-5 h-5" />
-                        장바구니 담기
-                      </button>
-                      <button className="w-full px-6 py-4 bg-gray-800 text-white border border-gray-700 rounded-xl text-lg font-semibold hover:bg-gray-700 transition-colors">
+                      <AddToCartButton serviceId={service.id} serviceName={service.title} />
+                      <Link
+                        href={`/checkout?service=${service.id}`}
+                        className="block w-full px-6 py-4 bg-gray-800 text-white text-center border border-gray-700 rounded-xl text-lg font-semibold hover:bg-gray-700 transition-colors"
+                      >
                         바로 구매
-                      </button>
+                      </Link>
                     </div>
 
                     {/* 추가 정보 */}

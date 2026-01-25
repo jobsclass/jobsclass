@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -14,12 +14,23 @@ export async function POST(request: Request) {
       )
     }
 
-    const supabase = await createClient()
+    // Service Role 클라이언트 생성 (RLS 우회)
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    )
 
     // 1. Create auth user
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
+      email_confirm: true,
     })
 
     if (authError) {
@@ -37,8 +48,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // 2. Create partner profile
-    const { data: profileData, error: profileError } = await supabase
+    // 2. Create partner profile (Service Role로 RLS 우회)
+    const { data: profileData, error: profileError } = await supabaseAdmin
       .from('partner_profiles')
       .insert({
         user_id: authData.user.id,
@@ -53,7 +64,7 @@ export async function POST(request: Request) {
       console.error('Profile creation error:', profileError)
       
       // Rollback: Delete auth user if profile creation fails
-      await supabase.auth.admin.deleteUser(authData.user.id)
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id)
       
       return NextResponse.json(
         { error: profileError.message },

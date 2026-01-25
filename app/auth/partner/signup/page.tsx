@@ -33,28 +33,35 @@ export default function PartnerSignupPage() {
     setError('')
 
     try {
-      // 1. Supabase Auth 회원가입
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // API 호출로 회원가입 (서버 측에서 처리)
+      const response = await fetch('/api/auth/partner/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          displayName: formData.displayName,
+          profileUrl: formData.profileUrl,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || '회원가입에 실패했습니다')
+      }
+
+      // 회원가입 성공 - 로그인 처리
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       })
 
-      if (authError) throw authError
-      if (!authData.user) throw new Error('회원가입에 실패했습니다')
+      if (signInError) throw signInError
 
-      // 2. 파트너 프로필 생성
-      const { error: profileError } = await supabase
-        .from('partner_profiles')
-        .insert({
-          user_id: authData.user.id,
-          display_name: formData.displayName,
-          profile_url: formData.profileUrl,
-          subscription_plan: 'FREE',
-        })
-
-      if (profileError) throw profileError
-
-      // 3. 대시보드로 이동
+      // 대시보드로 이동
       router.push('/dashboard')
     } catch (err: any) {
       console.error('Signup error:', err)

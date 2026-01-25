@@ -71,7 +71,7 @@ export default function ExperiencesPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('정말 이 경력을 삭제하시겠습니까?')) return
+    if (!confirm('정말 이 커리어를 삭제하시겠습니까?')) return
 
     try {
       const response = await fetch(`/api/profile/experiences?id=${id}`, {
@@ -81,7 +81,7 @@ export default function ExperiencesPage() {
       loadExperiences()
     } catch (error) {
       console.error('Error deleting experience:', error)
-      alert('경력 삭제에 실패했습니다')
+      alert('커리어 삭제에 실패했습니다')
     }
   }
 
@@ -103,7 +103,7 @@ export default function ExperiencesPage() {
       loadExperiences()
     } catch (error) {
       console.error('Error saving experience:', error)
-      alert('경력 저장에 실패했습니다')
+      alert('커리어 저장에 실패했습니다')
     }
   }
 
@@ -119,29 +119,29 @@ export default function ExperiencesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">경력 사항</h1>
-          <p className="text-gray-400">경력을 추가하고 관리하세요</p>
+          <h1 className="text-3xl font-bold text-white mb-2">커리어</h1>
+          <p className="text-gray-400">커리어를 추가하고 관리하세요</p>
         </div>
         <button
           onClick={handleAdd}
           className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/20 hover:from-primary-500 hover:to-purple-500 transition-all"
         >
           <Plus className="w-5 h-5" />
-          경력 추가
+          커리어 추가
         </button>
       </div>
 
       {experiences.length === 0 ? (
         <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-16 text-center">
           <Briefcase className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-white mb-2">등록된 경력이 없습니다</h3>
-          <p className="text-gray-400 mb-6">첫 경력을 추가하세요</p>
+          <h3 className="text-xl font-bold text-white mb-2">등록된 커리어가 없습니다</h3>
+          <p className="text-gray-400 mb-6">첫 커리어를 추가하세요</p>
           <button
             onClick={handleAdd}
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-500 text-white rounded-xl font-medium transition-colors"
           >
             <Plus className="w-5 h-5" />
-            경력 추가하기
+            커리어 추가하기
           </button>
         </div>
       ) : (
@@ -185,7 +185,7 @@ export default function ExperiencesPage() {
           <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white">
-                {editingId ? '경력 수정' : '경력 추가'}
+                {editingId ? '커리어 수정' : '커리어 추가'}
               </h2>
               <button
                 onClick={() => setShowModal(false)}

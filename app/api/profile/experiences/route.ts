@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Fetch error:', error)
-      return NextResponse.json({ error: '경력 목록을 불러오는데 실패했습니다' }, { status: 500 })
+      return NextResponse.json({ error: '커리어 목록을 불러오는데 실패했습니다' }, { status: 500 })
     }
 
     return NextResponse.json({ experiences: data || [] })
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Insert error:', error)
-      return NextResponse.json({ error: '경력 추가에 실패했습니다' }, { status: 500 })
+      return NextResponse.json({ error: '커리어 추가에 실패했습니다' }, { status: 500 })
     }
 
     return NextResponse.json({ experience: data }, { status: 201 })
@@ -86,7 +86,7 @@ export async function PUT(request: NextRequest) {
     const { id, company, position, startDate, endDate, isCurrent, description } = body
 
     if (!id) {
-      return NextResponse.json({ error: '경력 ID가 필요합니다' }, { status: 400 })
+      return NextResponse.json({ error: '커리어 ID가 필요합니다' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -106,7 +106,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('Update error:', error)
-      return NextResponse.json({ error: '경력 수정에 실패했습니다' }, { status: 500 })
+      return NextResponse.json({ error: '커리어 수정에 실패했습니다' }, { status: 500 })
     }
 
     return NextResponse.json({ experience: data })
@@ -130,7 +130,7 @@ export async function DELETE(request: NextRequest) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json({ error: '경력 ID가 필요합니다' }, { status: 400 })
+      return NextResponse.json({ error: '커리어 ID가 필요합니다' }, { status: 400 })
     }
 
     const { error } = await supabase
@@ -141,7 +141,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('Delete error:', error)
-      return NextResponse.json({ error: '경력 삭제에 실패했습니다' }, { status: 500 })
+      return NextResponse.json({ error: '커리어 삭제에 실패했습니다' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

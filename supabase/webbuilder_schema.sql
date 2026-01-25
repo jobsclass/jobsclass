@@ -68,6 +68,11 @@ CREATE TABLE websites (
   logo_url TEXT,
   favicon_url TEXT,
   
+  -- 문제-해결 중심 정보
+  problem_category TEXT, -- '💰 수익 창출', '🚀 비즈니스 성장', etc.
+  solution_types TEXT[], -- ['온라인 강의', '전자책', '컨설팅']
+  target_customer TEXT, -- '프리랜서 디자이너', '초보 마케터', etc.
+  
   -- 콘텐츠 (JSONB)
   content JSONB NOT NULL DEFAULT '{}',
   /*

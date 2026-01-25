@@ -16,7 +16,17 @@ export async function POST(request: Request) {
 
     // 요청 데이터
     const body = await request.json()
-    const { template, title, slug, description, content, settings } = body
+    const { 
+      template, 
+      title, 
+      slug, 
+      description, 
+      content, 
+      settings,
+      problem_category,
+      solution_types,
+      target_customer
+    } = body
 
     // 필수 필드 검증
     if (!template || !title || !slug) {
@@ -50,6 +60,9 @@ export async function POST(request: Request) {
         title,
         slug,
         description: description || '',
+        problem_category: problem_category || null,
+        solution_types: solution_types || [],
+        target_customer: target_customer || null,
         content: content || {},
         settings: settings || {
           colors: {

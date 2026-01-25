@@ -7,30 +7,51 @@ import { ArrowLeft, ArrowRight, Sparkles, Palette, Globe, Check } from 'lucide-r
 
 interface FormData {
   template: string
+  // 문제-해결 중심 필드
+  problem_category: string
+  solution_types: string[]
+  target_customer: string
+  // 기본 정보
   title: string
   slug: string
   description: string
   logo: string
+  // 콘텐츠
   content: {
-    hero: {
-      title: string
-      subtitle: string
-      image: string
-      cta: { text: string; link: string }
-    }
-    about: {
-      text: string
-      image: string
-    }
-    services: Array<{
+    problem: {
       title: string
       description: string
-      icon: string
-    }>
+      painPoints: string[]
+    }
+    solution: {
+      title: string
+      description: string
+      features: Array<{
+        title: string
+        description: string
+        icon: string
+      }>
+    }
+    process: {
+      title: string
+      steps: Array<{
+        title: string
+        description: string
+      }>
+    }
+    results: {
+      title: string
+      items: string[]
+    }
+    pricing: {
+      title: string
+      price: string
+      features: string[]
+    }
     contact: {
       email: string
       phone: string
-      address: string
+      cta: string
     }
   }
   settings: {
@@ -56,30 +77,52 @@ export default function WebsiteSetupPage({
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
     template: params.template || 'modern',
+    // 문제-해결 중심
+    problem_category: '',
+    solution_types: [],
+    target_customer: '',
+    // 기본 정보
     title: '',
     slug: '',
     description: '',
     logo: '',
+    // 콘텐츠
     content: {
-      hero: {
+      problem: {
         title: '',
-        subtitle: '',
-        image: '',
-        cta: { text: '시작하기', link: '#' }
+        description: '',
+        painPoints: ['', '', '']
       },
-      about: {
-        text: '',
-        image: ''
+      solution: {
+        title: '',
+        description: '',
+        features: [
+          { title: '', description: '', icon: '💡' },
+          { title: '', description: '', icon: '🚀' },
+          { title: '', description: '', icon: '⭐' }
+        ]
       },
-      services: [
-        { title: '', description: '', icon: '💼' },
-        { title: '', description: '', icon: '🚀' },
-        { title: '', description: '', icon: '⭐' }
-      ],
+      process: {
+        title: '진행 과정',
+        steps: [
+          { title: '', description: '' },
+          { title: '', description: '' },
+          { title: '', description: '' }
+        ]
+      },
+      results: {
+        title: '기대 효과',
+        items: ['', '', '']
+      },
+      pricing: {
+        title: '가격',
+        price: '',
+        features: ['', '', '']
+      },
       contact: {
         email: '',
         phone: '',
-        address: ''
+        cta: '지금 시작하기'
       }
     },
     settings: {
@@ -162,13 +205,13 @@ export default function WebsiteSetupPage({
         {/* 진행 단계 */}
         <div className="mb-12">
           <div className="flex items-center justify-center gap-4">
-            <StepIndicator number={1} label="템플릿" completed active={step === 1} />
+            <StepIndicator number={1} label="문제 정의" completed active={step === 1} />
             <StepLine completed={step > 1} />
-            <StepIndicator number={2} label="기본 정보" completed={step > 2} active={step === 2} />
+            <StepIndicator number={2} label="해결 방법" completed={step > 2} active={step === 2} />
             <StepLine completed={step > 2} />
-            <StepIndicator number={3} label="콘텐츠" completed={step > 3} active={step === 3} />
+            <StepIndicator number={3} label="기본 정보" completed={step > 3} active={step === 3} />
             <StepLine completed={step > 3} />
-            <StepIndicator number={4} label="디자인" completed={step > 4} active={step === 4} />
+            <StepIndicator number={4} label="세부 내용" completed={step > 4} active={step === 4} />
             <StepLine completed={step > 4} />
             <StepIndicator number={5} label="배포" active={step === 5} />
           </div>
@@ -176,10 +219,10 @@ export default function WebsiteSetupPage({
 
         {/* 폼 콘텐츠 */}
         <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-3xl p-8 mb-8">
-          {step === 1 && <Step1TemplateConfirm template={formData.template} />}
-          {step === 2 && <Step2BasicInfo formData={formData} setFormData={setFormData} />}
-          {step === 3 && <Step3Content formData={formData} setFormData={setFormData} />}
-          {step === 4 && <Step4Design formData={formData} setFormData={setFormData} />}
+          {step === 1 && <Step1ProblemDefinition formData={formData} setFormData={setFormData} />}
+          {step === 2 && <Step2SolutionType formData={formData} setFormData={setFormData} />}
+          {step === 3 && <Step3BasicInfo formData={formData} setFormData={setFormData} />}
+          {step === 4 && <Step4Details formData={formData} setFormData={setFormData} />}
           {step === 5 && <Step5Deploy formData={formData} />}
         </div>
 
@@ -273,37 +316,142 @@ function StepLine({ completed = false }: { completed?: boolean }) {
   )
 }
 
-// Step 1: 템플릿 확인
-function Step1TemplateConfirm({ template }: { template: string }) {
-  const templates: Record<string, { name: string; description: string }> = {
-    modern: { name: 'Modern Business', description: '세련된 비즈니스 웹사이트' },
-    minimal: { name: 'Minimal Portfolio', description: '미니멀한 포트폴리오' },
-    creative: { name: 'Creative Agency', description: '창의적인 에이전시' }
-  }
-
-  const selected = templates[template] || templates.modern
+// Step 1: 문제 정의
+function Step1ProblemDefinition({
+  formData,
+  setFormData,
+}: {
+  formData: FormData
+  setFormData: (data: FormData) => void
+}) {
+  const problemCategories = [
+    { id: '💰 수익 창출', emoji: '💰', title: '수익 창출', desc: '돈을 더 벌고 싶어요' },
+    { id: '🚀 비즈니스 성장', emoji: '🚀', title: '비즈니스 성장', desc: '내 사업을 키우고 싶어요' },
+    { id: '⏰ 시간 자유', emoji: '⏰', title: '시간 자유', desc: '시간/장소 자유롭게 일하고 싶어요' },
+    { id: '🎯 전문성 활용', emoji: '🎯', title: '전문성 활용', desc: '내 전문성을 돈으로 바꾸고 싶어요' },
+    { id: '💼 커리어 전환', emoji: '💼', title: '커리어 전환', desc: '새로운 분야로 이직하고 싶어요' },
+    { id: '🎨 창작/제작', emoji: '🎨', title: '창작/제작', desc: '내 작품/콘텐츠를 만들고 싶어요' },
+    { id: '📚 스킬 습득', emoji: '📚', title: '스킬 습득', desc: '새로운 기술을 배우고 싶어요' },
+    { id: '🏢 조직/팀 관리', emoji: '🏢', title: '조직/팀 관리', desc: '팀을 잘 이끌고 싶어요' }
+  ]
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-white">선택한 템플릿</h2>
-      <div className="bg-gray-800/50 rounded-2xl p-6">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="text-6xl">🎨</div>
-          <div>
-            <h3 className="text-2xl font-bold text-white">{selected.name}</h3>
-            <p className="text-gray-400">{selected.description}</p>
-          </div>
-        </div>
-        <p className="text-gray-300">
-          이 템플릿으로 웹사이트를 만들겠습니다. 다음 단계로 진행하세요.
-        </p>
+      <div>
+        <h2 className="text-3xl font-bold text-white mb-2">어떤 문제를 해결해주시나요?</h2>
+        <p className="text-gray-400">고객이 겪고 있는 핵심 문제를 선택하세요</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {problemCategories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setFormData({ ...formData, problem_category: category.id })}
+            className={`p-6 rounded-2xl border-2 transition-all text-left ${
+              formData.problem_category === category.id
+                ? 'border-primary-500 bg-primary-500/10'
+                : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
+            }`}
+          >
+            <div className="text-4xl mb-3">{category.emoji}</div>
+            <h3 className="text-lg font-bold text-white mb-1">{category.title}</h3>
+            <p className="text-sm text-gray-400">{category.desc}</p>
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-8">
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          타겟 고객을 구체적으로 설명해주세요 *
+        </label>
+        <input
+          type="text"
+          placeholder="예: 부업을 시작하고 싶은 직장인, 매출이 정체된 소상공인"
+          value={formData.target_customer}
+          onChange={(e) => setFormData({ ...formData, target_customer: e.target.value })}
+          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
+        />
       </div>
     </div>
   )
 }
 
-// Step 2: 기본 정보
-function Step2BasicInfo({
+// Step 2: 해결 방법
+function Step2SolutionType({
+  formData,
+  setFormData,
+}: {
+  formData: FormData
+  setFormData: (data: FormData) => void
+}) {
+  const solutionTypes = [
+    { id: '온라인 강의', emoji: '💻', desc: '동영상 강의 제공' },
+    { id: '오프라인 교육', emoji: '🎓', desc: '대면 교육 진행' },
+    { id: '전자책', emoji: '📚', desc: 'PDF/이북 제공' },
+    { id: '컨설팅', emoji: '💬', desc: '1:1 상담/자문' },
+    { id: '코칭', emoji: '🎯', desc: '코칭 프로그램' },
+    { id: '외주 서비스', emoji: '🛠️', desc: '작업물 제작/납품' },
+    { id: '템플릿/툴', emoji: '⚙️', desc: '템플릿/도구 제공' },
+    { id: '커뮤니티', emoji: '👥', desc: '멤버십/커뮤니티 운영' }
+  ]
+
+  const toggleSolutionType = (type: string) => {
+    const current = formData.solution_types || []
+    if (current.includes(type)) {
+      setFormData({
+        ...formData,
+        solution_types: current.filter(t => t !== type)
+      })
+    } else {
+      setFormData({
+        ...formData,
+        solution_types: [...current, type]
+      })
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-3xl font-bold text-white mb-2">어떤 형태로 제공하시나요?</h2>
+        <p className="text-gray-400">제공하는 솔루션 형태를 모두 선택하세요 (복수 선택 가능)</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {solutionTypes.map((type) => (
+          <button
+            key={type.id}
+            onClick={() => toggleSolutionType(type.id)}
+            className={`p-6 rounded-2xl border-2 transition-all text-left ${
+              formData.solution_types?.includes(type.id)
+                ? 'border-primary-500 bg-primary-500/10'
+                : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="text-3xl">{type.emoji}</div>
+              <div>
+                <h3 className="text-lg font-bold text-white">{type.id}</h3>
+                <p className="text-sm text-gray-400">{type.desc}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {formData.solution_types?.length > 0 && (
+        <div className="mt-6 p-4 bg-primary-500/10 border border-primary-500/20 rounded-xl">
+          <p className="text-primary-400 font-semibold">
+            ✨ 선택됨: {formData.solution_types.join(', ')}
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Step 3: 기본 정보
+function Step3BasicInfo({
   formData,
   setFormData,
 }: {
@@ -316,11 +464,11 @@ function Step2BasicInfo({
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">
-          웹사이트 이름 *
+          웹사이트/상품 이름 *
         </label>
         <input
           type="text"
-          placeholder="예: 내 카페"
+          placeholder="예: 블로그 수익화 완전 정복"
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
@@ -332,10 +480,10 @@ function Step2BasicInfo({
           URL 슬러그 *
         </label>
         <div className="flex items-center gap-2">
-          <span className="text-gray-500">corefy.com/</span>
+          <span className="text-gray-500">corefy.com/username/</span>
           <input
             type="text"
-            placeholder="my-cafe"
+            placeholder="blog-revenue"
             value={formData.slug}
             onChange={(e) =>
               setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s/g, '-') })
@@ -347,10 +495,10 @@ function Step2BasicInfo({
 
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">
-          간단한 설명
+          한 줄 소개 *
         </label>
         <textarea
-          placeholder="웹사이트를 간단히 설명해주세요"
+          placeholder="예: 블로그로 월 300만원 버는 실전 노하우 공개"
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           rows={3}
@@ -361,8 +509,8 @@ function Step2BasicInfo({
   )
 }
 
-// Step 3: 콘텐츠
-function Step3Content({
+// Step 4: 세부 내용
+function Step4Details({
   formData,
   setFormData,
 }: {
@@ -370,38 +518,74 @@ function Step3Content({
   setFormData: (data: FormData) => void
 }) {
   return (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-white">콘텐츠 작성</h2>
+    <div className="space-y-8">
+      <h2 className="text-3xl font-bold text-white">세부 내용 작성</h2>
 
+      {/* 문제 정의 */}
       <div className="space-y-4">
-        <h3 className="text-xl font-bold text-white">히어로 섹션</h3>
-
+        <h3 className="text-xl font-bold text-white">💡 고객의 문제</h3>
+        
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">메인 제목</label>
-          <input
-            type="text"
-            placeholder="환영합니다"
-            value={formData.content.hero.title}
+          <label className="block text-sm font-medium text-gray-300 mb-2">문제 설명</label>
+          <textarea
+            placeholder="고객이 겪는 문제를 구체적으로 설명하세요"
+            value={formData.content.problem.description}
             onChange={(e) =>
               setFormData({
                 ...formData,
-                content: { ...formData.content, hero: { ...formData.content.hero, title: e.target.value } }
+                content: {
+                  ...formData.content,
+                  problem: { ...formData.content.problem, description: e.target.value }
+                }
               })
             }
+            rows={3}
             className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
           />
         </div>
+      </div>
 
+      {/* 해결 방법 */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-bold text-white">✨ 해결 방법</h3>
+        
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">부제목</label>
-          <input
-            type="text"
-            placeholder="당신을 위한 최고의 서비스"
-            value={formData.content.hero.subtitle}
+          <label className="block text-sm font-medium text-gray-300 mb-2">해결 방법 설명</label>
+          <textarea
+            placeholder="이 상품/서비스로 어떻게 문제를 해결하는지 설명하세요"
+            value={formData.content.solution.description}
             onChange={(e) =>
               setFormData({
                 ...formData,
-                content: { ...formData.content, hero: { ...formData.content.hero, subtitle: e.target.value } }
+                content: {
+                  ...formData.content,
+                  solution: { ...formData.content.solution, description: e.target.value }
+                }
+              })
+            }
+            rows={3}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
+          />
+        </div>
+      </div>
+
+      {/* 가격 */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-bold text-white">💰 가격</h3>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">가격</label>
+          <input
+            type="text"
+            placeholder="예: ₩99,000 또는 무료"
+            value={formData.content.pricing.price}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                content: {
+                  ...formData.content,
+                  pricing: { ...formData.content.pricing, price: e.target.value }
+                }
               })
             }
             className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
@@ -409,8 +593,9 @@ function Step3Content({
         </div>
       </div>
 
+      {/* 연락처 */}
       <div className="space-y-4">
-        <h3 className="text-xl font-bold text-white">연락처</h3>
+        <h3 className="text-xl font-bold text-white">📞 연락처</h3>
 
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">이메일</label>
@@ -432,7 +617,7 @@ function Step3Content({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">전화번호</label>
+          <label className="block text-sm font-medium text-gray-300 mb-2">전화번호 (선택)</label>
           <input
             type="tel"
             placeholder="010-1234-5678"
@@ -449,83 +634,24 @@ function Step3Content({
             className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
           />
         </div>
-      </div>
-    </div>
-  )
-}
 
-// Step 4: 디자인
-function Step4Design({
-  formData,
-  setFormData,
-}: {
-  formData: FormData
-  setFormData: (data: FormData) => void
-}) {
-  return (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-white">디자인 설정</h2>
-
-      <div className="space-y-4">
-        <h3 className="text-xl font-bold text-white flex items-center gap-2">
-          <Palette className="w-6 h-6 text-primary-400" />
-          색상 팔레트
-        </h3>
-
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Primary</label>
-            <input
-              type="color"
-              value={formData.settings.colors.primary}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  settings: {
-                    ...formData.settings,
-                    colors: { ...formData.settings.colors, primary: e.target.value }
-                  }
-                })
-              }
-              className="w-full h-12 rounded-xl cursor-pointer"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Secondary</label>
-            <input
-              type="color"
-              value={formData.settings.colors.secondary}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  settings: {
-                    ...formData.settings,
-                    colors: { ...formData.settings.colors, secondary: e.target.value }
-                  }
-                })
-              }
-              className="w-full h-12 rounded-xl cursor-pointer"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Accent</label>
-            <input
-              type="color"
-              value={formData.settings.colors.accent}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  settings: {
-                    ...formData.settings,
-                    colors: { ...formData.settings.colors, accent: e.target.value }
-                  }
-                })
-              }
-              className="w-full h-12 rounded-xl cursor-pointer"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">CTA 버튼 텍스트</label>
+          <input
+            type="text"
+            placeholder="지금 시작하기"
+            value={formData.content.contact.cta}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                content: {
+                  ...formData.content,
+                  contact: { ...formData.content.contact, cta: e.target.value }
+                }
+              })
+            }
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
+          />
         </div>
       </div>
     </div>
@@ -544,14 +670,22 @@ function Step5Deploy({ formData }: { formData: FormData }) {
           <span className="ml-2 text-white font-semibold">{formData.title}</span>
         </div>
         <div>
-          <span className="text-gray-400">URL:</span>
-          <span className="ml-2 text-primary-400 font-semibold">
-            corefy.com/{formData.slug}
-          </span>
+          <span className="text-gray-400">타겟 고객:</span>
+          <span className="ml-2 text-white font-semibold">{formData.target_customer}</span>
         </div>
         <div>
-          <span className="text-gray-400">템플릿:</span>
-          <span className="ml-2 text-white font-semibold">{formData.template}</span>
+          <span className="text-gray-400">해결하는 문제:</span>
+          <span className="ml-2 text-white font-semibold">{formData.problem_category}</span>
+        </div>
+        <div>
+          <span className="text-gray-400">제공 형태:</span>
+          <span className="ml-2 text-white font-semibold">{formData.solution_types?.join(', ')}</span>
+        </div>
+        <div>
+          <span className="text-gray-400">URL:</span>
+          <span className="ml-2 text-primary-400 font-semibold">
+            corefy.com/[username]/{formData.slug}
+          </span>
         </div>
       </div>
 

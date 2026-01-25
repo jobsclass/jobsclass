@@ -6,10 +6,11 @@ import { createClient } from '@/lib/supabase/client'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
-export default function EditServicePage({ params }: { params: { id: string } }) {
+export default function EditServicePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const supabase = createClient()
   
+  const [serviceId, setServiceId] = useState<string>('')
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -24,11 +25,21 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
   const [error, setError] = useState('')
 
   useEffect(() => {
+    const initPage = async () => {
+      const resolvedParams = await params
+      setServiceId(resolvedParams.id)
+    }
+    initPage()
+  }, [params])
+
+  useEffect(() => {
+    if (!serviceId) return
+    
     const fetchService = async () => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', serviceId)
         .single()
 
       if (error || !data) {
@@ -50,7 +61,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
     }
 
     fetchService()
-  }, [params.id])
+  }, [serviceId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -69,7 +80,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
           instructor_bio: formData.instructor_bio,
           is_published: formData.is_published,
         })
-        .eq('id', params.id)
+        .eq('id', serviceId)
 
       if (updateError) throw updateError
 

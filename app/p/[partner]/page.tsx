@@ -7,15 +7,16 @@ import { ExternalLink } from 'lucide-react'
 export default async function PartnerPublicPage({
   params,
 }: {
-  params: { partner: string }
+  params: Promise<{ partner: string }>
 }) {
+  const { partner } = await params
   const supabase = await createClient()
 
   // 파트너 프로필 가져오기
   const { data: profile } = await supabase
     .from('partner_profiles')
     .select('*')
-    .eq('profile_url', params.partner)
+    .eq('profile_url', partner)
     .single()
 
   if (!profile) {
@@ -97,7 +98,7 @@ export default async function PartnerPublicPage({
             {services.map((service: any) => (
               <Link
                 key={service.id}
-                href={`/p/${params.partner}/${service.slug}`}
+                href={`/p/${partner}/${service.slug}`}
                 className="card group hover:border-primary-500/30 transition-all duration-300 hover:scale-[1.02]"
               >
                 {/* 썸네일 */}

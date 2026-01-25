@@ -16,6 +16,7 @@ export default async function CouponsPage() {
   // Fetch coupons
   const { data: coupons } = await supabase
     .from('coupons')
+    .select('*')
     .eq('partner_id', user.id)
     .order('created_at', { ascending: false })
 

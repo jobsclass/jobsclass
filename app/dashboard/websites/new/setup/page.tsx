@@ -103,10 +103,34 @@ export default function WebsiteSetupPage({
     if (step > 1) setStep(step - 1)
   }
 
+  const [isDeploying, setIsDeploying] = useState(false)
+  const [error, setError] = useState('')
+
   const handleDeploy = async () => {
-    // TODO: API 호출하여 웹사이트 생성
-    console.log('Deploying website:', formData)
-    router.push('/dashboard')
+    setIsDeploying(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/websites/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || '웹사이트 생성 실패')
+      }
+
+      // 성공 시 대시보드로 이동
+      router.push('/dashboard/websites')
+    } catch (err: any) {
+      setError(err.message)
+      setIsDeploying(false)
+    }
   }
 
   return (
@@ -181,13 +205,30 @@ export default function WebsiteSetupPage({
           ) : (
             <button
               onClick={handleDeploy}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/20 hover:scale-105 transition-all"
+              disabled={isDeploying}
+              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/20 hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Globe className="w-5 h-5" />
-              배포하기
+              {isDeploying ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  배포 중...
+                </>
+              ) : (
+                <>
+                  <Globe className="w-5 h-5" />
+                  배포하기
+                </>
+              )}
             </button>
           )}
         </div>
+
+        {/* 에러 메시지 */}
+        {error && (
+          <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-center">
+            ⚠️ {error}
+          </div>
+        )}
       </div>
     </div>
   )

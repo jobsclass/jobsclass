@@ -90,6 +90,8 @@ export default function NewServicePage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false)
+  const [isGeneratingPrice, setIsGeneratingPrice] = useState(false)
 
   const handleAIGenerate = async () => {
     if (!formData.title) {
@@ -118,6 +120,71 @@ export default function NewServicePage() {
       alert('AI 생성에 실패했습니다')
     } finally {
       setIsGenerating(false)
+    }
+  }
+
+  const handleAIImageGenerate = async () => {
+    if (!formData.title) {
+      alert('서비스명을 먼저 입력해주세요')
+      return
+    }
+
+    setIsGeneratingImage(true)
+    try {
+      const response = await fetch('/api/ai/generate-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: `${formData.title} - ${formData.description || '전문 서비스'}`,
+          type: 'service'
+        }),
+      })
+
+      if (!response.ok) throw new Error('AI 이미지 생성 실패')
+
+      const data = await response.json()
+      setThumbnailPreview(data.imageUrl)
+      alert('AI가 썸네일을 생성했습니다! (임시 URL이므로 저장 후 업로드됩니다)')
+    } catch (error) {
+      console.error('AI image generation error:', error)
+      alert('AI 이미지 생성에 실패했습니다')
+    } finally {
+      setIsGeneratingImage(false)
+    }
+  }
+
+  const handleAIPriceSuggest = async () => {
+    if (!formData.title || !formData.category) {
+      alert('서비스명과 카테고리를 먼저 입력해주세요')
+      return
+    }
+
+    setIsGeneratingPrice(true)
+    try {
+      const response = await fetch('/api/ai/suggest-price', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceTitle: formData.title,
+          category: formData.category,
+          description: formData.description
+        }),
+      })
+
+      if (!response.ok) throw new Error('AI 가격 추천 실패')
+
+      const data = await response.json()
+      const pricing = data.pricing
+      
+      handleInputChange('price', pricing.recommendedPrice.toString())
+      handleInputChange('originalPrice', pricing.priceRange.max.toString())
+      
+      alert(`AI 추천 가격: ${pricing.recommendedPrice.toLocaleString()}원\n\n근거: ${pricing.reasoning}\n\n가격 범위: ${pricing.priceRange.min.toLocaleString()}원 ~ ${pricing.priceRange.max.toLocaleString()}원`)
+    } catch (error) {
+      console.error('AI price suggestion error:', error)
+      alert('AI 가격 추천에 실패했습니다')
+    } finally {
+      setIsGeneratingPrice(false)
     }
   }
 
@@ -332,9 +399,20 @@ export default function NewServicePage() {
 
               {/* 썸네일 */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  썸네일 이미지
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-300">
+                    썸네일 이미지
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAIImageGenerate}
+                    disabled={isGeneratingImage || !formData.title}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:from-gray-700 disabled:to-gray-700 text-white text-sm rounded-lg font-medium transition-all"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    {isGeneratingImage ? 'AI 생성 중...' : 'AI 이미지 생성'}
+                  </button>
+                </div>
                 <FileUpload
                   onChange={(file: File | null, previewUrl?: string) => {
                     handleInputChange('thumbnail', file)
@@ -413,7 +491,18 @@ export default function NewServicePage() {
 
             {/* 가격 정보 */}
             <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-8 space-y-6">
-              <h2 className="text-xl font-bold text-white">가격 정보</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white">가격 정보</h2>
+                <button
+                  type="button"
+                  onClick={handleAIPriceSuggest}
+                  disabled={isGeneratingPrice || !formData.title || !formData.category}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:from-gray-700 disabled:to-gray-700 text-white text-sm rounded-lg font-medium transition-all"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  {isGeneratingPrice ? 'AI 분석 중...' : 'AI 가격 추천'}
+                </button>
+              </div>
 
               <div className="grid grid-cols-2 gap-6">
                 {/* 판매 가격 */}

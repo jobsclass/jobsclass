@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Plus, X } from 'lucide-react'
+import { ArrowLeft, Plus, X, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import FileUpload from '@/components/FileUpload'
 
@@ -89,6 +89,37 @@ export default function NewServicePage() {
   }
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+
+  const handleAIGenerate = async () => {
+    if (!formData.title) {
+      alert('서비스명을 먼저 입력해주세요')
+      return
+    }
+
+    setIsGenerating(true)
+    try {
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'service',
+          prompt: `서비스명: ${formData.title}\n카테고리: ${formData.category}\n\n이 서비스에 대한 매력적인 설명을 작성해주세요.`,
+        }),
+      })
+
+      if (!response.ok) throw new Error('AI 생성 실패')
+
+      const data = await response.json()
+      handleInputChange('description', data.text)
+      alert('AI가 설명을 생성했습니다!')
+    } catch (error) {
+      console.error('AI generation error:', error)
+      alert('AI 생성에 실패했습니다')
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -275,9 +306,20 @@ export default function NewServicePage() {
 
               {/* 간단 설명 */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  간단 설명 *
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-300">
+                    간단 설명 *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAIGenerate}
+                    disabled={isGenerating || !formData.title}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:from-gray-700 disabled:to-gray-700 text-white text-sm rounded-lg font-medium transition-all"
+                  >
+                    <span>✨</span>
+                    {isGenerating ? 'AI 생성 중...' : 'AI로 작성'}
+                  </button>
+                </div>
                 <textarea
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}

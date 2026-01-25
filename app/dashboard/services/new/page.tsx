@@ -2,10 +2,38 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Plus, X, Sparkles } from 'lucide-react'
+import { ArrowLeft, Plus, X, Sparkles, ShoppingCart, ExternalLink, MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import FileUpload from '@/components/FileUpload'
 import AIImageGenerator from '@/components/AIImageGenerator'
+
+// 서비스 타입
+const serviceTypes = [
+  {
+    id: 'direct_sale',
+    icon: ShoppingCart,
+    title: '🛒 바로 결제',
+    subtitle: '고객이 즉시 구매 가능',
+    description: '온라인 강의, 전자책, 템플릿 등',
+    examples: ['온라인 강의', '전자책', '디지털 상품']
+  },
+  {
+    id: 'external_link',
+    icon: ExternalLink,
+    title: '🔗 외부 링크',
+    subtitle: '별도 웹사이트로 연결',
+    description: '독립 서비스, 파트너십, 외부 플랫폼',
+    examples: ['잡스빌드', '잡스벤처스', '잡스마켓']
+  },
+  {
+    id: 'inquiry',
+    icon: MessageCircle,
+    title: '💬 문의 받기',
+    subtitle: '견적 상담 후 진행',
+    description: '맞춤형 컨설팅, B2B 서비스',
+    examples: ['기업 컨설팅', '맞춤 개발', '프로젝트 의뢰']
+  }
+]
 
 // 🎓 지식 서비스 카테고리 (직관적으로!)
 const serviceCategories = [
@@ -25,8 +53,11 @@ const serviceCategories = [
 
 export default function NewServicePage() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStep, setCurrentStep] = useState(0) // 0: 타입 선택
   const [formData, setFormData] = useState({
+    // Step 0: 서비스 타입
+    serviceType: '' as 'direct_sale' | 'external_link' | 'inquiry' | '',
+    
     // Step 1: 서비스 카테고리
     category: '',
     
@@ -42,10 +73,17 @@ export default function NewServicePage() {
     solutionProcess: '',
     expectedResults: '',
     
-    // 가격 정보
+    // 가격 정보 (direct_sale만)
     price: '',
     originalPrice: '',
     currency: 'KRW',
+    
+    // 외부 링크 (external_link만)
+    externalUrl: '',
+    externalButtonText: '서비스 바로가기',
+    
+    // 문의 받기 (inquiry만)
+    inquiryDescription: '',
     
     // 특징
     features: [''],
@@ -264,20 +302,40 @@ export default function NewServicePage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          // 서비스 타입
+          serviceType: formData.serviceType,
+          
+          // 기본 정보
           category: formData.category,
           serviceCategory: formData.category,
           title: formData.title,
           slug: formData.slug,
           description: formData.description,
           thumbnail: thumbnailUrl,
+          
+          // 상세 정보
           targetCustomer: formData.targetCustomer,
           problemDescription: formData.problemDescription,
           solutionProcess: formData.solutionProcess,
           expectedResults: formData.expectedResults,
-          price: formData.price,
-          originalPrice: formData.originalPrice,
+          
+          // 가격 (direct_sale만)
+          price: formData.serviceType === 'direct_sale' ? formData.price : null,
+          originalPrice: formData.serviceType === 'direct_sale' ? formData.originalPrice : null,
           currency: formData.currency,
+          
+          // 외부 링크 (external_link만)
+          externalUrl: formData.serviceType === 'external_link' ? formData.externalUrl : null,
+          externalButtonText: formData.serviceType === 'external_link' ? formData.externalButtonText : '서비스 바로가기',
+          
+          // 문의 설정 (inquiry만)
+          inquiryEnabled: formData.serviceType === 'inquiry',
+          inquiryDescription: formData.serviceType === 'inquiry' ? formData.inquiryDescription : null,
+          
+          // 특징
           features: formData.features.filter(f => f.trim()),
+          
+          // 공개 설정
           isPublished: formData.isPublished,
         }),
       })
@@ -332,29 +390,103 @@ export default function NewServicePage() {
 
       {/* 진행 단계 */}
       <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-6">
-        <div className="flex items-center gap-4">
-          <div className={`flex-1 flex items-center gap-3 ${currentStep >= 1 ? 'text-primary-400' : 'text-gray-600'}`}>
+        <div className="flex items-center gap-2">
+          <div className={`flex-1 flex items-center gap-2 ${currentStep >= 0 ? 'text-primary-400' : 'text-gray-600'}`}>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
-              currentStep >= 1 ? 'bg-primary-500 text-white' : 'bg-gray-800'
+              currentStep >= 0 ? 'bg-primary-500 text-white' : 'bg-gray-800'
             }`}>
               1
             </div>
-            <span className="font-medium">서비스 선택</span>
+            <span className="font-medium text-sm">타입 선택</span>
           </div>
-          <div className={`h-px flex-1 ${currentStep >= 2 ? 'bg-primary-500' : 'bg-gray-800'}`} />
-          <div className={`flex-1 flex items-center gap-3 ${currentStep >= 2 ? 'text-primary-400' : 'text-gray-600'}`}>
+          <div className={`h-px flex-1 ${currentStep >= 1 ? 'bg-primary-500' : 'bg-gray-800'}`} />
+          <div className={`flex-1 flex items-center gap-2 ${currentStep >= 1 ? 'text-primary-400' : 'text-gray-600'}`}>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
-              currentStep >= 2 ? 'bg-primary-500 text-white' : 'bg-gray-800'
+              currentStep >= 1 ? 'bg-primary-500 text-white' : 'bg-gray-800'
             }`}>
               2
             </div>
-            <span className="font-medium">정보 입력</span>
+            <span className="font-medium text-sm">카테고리</span>
+          </div>
+          <div className={`h-px flex-1 ${currentStep >= 2 ? 'bg-primary-500' : 'bg-gray-800'}`} />
+          <div className={`flex-1 flex items-center gap-2 ${currentStep >= 2 ? 'text-primary-400' : 'text-gray-600'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+              currentStep >= 2 ? 'bg-primary-500 text-white' : 'bg-gray-800'
+            }`}>
+              3
+            </div>
+            <span className="font-medium text-sm">정보 입력</span>
           </div>
         </div>
       </div>
 
       {/* 폼 */}
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Step 0: 서비스 타입 선택 */}
+        {currentStep === 0 && (
+          <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-8 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">어떤 방식으로 서비스를 제공하시나요?</h2>
+              <p className="text-gray-400">비즈니스 모델에 맞는 서비스 타입을 선택하세요</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {serviceTypes.map((type) => {
+                const Icon = type.icon
+                return (
+                  <button
+                    key={type.id}
+                    type="button"
+                    onClick={() => handleInputChange('serviceType', type.id)}
+                    className={`p-6 rounded-xl border-2 transition-all text-left space-y-4 ${
+                      formData.serviceType === type.id
+                        ? 'border-primary-500 bg-primary-500/10 shadow-lg shadow-primary-500/20'
+                        : 'border-gray-800 hover:border-gray-700 bg-gray-800/30'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className={`w-8 h-8 ${
+                        formData.serviceType === type.id ? 'text-primary-400' : 'text-gray-500'
+                      }`} />
+                      <div className="text-2xl">{type.title.split(' ')[0]}</div>
+                    </div>
+                    <div>
+                      <h3 className={`text-lg font-bold mb-1 ${
+                        formData.serviceType === type.id ? 'text-primary-400' : 'text-white'
+                      }`}>
+                        {type.title.split(' ').slice(1).join(' ')}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-2">{type.subtitle}</p>
+                      <p className="text-xs text-gray-600">{type.description}</p>
+                    </div>
+                    <div className="pt-3 border-t border-gray-800">
+                      <p className="text-xs text-gray-500 mb-1">예시:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {type.examples.map((example, idx) => (
+                          <span key={idx} className="px-2 py-0.5 bg-gray-800 text-gray-400 rounded text-xs">
+                            {example}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="flex justify-end pt-6 border-t border-gray-800">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(1)}
+                disabled={!formData.serviceType}
+                className="px-6 py-3 bg-primary-600 hover:bg-primary-500 disabled:bg-gray-800 disabled:text-gray-600 text-white rounded-xl font-medium transition-colors"
+              >
+                다음 단계
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Step 1: 서비스 카테고리 선택 */}
         {currentStep === 1 && (
           <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-8 space-y-6">
@@ -386,7 +518,14 @@ export default function NewServicePage() {
               ))}
             </div>
 
-            <div className="flex justify-end pt-6 border-t border-gray-800">
+            <div className="flex justify-between pt-6 border-t border-gray-800">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(0)}
+                className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-medium transition-colors"
+              >
+                이전
+              </button>
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
@@ -564,59 +703,125 @@ export default function NewServicePage() {
               </div>
             </div>
 
-            {/* 가격 정보 */}
-            <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-8 space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">가격 정보</h2>
-                <button
-                  type="button"
-                  onClick={handleAIPriceSuggest}
-                  disabled={isGeneratingPrice || !formData.title || !formData.category}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:from-gray-700 disabled:to-gray-700 text-white text-sm rounded-lg font-medium transition-all"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  {isGeneratingPrice ? 'AI 분석 중...' : 'AI 가격 추천'}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                {/* 판매 가격 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    판매 가격 *
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) => handleInputChange('price', e.target.value)}
-                      placeholder="99000"
-                      className="flex-1 px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
-                      required
-                    />
-                    <span className="text-gray-400">원</span>
-                  </div>
+            {/* 서비스 타입별 추가 정보 */}
+            {/* 1️⃣ 바로 결제: 가격 정보 */}
+            {formData.serviceType === 'direct_sale' && (
+              <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-8 space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-white">💳 가격 정보</h2>
+                  <button
+                    type="button"
+                    onClick={handleAIPriceSuggest}
+                    disabled={isGeneratingPrice || !formData.title || !formData.category}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:from-gray-700 disabled:to-gray-700 text-white text-sm rounded-lg font-medium transition-all"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    {isGeneratingPrice ? 'AI 분석 중...' : 'AI 가격 추천'}
+                  </button>
                 </div>
 
-                {/* 정가 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    정가 (선택)
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      value={formData.originalPrice}
-                      onChange={(e) => handleInputChange('originalPrice', e.target.value)}
-                      placeholder="149000"
-                      className="flex-1 px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
-                    />
-                    <span className="text-gray-400">원</span>
+                <div className="grid grid-cols-2 gap-6">
+                  {/* 판매 가격 */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      판매 가격 *
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={formData.price}
+                        onChange={(e) => handleInputChange('price', e.target.value)}
+                        placeholder="99000"
+                        className="flex-1 px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                        required
+                      />
+                      <span className="text-gray-400">원</span>
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">할인율을 표시하려면 정가를 입력하세요</p>
+
+                  {/* 정가 */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      정가 (선택)
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={formData.originalPrice}
+                        onChange={(e) => handleInputChange('originalPrice', e.target.value)}
+                        placeholder="149000"
+                        className="flex-1 px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                      />
+                      <span className="text-gray-400">원</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">할인율을 표시하려면 정가를 입력하세요</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* 2️⃣ 외부 링크: URL 정보 */}
+            {formData.serviceType === 'external_link' && (
+              <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-8 space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold text-white mb-2">🔗 외부 링크 설정</h2>
+                  <p className="text-sm text-gray-400">고객이 클릭하면 이동할 웹사이트 URL을 입력하세요</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    외부 URL *
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.externalUrl}
+                    onChange={(e) => handleInputChange('externalUrl', e.target.value)}
+                    placeholder="https://jobsbuild.co.kr"
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-1">예: https://잡스빌드.com, https://잡스벤처스.com</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    버튼 텍스트
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.externalButtonText}
+                    onChange={(e) => handleInputChange('externalButtonText', e.target.value)}
+                    placeholder="서비스 바로가기"
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">버튼에 표시될 텍스트 (기본: 서비스 바로가기)</p>
+                </div>
+              </div>
+            )}
+
+            {/* 3️⃣ 문의 받기: 문의 안내 */}
+            {formData.serviceType === 'inquiry' && (
+              <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-8 space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold text-white mb-2">💬 문의 안내</h2>
+                  <p className="text-sm text-gray-400">고객에게 보여줄 문의 절차 또는 안내 메시지를 작성하세요</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    문의 안내 메시지
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={formData.inquiryDescription}
+                    onChange={(e) => handleInputChange('inquiryDescription', e.target.value)}
+                    placeholder="이 서비스는 고객님의 상황에 맞춤형으로 제공됩니다. 아래 문의하기 버튼을 통해 상담 신청해주시면 24시간 이내에 연락드리겠습니다."
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 resize-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">예: 견적 문의 → 상담 → 제안서 발송 → 계약 진행</p>
+                </div>
+              </div>
+            )}
 
             {/* 특징 */}
             <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-8 space-y-6">

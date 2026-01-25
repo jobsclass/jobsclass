@@ -92,6 +92,58 @@ export default function NewServicePage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isGeneratingImage, setIsGeneratingImage] = useState(false)
   const [isGeneratingPrice, setIsGeneratingPrice] = useState(false)
+  const [isGeneratingMultimodal, setIsGeneratingMultimodal] = useState(false)
+
+  /**
+   * 🎯 특허 핵심 기술 #1: 멀티모달 AI 생성
+   * 텍스트 + 이미지를 한 번에 생성하는 원클릭 기능
+   */
+  const handleMultimodalGenerate = async () => {
+    if (!formData.title || !formData.category) {
+      alert('서비스명과 카테고리를 먼저 선택해주세요')
+      return
+    }
+
+    setIsGeneratingMultimodal(true)
+    try {
+      const response = await fetch('/api/ai/generate-multimodal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceTitle: formData.title,
+          category: formData.category,
+          keywords: ''
+        }),
+      })
+
+      if (!response.ok) throw new Error('멀티모달 AI 생성 실패')
+
+      const data = await response.json()
+      const { text, image, metadata } = data.multimodal
+
+      // 텍스트 자동 채우기
+      handleInputChange('description', text.description)
+      handleInputChange('targetCustomer', text.targetCustomer)
+      handleInputChange('problemDescription', text.problemDescription)
+      handleInputChange('solutionProcess', text.solutionProcess)
+      handleInputChange('expectedResults', text.expectedResults)
+      
+      // 특징 자동 채우기
+      setFormData(prev => ({ ...prev, features: text.features }))
+
+      // 이미지 자동 설정
+      if (image.url) {
+        setThumbnailPreview(image.url)
+      }
+
+      alert(`✨ 멀티모달 AI 생성 완료!\n\n✅ 텍스트 생성 완료\n✅ 이미지 생성 완료\n🔍 일관성 점수: ${metadata.consistencyScore}/100\n\n모든 항목을 확인하고 수정할 수 있습니다.`)
+    } catch (error) {
+      console.error('Multimodal generation error:', error)
+      alert('멀티모달 AI 생성에 실패했습니다')
+    } finally {
+      setIsGeneratingMultimodal(false)
+    }
+  }
 
   const handleAIGenerate = async () => {
     if (!formData.title) {
@@ -262,6 +314,19 @@ export default function NewServicePage() {
             <p className="text-gray-400 mt-1">판매할 지식 서비스를 등록하세요</p>
           </div>
         </div>
+        
+        {/* 🎯 멀티모달 AI 원클릭 버튼 */}
+        {currentStep === 2 && (
+          <button
+            type="button"
+            onClick={handleMultimodalGenerate}
+            disabled={isGeneratingMultimodal || !formData.title || !formData.category}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 hover:from-yellow-500 hover:via-orange-500 hover:to-red-500 disabled:from-gray-700 disabled:to-gray-700 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+          >
+            <Sparkles className="w-5 h-5" />
+            {isGeneratingMultimodal ? '🎨 AI 생성 중...' : '✨ AI 원클릭 생성'}
+          </button>
+        )}
       </div>
 
       {/* 진행 단계 */}

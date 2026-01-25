@@ -6,6 +6,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
 
+/**
+ * 🎯 특허 핵심 기술 #2: 대화형 온보딩
+ * 질의응답 기반 웹사이트 자동 생성 시스템
+ */
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -19,7 +23,10 @@ export async function POST(request: NextRequest) {
     const answers = await request.json()
     const { occupation, targetAudience, services, experience, achievements } = answers
 
-    // AI 프롬프트 생성
+    console.log('🚀 대화형 온보딩 - AI 웹사이트 자동 생성 시작')
+    console.log('📝 사용자 답변:', { occupation, targetAudience, services, experience, achievements })
+
+    // AI 프롬프트 생성 (멀티모달 고려)
     const prompt = `당신은 전문 웹사이트 빌더입니다. 다음 정보를 바탕으로 전문적인 웹사이트 콘텐츠를 생성해주세요:
 
 직업: ${occupation}
@@ -41,9 +48,10 @@ export async function POST(request: NextRequest) {
     {
       "title": "서비스명",
       "description": "서비스 설명 (100-150자)",
-      "category": "온라인 강의|컨설팅|개발 대행|마케팅 대행|디자인 대행|콘텐츠 제작|전자책/가이드 중 하나",
+      "category": "online_course|consulting|development|marketing|design|content|ebook 중 하나",
       "price": 가격(숫자),
-      "features": ["특징1", "특징2", "특징3"]
+      "features": ["특징1", "특징2", "특징3"],
+      "imagePrompt": "이 서비스를 표현하는 이미지 설명 (영문, 30단어)"
     }
   ] (3개),
   "blogs": [
@@ -70,7 +78,7 @@ export async function POST(request: NextRequest) {
   ] (1-2개)
 }
 
-마케팅에 효과적인 매력적인 문구로 작성해주세요.`
+마케팅에 효과적인 매력적인 문구로 작성해주세요. 각 서비스에는 imagePrompt도 포함해주세요.`
 
     // OpenAI API 호출
     const completion = await openai.chat.completions.create({

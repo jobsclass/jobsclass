@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus, X } from 'lucide-react'
 import FileUpload from '@/components/FileUpload'
 
 export default function ProfilePage() {
+  const [loading, setLoading] = useState(false)
+  const [loadingData, setLoadingData] = useState(true)
   const [formData, setFormData] = useState({
     displayName: '',
     jobTitle: '',
@@ -19,6 +21,39 @@ export default function ProfilePage() {
 
   const [profileImagePreview, setProfileImagePreview] = useState<string>('')
   const [newExpertise, setNewExpertise] = useState('')
+
+  useEffect(() => {
+    loadProfile()
+  }, [])
+
+  const loadProfile = async () => {
+    try {
+      const response = await fetch('/api/profile/update')
+      if (!response.ok) throw new Error('Failed to fetch')
+      const data = await response.json()
+      
+      if (data.profile) {
+        setFormData({
+          displayName: data.profile.display_name || '',
+          jobTitle: data.profile.job_title || '',
+          tagline: data.profile.tagline || '',
+          bio: data.profile.bio || '',
+          expertise: data.profile.expertise || [],
+          email: data.profile.email || '',
+          phone: data.profile.phone || '',
+          location: data.profile.location || '',
+          profileImage: null,
+        })
+        if (data.profile.avatar_url) {
+          setProfileImagePreview(data.profile.avatar_url)
+        }
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error)
+    } finally {
+      setLoadingData(false)
+    }
+  }
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -44,10 +79,36 @@ export default function ProfilePage() {
     }))
   }
 
-  const handleSave = () => {
-    console.log('Saving profile:', formData)
-    // TODO: API 연동
-    alert('프로필이 저장되었습니다!')
+  const handleSave = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || '저장 실패')
+      }
+
+      alert('프로필이 성공적으로 저장되었습니다!')
+      loadProfile()
+    } catch (error: any) {
+      console.error('Error:', error)
+      alert(error.message || '프로필 저장에 실패했습니다')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loadingData) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-gray-400">로딩 중...</div>
+      </div>
+    )
   }
 
   return (
@@ -206,9 +267,10 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={handleSave}
-            className="px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-500 hover:to-purple-500 text-white rounded-xl font-medium shadow-lg shadow-primary-500/20 transition-all"
+            disabled={loading}
+            className="px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-500 hover:to-purple-500 text-white rounded-xl font-medium shadow-lg shadow-primary-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            변경사항 저장
+            {loading ? '저장 중...' : '변경사항 저장'}
           </button>
         </div>
       </div>

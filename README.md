@@ -1,110 +1,49 @@
-# Corefy - 지식 서비스 판매 SaaS 플랫폼
+# Corefy WebBuilder 🚀
 
-**Phase 1: 웹빌더 SaaS (마켓플레이스 제외)**
+**문제-해결 중심의 No-Code 웹사이트 빌더**
 
-인플루언서와 전문가가 자신의 지식 서비스를 쉽게 판매할 수 있는 독립형 쇼핑몰 플랫폼입니다.
+Corefy는 지식 창작자, 코치, 컨설턴트, 프리랜서를 위한 완전한 웹사이트 빌더입니다. 드래그 앤 드롭 없이 **간단한 폼 작성만으로** 전문적인 웹사이트를 만들고, 상품을 판매하고, 고객을 관리할 수 있습니다.
 
----
+## ✨ 주요 기능
 
-## 🎯 프로젝트 개요
+### 🎯 문제-해결 중심 구조
+- **8개 문제 카테고리**: 수익 창출, 비즈니스 성장, 시간 자유, 기술 습득 등
+- **8개 솔루션 타입**: 온라인 강의, 전자책, 컨설팅, 코칭, 템플릿 등
+- **타겟 고객 명확화**: 누구의 어떤 문제를 해결하는지 명확한 메시지
 
-### 핵심 컨셉
-- **폼 기반 웹사이트 생성**: 드래그앤드롭 없이 내용만 입력하면 자동으로 프로페셔널한 웹사이트 생성
-- **독립형 쇼핑몰**: 각 파트너가 독립적인 URL로 자신의 쇼핑몰 운영 (`/p/[partner-name]`)
-- **빠른 시작**: 30분 만에 서비스 등록부터 판매까지 가능
+### 📊 완전한 대시보드
+- **웹사이트 관리**: 설정, 섹션 관리, 디자인 커스터마이징
+- **프로필 관리**: 경력, 학력, 자격증, 전문 분야
+- **상품 관리**: 온라인 강의, 전자책, 컨설팅 등 다양한 상품 등록
+- **블로그**: 콘텐츠 마케팅을 위한 블로그 시스템
+- **포트폴리오**: 프로젝트 사례 및 포트폴리오 관리
+- **고객 관리**: 문의 관리 및 고객 데이터베이스
+- **결제 관리**: 주문, 매출 통계, 환불 관리
+- **통계/분석**: 방문자, 전환율, 매출 분석
 
-### 비즈니스 모델
-- **월 구독료**:
-  - FREE: ₩0 (거래 수수료 10%)
-  - STARTER: ₩29,000 (거래 수수료 7%)
-  - PRO: ₩49,000 (거래 수수료 5%)
-- 파트너가 SNS로 자기 팔로워를 고객으로 전환
-- 마켓플레이스는 파트너 50명 이상 모이면 Phase 2로 추가 예정
-
----
-
-## ✅ 완성된 기능 (Phase 1)
-
-### 1. 파트너 기능
-- ✅ **회원가입/로그인** (Supabase Auth)
-- ✅ **대시보드**
-  - 통계 카드 (총 매출, 이번 달 주문, 운영 중인 서비스)
-  - 최근 주문 목록
-  - 빠른 액션
-- ✅ **서비스 등록**
-  - 7가지 서비스 타입 (온라인강의, 오프라인강의, 컨설팅, 부트캠프, 코칭, 이벤트, 전문서비스)
-  - 폼 기반 간편 입력
-  - 자동 URL 슬러그 생성
-- ✅ **서비스 관리**
-  - 등록된 서비스 목록
-  - 수정/삭제 기능
-
-### 2. 공개 서비스 페이지
-- ✅ **자동 웹페이지 생성**: `/p/[partner]/[service]`
-- ✅ 반응형 디자인
-- ✅ 서비스 타입별 맞춤 템플릿
-- ✅ 장바구니/구매 버튼 (UI만)
+### 🎨 공개 웹사이트 템플릿
+- **섹션별 렌더링**: Hero, Profile, Products, Blog, Portfolio, Contact
+- **동적 섹션 관리**: 섹션 표시/숨김 및 순서 조정
+- **반응형 디자인**: 모바일, 태블릿, 데스크톱 완벽 대응
+- **SEO 최적화**: 메타 태그, OG 이미지, 검색 엔진 최적화
 
 ---
 
-## 🚧 다음 개발 단계 (Phase 1 완성)
+## 🛠 기술 스택
 
-### 🔥 최우선 순위
+### Frontend
+- **Next.js 15.5.9**: React 기반 풀스택 프레임워크
+- **TypeScript**: 타입 안전성
+- **Tailwind CSS**: 유틸리티 퍼스트 CSS 프레임워크
+- **Lucide React**: 아이콘 라이브러리
 
-#### 1. 구매자 인증 시스템 (파트너별 독립)
-```typescript
-// app/p/[partner]/auth/signup/page.tsx
-// - 파트너별로 독립적인 구매자 계정
-// - JWT 기반 인증
-// - buyers 테이블에 저장
-```
+### Backend & Database
+- **Supabase**: PostgreSQL 데이터베이스, 인증, 실시간 기능
+- **Supabase Auth**: 이메일/소셜 로그인
 
-#### 2. 장바구니 기능
-```typescript
-// 구매자가 여러 서비스를 장바구니에 담기
-// carts 테이블 활용
-// 헤더에 장바구니 아이콘 + 개수 표시
-```
-
-#### 3. Toss Payments 결제 연동
-```typescript
-// app/api/payments/request/route.ts
-// - 주문 생성 (orders 테이블)
-// - Toss Payments SDK 호출
-// - 결제 성공 시 enrollments 생성 (온라인 강의)
-```
-
-#### 4. 쿠폰 시스템
-```typescript
-// app/dashboard/coupons/page.tsx
-// - 쿠폰 생성 (할인율/고정금액)
-// - 유효기간, 사용 제한 설정
-// - 실시간 검증 API
-```
-
-#### 5. LMS 기능
-```typescript
-// 파트너: 비메오 링크 등록
-// app/dashboard/services/[id]/videos/page.tsx
-
-// 구매자: 영상 수강
-// app/learn/[service]/page.tsx
-// - 왼쪽: 챕터 목록
-// - 오른쪽: 비메오 영상 플레이어
-// - 영상 시청 시 started_watching = true (환불 불가)
-```
-
-#### 6. 구매자 마이페이지
-```typescript
-// /p/[partner]/my/orders - 주문 내역
-// /p/[partner]/my/courses - 수강 목록
-```
-
-#### 7. 환불 시스템
-```typescript
-// refund_requests 테이블
-// started_watching = false일 때만 환불 가능
-```
+### Deployment
+- **Vercel**: Next.js 최적화 호스팅
+- **GitHub**: 버전 관리 및 CI/CD
 
 ---
 
@@ -112,225 +51,213 @@
 
 ```
 corefy/
-├── app/
-│   ├── (landing)
-│   │   └── page.tsx              # 메인 랜딩 페이지
-│   ├── auth/partner/
-│   │   ├── signup/               # 파트너 회원가입
-│   │   └── login/                # 파트너 로그인
-│   ├── dashboard/                # 파트너 대시보드
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   ├── services/
-│   │   │   ├── page.tsx
-│   │   │   ├── new/page.tsx
-│   │   │   └── [id]/page.tsx
-│   │   ├── orders/               # (TODO)
-│   │   ├── coupons/              # (TODO)
-│   │   └── settings/             # (TODO)
-│   └── p/[partner]/              # 공개 서비스 페이지
-│       ├── [service]/page.tsx
-│       ├── auth/                 # (TODO) 구매자 인증
-│       ├── cart/                 # (TODO) 장바구니
-│       ├── checkout/             # (TODO) 결제
-│       └── my/                   # (TODO) 마이페이지
-│
-├── components/
-│   └── dashboard/
-│       └── Sidebar.tsx
-│
-├── lib/
-│   ├── supabase/
-│   │   ├── client.ts
-│   │   ├── server.ts
-│   │   └── middleware.ts
-│   ├── utils.ts
-│   └── auth.ts
-│
-├── types/
-│   └── database.ts
-│
-├── supabase/
-│   └── schema.sql                # DB 스키마 (10개 테이블)
-│
-├── package.json
-├── tsconfig.json
-├── tailwind.config.js
-└── next.config.js
+├── app/                          # Next.js App Router
+│   ├── [username]/[slug]/        # 공개 웹사이트 (동적 라우팅)
+│   ├── auth/                     # 인증 (로그인/회원가입)
+│   ├── dashboard/                # 대시보드
+│   │   ├── analytics/            # 통계/분석
+│   │   ├── blog/                 # 블로그 관리
+│   │   │   └── new/              # 블로그 글쓰기
+│   │   ├── customers/            # 고객 관리
+│   │   ├── orders/               # 결제/주문 관리
+│   │   ├── portfolio/            # 포트폴리오 관리
+│   │   │   └── new/              # 포트폴리오 추가
+│   │   ├── products/             # 상품 관리
+│   │   │   └── new/              # 상품 등록 (4단계)
+│   │   ├── profile/              # 프로필 관리
+│   │   ├── settings/             # 설정
+│   │   ├── website/              # 웹사이트 설정
+│   │   │   ├── design/           # 디자인 설정
+│   │   │   └── sections/         # 섹션 관리
+│   │   └── websites/             # 웹사이트 목록
+│   └── api/                      # API 엔드포인트
+├── components/                   # React 컴포넌트
+│   └── dashboard/                # 대시보드 컴포넌트
+│       └── Sidebar.tsx           # 사이드바 네비게이션
+├── lib/                          # 유틸리티 함수
+│   └── supabase/                 # Supabase 클라이언트
+├── supabase/                     # Supabase 설정
+│   ├── complete_schema.sql       # 완전한 DB 스키마
+│   └── migrations/               # DB 마이그레이션
+├── public/                       # 정적 파일
+└── README.md                     # 프로젝트 문서
 ```
 
 ---
 
-## 🗄️ 데이터베이스 스키마 (10개 테이블)
+## 🚀 시작하기
 
-1. **partner_profiles** - 파트너 정보
-2. **services** - 서비스 상품
-3. **course_videos** - 온라인 강의 영상 (비메오 URL)
-4. **buyers** - 구매자 (파트너별 독립 계정)
-5. **carts** - 장바구니
-6. **orders** - 주문
-7. **enrollments** - 온라인 강의 수강 정보
-8. **coupons** - 쿠폰
-9. **coupon_usage** - 쿠폰 사용 내역
-10. **refund_requests** - 환불 요청
-
----
-
-## 🚀 개발 환경 시작하기
-
-### 1단계: Supabase 프로젝트 생성
-
-1. [Supabase](https://supabase.com)에서 새 프로젝트 생성
-2. SQL Editor에서 `supabase/schema.sql` 파일 실행
-3. Settings → API에서 URL과 anon key 복사
-
-### 2단계: 환경변수 설정
-
-`.env.local` 파일 생성:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_TOSS_CLIENT_KEY=your-toss-client-key
-TOSS_SECRET_KEY=your-toss-secret-key
+### 1. 저장소 클론
+```bash
+git clone https://github.com/jobsclass/corefy.git
+cd corefy
 ```
 
-### 3단계: 의존성 설치 및 실행
-
+### 2. 의존성 설치
 ```bash
 npm install
+```
+
+### 3. 환경 변수 설정
+`.env.local` 파일을 생성하고 다음 내용을 추가하세요:
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+```
+
+### 4. Supabase 설정
+1. [Supabase](https://supabase.com/)에서 새 프로젝트 생성
+2. SQL Editor에서 `/supabase/complete_schema.sql` 실행
+3. 환경 변수에 프로젝트 URL과 API 키 입력
+
+### 5. 개발 서버 실행
+```bash
 npm run dev
 ```
 
-브라우저에서 http://localhost:3000 접속
+브라우저에서 [http://localhost:3000](http://localhost:3000) 접속
 
 ---
 
-## 🎨 주요 URL 구조
+## 📦 데이터베이스 스키마
 
-### 파트너 (Supabase Auth)
-- `/` - 랜딩 페이지
-- `/auth/partner/signup` - 파트너 회원가입
-- `/auth/partner/login` - 파트너 로그인
-- `/dashboard` - 대시보드
-- `/dashboard/services` - 서비스 관리
-- `/dashboard/services/new` - 새 서비스 등록
-- `/dashboard/orders` - 주문 관리 (TODO)
-- `/dashboard/coupons` - 쿠폰 관리 (TODO)
+### 주요 테이블
+- `user_profiles`: 사용자 프로필 정보
+- `websites`: 웹사이트 설정 및 콘텐츠
+- `products`: 상품 (온라인 강의, 전자책 등)
+- `blog_posts`: 블로그 글
+- `portfolios`: 포트폴리오 프로젝트
+- `experiences`: 경력 사항
+- `educations`: 학력 사항
+- `certifications`: 자격증 및 수상
+- `customers`: 고객 데이터
+- `inquiries`: 문의 관리
+- `orders`: 주문 및 결제
 
-### 구매자 (파트너별 독립)
-- `/p/[partner]/[service]` - 서비스 상세 페이지 ✅
-- `/p/[partner]/auth/signup` - 구매자 회원가입 (TODO)
-- `/p/[partner]/auth/login` - 구매자 로그인 (TODO)
-- `/p/[partner]/cart` - 장바구니 (TODO)
-- `/p/[partner]/checkout` - 결제 (TODO)
-- `/p/[partner]/my/orders` - 내 주문 (TODO)
-- `/p/[partner]/my/courses` - 내 수강 목록 (TODO)
-- `/learn/[service]` - LMS 영상 수강 (TODO)
+전체 스키마는 `/supabase/complete_schema.sql` 참조
 
 ---
 
-## 🛠️ 기술 스택
+## 🎨 주요 페이지
 
-- **Frontend**: Next.js 15 (App Router), React 19, TypeScript
-- **Styling**: Tailwind CSS
-- **Database**: Supabase (PostgreSQL)
-- **Auth**: Supabase Auth (파트너), JWT (구매자)
-- **Storage**: Supabase Storage
-- **Payment**: Toss Payments (TODO)
-- **Video**: Vimeo Embed
-- **Deployment**: Vercel (권장)
+### 대시보드
+- **홈**: `/dashboard` - 주요 지표 및 빠른 액션
+- **웹사이트 설정**: `/dashboard/website` - 기본 정보, SEO, 도메인
+- **섹션 관리**: `/dashboard/website/sections` - 섹션 표시/숨김 및 순서
+- **디자인 설정**: `/dashboard/website/design` - 색상, 폰트, 레이아웃
+- **프로필 관리**: `/dashboard/profile` - 프로필, 경력, 학력, 자격증
+- **상품 관리**: `/dashboard/products` - 상품 목록 및 등록
+- **블로그 관리**: `/dashboard/blog` - 블로그 글 목록 및 작성
+- **포트폴리오 관리**: `/dashboard/portfolio` - 포트폴리오 목록 및 추가
+- **고객 관리**: `/dashboard/customers` - 고객 및 문의 관리
+- **결제 관리**: `/dashboard/orders` - 주문, 매출, 환불 관리
+- **통계/분석**: `/dashboard/analytics` - 방문자, 전환율, 매출 분석
 
----
-
-## 📊 개발 진행률
-
-| 기능 | 완성도 | 상태 |
-|------|--------|------|
-| 랜딩 페이지 | 100% | ✅ |
-| 파트너 인증 | 100% | ✅ |
-| 파트너 대시보드 | 100% | ✅ |
-| 서비스 등록 | 80% | ✅ (기본 폼) |
-| 공개 서비스 페이지 | 100% | ✅ |
-| 구매자 인증 | 0% | ❌ |
-| 장바구니 | 0% | ❌ |
-| 결제 시스템 | 0% | ❌ |
-| 쿠폰 시스템 | 0% | ❌ |
-| LMS 기능 | 0% | ❌ |
-| 환불 시스템 | 0% | ❌ |
-
-**Phase 1 완성도**: **40%**
+### 공개 웹사이트
+- **메인 페이지**: `/[username]/[slug]` - 섹션별 동적 렌더링
 
 ---
 
-## 🗺️ 로드맵
+## 🔒 인증 시스템
 
-### Phase 1: 웹빌더 SaaS (진행 중)
-- ✅ 파트너 기능 (40% 완료)
-- ⏳ 구매자 기능 (0%)
-- ⏳ 결제 시스템 (0%)
-- ⏳ LMS 기능 (0%)
-- ⏳ 쿠폰/환불 (0%)
-
-**목표**: 6주 내 완성, 베타 테스트 시작
-
-### Phase 2: 마켓플레이스 (파트너 50명 이상 시)
-- ❌ 통합 서비스 검색
-- ❌ 필터링 및 정렬
-- ❌ 추천 알고리즘
-- ❌ 구매자 통합 계정
-- ❌ 리뷰 시스템
-
-**조건**: 파트너 50명 + 월 거래액 1억 이상
-
-### Phase 3: 인재 연결 (미래)
-- ❌ 프리랜서 매칭
-- ❌ 프로젝트 의뢰
-- ❌ 포트폴리오
+### Supabase Auth 기반
+- **회원가입**: `/auth/user/signup`
+- **로그인**: `/auth/user/login`
+- **자동 프로필 생성**: 회원가입 시 `user_profiles` 자동 생성
+- **세션 관리**: 서버 사이드 세션 관리
 
 ---
 
-## 💡 핵심 특징
+## 🎯 상품 등록 프로세스
 
-### 1. 폼 기반 웹사이트 생성
-- **드래그앤드롭 없음**: 내용만 입력하면 자동 생성
-- **빠른 시작**: 30분 만에 판매 시작
-- **프로페셔널 템플릿**: 서비스 타입별 최적화된 디자인
-
-### 2. 독립형 쇼핑몰
-- 각 파트너가 자신만의 URL (`/p/partner-name`)
-- 파트너별 독립 구매자 계정
-- 파트너가 SNS로 자기 고객 유입
-
-### 3. 비메오 연동 LMS
-- 자체 영상 저장소 불필요
-- 비메오 링크만 입력
-- 영상 시청 시 환불 불가 처리
-
-### 4. 투명한 수수료
-- FREE: 10%, STARTER: 7%, PRO: 5%
-- 숨겨진 비용 없음
+### 4단계 마법사
+1. **문제 정의**: 8개 문제 카테고리 중 선택, 타겟 고객 정의
+2. **솔루션 선택**: 8개 솔루션 타입 중 다중 선택 가능
+3. **상품 정보**: 제목, 설명, 썸네일 이미지
+4. **가격 및 특징**: 판매 가격, 정가, 주요 특징
 
 ---
 
-## 🤝 기여 가이드
+## 🌐 공개 웹사이트 섹션
 
-현재는 초기 개발 단계로 외부 기여를 받지 않습니다.
+### 동적 섹션 시스템
+- **Hero**: 메인 배너, 문제 카테고리, 솔루션 타입
+- **Profile**: 프로필, 경력, 학력, 자격증
+- **Products**: 상품 카드 그리드
+- **Blog**: 최근 블로그 글 목록
+- **Portfolio**: 프로젝트 갤러리
+- **Contact**: 문의 정보 (이메일, 전화, 위치)
+
+### 섹션 관리
+- `sections_enabled`: 섹션 표시/숨김 설정 (JSONB)
+- `sections_order`: 섹션 순서 배열 (TEXT[])
+
+---
+
+## 📱 반응형 디자인
+
+### 브레이크포인트
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
+
+### 최적화
+- Next.js Image 컴포넌트 사용
+- Lazy loading
+- 호버 인터랙션
+- 터치 제스처 지원
+
+---
+
+## 🚢 배포
+
+### Vercel 배포 (추천)
+1. GitHub에 코드 푸시
+2. [Vercel](https://vercel.com/)에서 프로젝트 연결
+3. 환경 변수 설정
+4. 자동 배포
+
+### 수동 빌드
+```bash
+npm run build
+npm start
+```
 
 ---
 
 ## 📝 라이선스
 
-Proprietary - All rights reserved
+MIT License
 
 ---
 
-## 📞 문의
+## 👥 기여
 
-프로젝트 관련 문의: [이메일 주소]
+이슈 및 PR은 언제든 환영합니다!
 
 ---
 
-**Corefy - 지식으로 돈을 버는 가장 쉬운 방법** 🚀
+## 📧 문의
+
+- **Email**: startupjobs824@gmail.com
+- **GitHub**: [https://github.com/jobsclass/corefy](https://github.com/jobsclass/corefy)
+
+---
+
+## 🎉 특징
+
+### 왜 Corefy인가?
+
+1. **드래그 앤 드롭 없음**: 복잡한 UI 대신 간단한 폼 작성
+2. **문제-해결 중심**: 고객의 문제를 명확히 정의하고 해결책 제시
+3. **완전한 비즈니스 시스템**: 웹사이트 + 상품 + 블로그 + 포트폴리오 + 고객관리
+4. **반응형 디자인**: 모든 디바이스에서 완벽한 경험
+5. **SEO 최적화**: 검색 엔진 친화적
+6. **빠른 로딩**: Next.js 최적화
+
+---
+
+**Corefy로 당신의 지식을 비즈니스로 만드세요! 🚀**

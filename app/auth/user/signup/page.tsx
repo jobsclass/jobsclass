@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -13,11 +13,57 @@ export default function UserSignupPage() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    passwordConfirm: '',
     displayName: '',
     profileUrl: '',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [usernameCheck, setUsernameCheck] = useState<{
+    checking: boolean
+    available: boolean | null
+    message: string
+  }>({
+    checking: false,
+    available: null,
+    message: ''
+  })
+
+  // 사용자 이름 중복 체크 (debounce 적용)
+  useEffect(() => {
+    if (!formData.profileUrl || formData.profileUrl.length < 3) {
+      setUsernameCheck({ checking: false, available: null, message: '' })
+      return
+    }
+
+    const timer = setTimeout(async () => {
+      setUsernameCheck({ checking: true, available: null, message: '' })
+      
+      try {
+        const response = await fetch('/api/auth/check-username', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: formData.profileUrl })
+        })
+        
+        const data = await response.json()
+        
+        setUsernameCheck({
+          checking: false,
+          available: data.available,
+          message: data.message || data.error || ''
+        })
+      } catch (err) {
+        setUsernameCheck({
+          checking: false,
+          available: null,
+          message: '중복 확인 중 오류가 발생했습니다'
+        })
+      }
+    }, 500) // 500ms debounce
+
+    return () => clearTimeout(timer)
+  }, [formData.profileUrl])
 
   const handleDisplayNameChange = (value: string) => {
     setFormData({
@@ -31,6 +77,13 @@ export default function UserSignupPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+
+    // 비밀번호 확인 검증
+    if (formData.password !== formData.passwordConfirm) {
+      setError('비밀번호가 일치하지 않습니다')
+      setLoading(false)
+      return
+    }
 
     try {
       // API 호출로 회원가입 (서버 측에서 처리)
@@ -135,6 +188,28 @@ export default function UserSignupPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
+                비밀번호 확인
+              </label>
+              <input
+                type="password"
+                required
+                minLength={6}
+                value={formData.passwordConfirm}
+                onChange={(e) =>
+                  setFormData({ ...formData, passwordConfirm: e.target.value })
+                }
+                className="input w-full"
+                placeholder="비밀번호를 다시 입력하세요"
+              />
+              {formData.passwordConfirm && formData.password !== formData.passwordConfirm && (
+                <p className="mt-1 text-xs text-red-400">
+                  비밀번호가 일치하지 않습니다
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 표시 이름
               </label>
               <input
@@ -153,7 +228,7 @@ export default function UserSignupPage() {
               </label>
               <div className="flex items-center gap-1">
                 <span className="text-gray-500 text-sm px-3">
-                  corefy.com/
+                  jobsbuild.com/
                 </span>
                 <input
                   type="text"
@@ -167,14 +242,35 @@ export default function UserSignupPage() {
                 />
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                내 웹사이트 URL에 사용됩니다 (예: corefy.com/username/my-site)
+                내 웹사이트 URL에 사용됩니다 (예: jobsbuild.com/username)
               </p>
+              
+              {/* 중복 체크 상태 표시 */}
+              {formData.profileUrl.length >= 3 && (
+                <div className="mt-2">
+                  {usernameCheck.checking && (
+                    <p className="text-xs text-gray-400">
+                      사용 가능 여부 확인 중...
+                    </p>
+                  )}
+                  {!usernameCheck.checking && usernameCheck.available === true && (
+                    <p className="text-xs text-green-400">
+                      ✓ {usernameCheck.message}
+                    </p>
+                  )}
+                  {!usernameCheck.checking && usernameCheck.available === false && (
+                    <p className="text-xs text-red-400">
+                      ✗ {usernameCheck.message}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={loading}
-              className="btn-primary w-full"
+              disabled={loading || usernameCheck.checking || usernameCheck.available === false}
+              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? '가입 중...' : '무료로 시작하기'}
             </button>

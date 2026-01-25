@@ -29,6 +29,9 @@ export default async function DashboardPage({
     redirect('/auth/user/signup')
   }
 
+  // 온보딩 완료 여부 확인 (필수!)
+  const onboardingComplete = profile.onboarding_complete === true
+
   // 웹사이트 개수 가져오기
   const { data: websites } = await supabase
     .from('websites')
@@ -38,12 +41,38 @@ export default async function DashboardPage({
   // 온보딩 여부 확인 (웹사이트 0개)
   const needsOnboarding = !websites || websites.length === 0
   const params = await searchParams
-  const onboardingComplete = params.onboarding === 'complete'
+  const onboardingSuccess = params.onboarding === 'complete'
 
   return (
     <div className="p-8">
+      {/* 온보딩 미완료 경고 */}
+      {!onboardingComplete && (
+        <div className="mb-8 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl p-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl">
+              <Sparkles className="w-6 h-6 text-white animate-pulse" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-white mb-1">
+                ⚠️ 온보딩을 완료해주세요!
+              </h3>
+              <p className="text-gray-400 mb-3">
+                5개 질문에 답하면 AI가 자동으로 웹사이트를 생성합니다. 온보딩을 완료해야 웹사이트 배포가 가능합니다.
+              </p>
+              <Link
+                href="/onboarding"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-xl hover:scale-105 transition-transform"
+              >
+                <Rocket className="w-5 h-5" />
+                지금 시작하기 (10분 소요)
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 온보딩 완료 축하 메시지 */}
-      {onboardingComplete && (
+      {onboardingSuccess && onboardingComplete && (
         <div className="mb-8 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-2xl p-6">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl">

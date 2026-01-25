@@ -201,6 +201,14 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // 6. 온보딩 완료 처리 (필수값 검증)
+    await supabase
+      .from('user_profiles')
+      .update({ onboarding_complete: true })
+      .eq('user_id', user.id)
+
+    console.log('✅ 온보딩 완료 - 웹사이트 배포 가능 상태')
+
     return NextResponse.json({
       success: true,
       message: '웹사이트가 성공적으로 생성되었습니다!',

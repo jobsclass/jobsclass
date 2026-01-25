@@ -11,12 +11,9 @@ export default function HomePage() {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
-              <span className="text-white font-bold text-xl">J</span>
+              <span className="text-white font-bold text-xl">잡</span>
             </div>
-            <div className="flex flex-col items-start">
-              <span className="text-2xl font-bold text-white leading-none">잡스빌드</span>
-              <span className="text-xs text-gray-400 leading-none">Jobs Build</span>
-            </div>
+            <span className="text-2xl font-bold text-white">잡스빌드</span>
           </Link>
           
           <div className="flex items-center gap-3">
@@ -264,12 +261,9 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
-                <span className="text-white font-bold">J</span>
+                <span className="text-white font-bold">잡</span>
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold text-white leading-none">잡스빌드</span>
-                <span className="text-xs text-gray-400 leading-none">Jobs Build</span>
-              </div>
+              <span className="text-xl font-bold text-white">잡스빌드</span>
             </div>
             
             <p className="text-gray-500 text-sm">

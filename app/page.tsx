@@ -16,6 +16,12 @@ export default function HomePage() {
           
           <div className="flex items-center gap-3">
             <Link
+              href="/explore"
+              className="btn-ghost text-sm"
+            >
+              서비스 탐색
+            </Link>
+            <Link
               href="/auth/partner/login"
               className="btn-ghost text-sm"
             >

@@ -61,8 +61,8 @@ export default function UserSignupPage() {
 
       if (signInError) throw signInError
 
-      // 대시보드로 이동
-      router.push('/dashboard')
+      // AI 온보딩으로 이동
+      router.push('/onboarding')
     } catch (err: any) {
       console.error('Signup error:', err)
       setError(err.message || '회원가입 중 오류가 발생했습니다')

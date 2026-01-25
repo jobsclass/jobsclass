@@ -1,9 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Plus, Globe, ExternalLink, Sparkles, Rocket, CheckCircle2, ArrowUpRight, Layout } from 'lucide-react'
+import { Plus, Globe, ExternalLink, Sparkles, Rocket, CheckCircle2, ArrowUpRight, Layout, PartyPopper } from 'lucide-react'
 import { redirect } from 'next/navigation'
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams
+}: {
+  searchParams: Promise<{ onboarding?: string }>
+}) {
   const supabase = await createClient()
   
   const {
@@ -33,9 +37,30 @@ export default async function DashboardPage() {
 
   // 온보딩 여부 확인 (웹사이트 0개)
   const needsOnboarding = !websites || websites.length === 0
+  const params = await searchParams
+  const onboardingComplete = params.onboarding === 'complete'
 
   return (
     <div className="p-8">
+      {/* 온보딩 완료 축하 메시지 */}
+      {onboardingComplete && (
+        <div className="mb-8 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-2xl p-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl">
+              <PartyPopper className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white mb-1">
+                🎉 축하합니다! AI 웹사이트 생성 완료!
+              </h3>
+              <p className="text-gray-400">
+                AI가 프로필, 서비스, 블로그, 포트폴리오를 자동으로 생성했습니다. 이제 각 항목을 수정할 수 있어요!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 헤더 */}
       <div className="mb-10">
         <h1 className="text-4xl font-bold text-white mb-2">

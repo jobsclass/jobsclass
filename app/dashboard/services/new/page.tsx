@@ -88,11 +88,64 @@ export default function NewServicePage() {
     }))
   }
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: API 연동
-    console.log('Form submitted:', formData)
-    router.push('/dashboard/services')
+    setIsSubmitting(true)
+
+    try {
+      // 썸네일 업로드 (Supabase Storage)
+      let thumbnailUrl = ''
+      if (formData.thumbnail) {
+        const formDataUpload = new FormData()
+        formDataUpload.append('file', formData.thumbnail)
+        
+        // TODO: 실제 파일 업로드 구현
+        // 지금은 임시로 빈 문자열
+        thumbnailUrl = ''
+      }
+
+      // API 요청
+      const response = await fetch('/api/services/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          category: formData.category,
+          serviceCategory: formData.category,
+          title: formData.title,
+          slug: formData.slug,
+          description: formData.description,
+          thumbnail: thumbnailUrl,
+          targetCustomer: formData.targetCustomer,
+          problemDescription: formData.problemDescription,
+          solutionProcess: formData.solutionProcess,
+          expectedResults: formData.expectedResults,
+          price: formData.price,
+          originalPrice: formData.originalPrice,
+          currency: formData.currency,
+          features: formData.features.filter(f => f.trim()),
+          isPublished: formData.isPublished,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create service')
+      }
+
+      // 성공
+      alert('✅ 서비스가 성공적으로 등록되었습니다!')
+      router.push('/dashboard/services')
+    } catch (error: any) {
+      console.error('Submit error:', error)
+      alert('❌ 오류: ' + error.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -420,12 +473,13 @@ export default function NewServicePage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-500 hover:to-purple-500 text-white rounded-xl font-medium transition-colors"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-colors"
                   onClick={(e) => {
                     handleInputChange('isPublished', true)
                   }}
                 >
-                  서비스 등록
+                  {isSubmitting ? '등록 중...' : '서비스 등록'}
                 </button>
               </div>
             </div>

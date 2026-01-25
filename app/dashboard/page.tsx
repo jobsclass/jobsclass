@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { formatCurrency } from '@/lib/utils'
-import { DollarSign, ShoppingBag, Package, Plus, TrendingUp, ArrowUpRight, Eye, Globe, ExternalLink } from 'lucide-react'
+import { DollarSign, ShoppingBag, Package, Plus, TrendingUp, ArrowUpRight, Eye, Globe, ExternalLink, Sparkles, Users, CheckCircle2, Rocket } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -51,6 +51,9 @@ export default async function DashboardPage() {
     .order('created_at', { ascending: false })
     .limit(5)
 
+  // 온보딩 여부 확인 (서비스 0개 && 주문 0개)
+  const needsOnboarding = (!services || services.length === 0) && (!orders || orders.length === 0)
+
   return (
     <div className="p-8">
       {/* 헤더 */}
@@ -62,6 +65,9 @@ export default async function DashboardPage() {
           오늘도 멋진 하루 보내세요!
         </p>
       </div>
+
+      {/* 온보딩 가이드 (서비스 & 주문 0개일 때만 표시) */}
+      {needsOnboarding && <OnboardingGuide profileUrl={profile?.profile_url || ''} />}
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -276,6 +282,143 @@ function ActionCard({
         </div>
       </div>
     </Link>
+  )
+}
+
+function OnboardingGuide({ profileUrl }: { profileUrl: string }) {
+  return (
+    <div className="mb-10">
+      <div className="relative">
+        {/* Gradient Border Effect */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 via-purple-500 to-pink-500 rounded-3xl blur-lg opacity-30 animate-pulse"></div>
+        
+        <div className="relative bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8">
+          {/* 헤더 */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-purple-600 rounded-2xl mb-4 shadow-lg shadow-primary-500/20">
+              <Rocket className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-3">
+              🎉 환영합니다! 첫 수익을 만들어보세요
+            </h2>
+            <p className="text-gray-400 text-lg">
+              평균 24시간 내 첫 주문 발생! 지금 바로 시작하세요
+            </p>
+          </div>
+
+          {/* 3단계 가이드 */}
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <OnboardingStep
+              step="1"
+              icon={<Plus className="w-6 h-6" />}
+              title="서비스 등록"
+              description="3분이면 충분해요. 온라인 강의, 멘토링, 컨설팅 중 선택하세요."
+              actionText="서비스 등록하기"
+              actionHref="/dashboard/services/new"
+              gradient="from-blue-500 to-cyan-500"
+            />
+            <OnboardingStep
+              step="2"
+              icon={<Users className="w-6 h-6" />}
+              title="SNS에 공유"
+              description="인스타그램, 유튜브에 링크를 올리면 팔로워가 고객이 됩니다."
+              actionText="내 링크 보기"
+              actionHref={`/p/${profileUrl}`}
+              gradient="from-purple-500 to-pink-500"
+              isExternal
+            />
+            <OnboardingStep
+              step="3"
+              icon={<DollarSign className="w-6 h-6" />}
+              title="수익 받기"
+              description="주문이 들어오면 자동으로 정산. 별도 작업 없이 수익 창출!"
+              actionText="대시보드 둘러보기"
+              actionHref="/dashboard/orders"
+              gradient="from-emerald-500 to-teal-500"
+            />
+          </div>
+
+          {/* 성공 사례 */}
+          <div className="bg-gray-800/50 border border-gray-700/50 rounded-2xl p-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex-shrink-0">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-white mb-2">💡 성공 팁</h3>
+                <p className="text-gray-300 mb-3">
+                  <strong className="text-primary-400">김OO 파트너</strong>님은 인스타그램 스토리에 링크를 올려서 <strong className="text-white">첫 날 3건의 주문</strong>을 받았어요!
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-700/50 rounded-full text-sm text-gray-300">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    첫 달 매출 ₩500만원
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-700/50 rounded-full text-sm text-gray-300">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    만족도 4.9★
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-700/50 rounded-full text-sm text-gray-300">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    재구매율 80%
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function OnboardingStep({
+  step,
+  icon,
+  title,
+  description,
+  actionText,
+  actionHref,
+  gradient,
+  isExternal = false,
+}: {
+  step: string
+  icon: React.ReactNode
+  title: string
+  description: string
+  actionText: string
+  actionHref: string
+  gradient: string
+  isExternal?: boolean
+}) {
+  return (
+    <div className="relative group">
+      <div className="bg-gray-800/50 border border-gray-700/50 rounded-2xl p-6 h-full flex flex-col hover:border-gray-600 transition-all">
+        {/* Step Number */}
+        <div className="absolute -top-3 -left-3 w-8 h-8 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+          {step}
+        </div>
+
+        {/* Icon */}
+        <div className={`w-12 h-12 bg-gradient-to-br ${gradient} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+          {icon}
+        </div>
+
+        {/* Content */}
+        <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+        <p className="text-gray-400 text-sm mb-4 flex-1">{description}</p>
+
+        {/* Action Button */}
+        <Link
+          href={actionHref}
+          target={isExternal ? '_blank' : undefined}
+          className={`inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r ${gradient} text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all text-sm`}
+        >
+          {actionText}
+          <ArrowUpRight className="w-4 h-4" />
+        </Link>
+      </div>
+    </div>
   )
 }
 

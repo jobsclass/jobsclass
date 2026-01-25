@@ -2,8 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import OpenAI from 'openai'
 
+// OpenAI API 키 확인
+if (!process.env.OPENAI_API_KEY) {
+  console.error('❌ OPENAI_API_KEY 환경 변수가 설정되지 않았습니다!')
+}
+
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-build'
 })
 
 /**
@@ -12,6 +17,14 @@ const openai = new OpenAI({
  */
 export async function POST(request: NextRequest) {
   try {
+    // OpenAI API 키 확인
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'dummy-key-for-build') {
+      return NextResponse.json(
+        { error: 'OpenAI API 키가 설정되지 않았습니다. Vercel 환경 변수에 OPENAI_API_KEY를 추가해주세요.' },
+        { status: 500 }
+      )
+    }
+
     const supabase = await createClient()
     
     // 사용자 인증 확인

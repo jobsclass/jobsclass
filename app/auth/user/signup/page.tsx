@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { generateSlug } from '@/lib/utils'
 
-export default function PartnerSignupPage() {
+export default function UserSignupPage() {
   const router = useRouter()
   const supabase = createClient()
   
@@ -34,7 +34,7 @@ export default function PartnerSignupPage() {
 
     try {
       // API 호출로 회원가입 (서버 측에서 처리)
-      const response = await fetch('/api/auth/partner/signup', {
+      const response = await fetch('/api/auth/user/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,10 +85,10 @@ export default function PartnerSignupPage() {
             <span className="text-3xl font-bold text-white">Corefy</span>
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-white">
-            파트너 회원가입
+            회원가입
           </h2>
           <p className="mt-2 text-gray-400">
-            무료로 시작하고 30분 만에 판매하세요
+            AI로 1분 만에 웹사이트를 만드세요
           </p>
         </div>
 
@@ -149,11 +149,11 @@ export default function PartnerSignupPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                프로필 URL
+                사용자 이름 (Username)
               </label>
               <div className="flex items-center gap-1">
                 <span className="text-gray-500 text-sm px-3">
-                  corefy.com/p/
+                  corefy.com/
                 </span>
                 <input
                   type="text"
@@ -163,11 +163,11 @@ export default function PartnerSignupPage() {
                     setFormData({ ...formData, profileUrl: e.target.value })
                   }
                   className="input flex-1"
-                  placeholder="your-name"
+                  placeholder="your-username"
                 />
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                고객들이 접속할 URL입니다
+                내 웹사이트 URL에 사용됩니다 (예: corefy.com/username/my-site)
               </p>
             </div>
 
@@ -184,7 +184,7 @@ export default function PartnerSignupPage() {
             <p className="text-sm text-gray-400">
               이미 계정이 있으신가요?{' '}
               <Link
-                href="/auth/partner/login"
+                href="/auth/user/login"
                 className="text-primary-400 hover:text-primary-300 font-semibold transition-colors"
               >
                 로그인

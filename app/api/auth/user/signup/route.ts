@@ -48,14 +48,16 @@ export async function POST(request: Request) {
       )
     }
 
-    // 2. Create partner profile (Service Role로 RLS 우회)
+    // 2. Create user profile (Service Role로 RLS 우회)
     const { data: profileData, error: profileError } = await supabaseAdmin
-      .from('partner_profiles')
+      .from('user_profiles')
       .insert({
         user_id: authData.user.id,
         display_name: displayName,
-        profile_url: profileUrl,
+        email: email,
+        username: profileUrl, // username으로 매핑
         subscription_plan: 'FREE',
+        subscription_status: 'active',
       })
       .select()
       .single()

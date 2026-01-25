@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { formatCurrency } from '@/lib/utils'
-import { DollarSign, ShoppingBag, Package, Plus, TrendingUp, ArrowUpRight, Eye, Globe, ExternalLink, Sparkles, Users, CheckCircle2, Rocket } from 'lucide-react'
+import { Plus, Globe, ExternalLink, Sparkles, Rocket, CheckCircle2, ArrowUpRight, Layout } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -10,198 +10,137 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return null
+  if (!user) {
+    redirect('/auth/user/login')
+  }
 
-  // 파트너 프로필 가져오기
+  // 유저 프로필 가져오기
   const { data: profile } = await supabase
-    .from('partner_profiles')
+    .from('user_profiles')
     .select('*')
     .eq('user_id', user.id)
     .single()
 
-  // 통계 데이터 가져오기
-  const { data: services } = await supabase
-    .from('services')
-    .select('id')
-    .eq('partner_id', user.id)
+  if (!profile) {
+    redirect('/auth/user/signup')
+  }
 
-  const { data: orders } = await supabase
-    .from('orders')
-    .select('final_amount, status, created_at')
-    .eq('partner_id', user.id)
-    .eq('status', 'completed')
+  // 웹사이트 개수 가져오기
+  const { data: websites } = await supabase
+    .from('websites')
+    .select('id, title, slug')
+    .eq('user_id', user.id)
 
-  const totalRevenue = orders?.reduce((sum, order) => sum + Number(order.final_amount), 0) || 0
-  
-  const thisMonthOrders = orders?.filter((order) => {
-    const orderDate = new Date(order.created_at)
-    const now = new Date()
-    return orderDate.getMonth() === now.getMonth() && orderDate.getFullYear() === now.getFullYear()
-  }).length || 0
-
-  // 최근 주문
-  const { data: recentOrders } = await supabase
-    .from('orders')
-    .select(`
-      *,
-      service:services(title),
-      buyer:buyers(name, email)
-    `)
-    .eq('partner_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(5)
-
-  // 온보딩 여부 확인 (서비스 0개 && 주문 0개)
-  const needsOnboarding = (!services || services.length === 0) && (!orders || orders.length === 0)
+  // 온보딩 여부 확인 (웹사이트 0개)
+  const needsOnboarding = !websites || websites.length === 0
 
   return (
     <div className="p-8">
       {/* 헤더 */}
       <div className="mb-10">
         <h1 className="text-4xl font-bold text-white mb-2">
-          안녕하세요, {profile?.display_name}님! 👋
+          안녕하세요, {profile.display_name}님! 👋
         </h1>
         <p className="text-gray-400 text-lg">
-          오늘도 멋진 하루 보내세요!
+          오늘도 멋진 웹사이트를 만들어보세요!
         </p>
       </div>
 
-      {/* 온보딩 가이드 (서비스 & 주문 0개일 때만 표시) */}
-      {needsOnboarding && <OnboardingGuide profileUrl={profile?.profile_url || ''} />}
+      {/* 온보딩 가이드 (웹사이트 0개일 때만 표시) */}
+      {needsOnboarding && <OnboardingGuide username={profile.username || ''} />}
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <StatCard
-          title="총 매출"
-          value={formatCurrency(totalRevenue)}
-          icon={<DollarSign className="w-6 h-6" />}
-          trend="+12.5%"
-          gradient="from-emerald-500 to-teal-600"
-        />
-        <StatCard
-          title="이번 달 주문"
-          value={`${thisMonthOrders}건`}
-          icon={<ShoppingBag className="w-6 h-6" />}
-          trend="+8.2%"
+          title="내 웹사이트"
+          value={`${websites?.length || 0}개`}
+          icon={<Layout className="w-6 h-6" />}
           gradient="from-blue-500 to-cyan-600"
         />
         <StatCard
-          title="운영 중인 서비스"
-          value={`${services?.length || 0}개`}
-          icon={<Package className="w-6 h-6" />}
+          title="구독 플랜"
+          value={profile.subscription_plan || 'FREE'}
+          icon={<Sparkles className="w-6 h-6" />}
           gradient="from-purple-500 to-pink-600"
+        />
+        <StatCard
+          title="계정 상태"
+          value={profile.subscription_status === 'active' ? '활성' : '비활성'}
+          icon={<CheckCircle2 className="w-6 h-6" />}
+          gradient="from-emerald-500 to-teal-600"
         />
       </div>
 
       {/* 빠른 액션 */}
       <div className="mb-10">
         <h2 className="text-2xl font-bold text-white mb-6">빠른 액션</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* 내 웹사이트 카드 - 강조 */}
-          <Link
-            href={`/p/${profile?.profile_url}`}
-            target="_blank"
-            className="relative group col-span-1 md:col-span-2"
-          >
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-300"></div>
-            <div className="relative bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 h-full">
-              <div className="flex items-start justify-between mb-4">
-                <div className="p-3 bg-gradient-to-br from-primary-500 to-purple-600 rounded-xl">
-                  <Globe className="w-6 h-6 text-white" />
-                </div>
-                <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">내 웹사이트</h3>
-              <p className="text-gray-400 text-sm mb-3">
-                고객이 보는 페이지를 확인하세요
-              </p>
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-primary-400 font-mono">
-                  corefy.com/p/{profile?.profile_url}
-                </span>
-              </div>
-            </div>
-          </Link>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <ActionCard
-            title="새 서비스 등록"
-            description="새로운 강의나 서비스를 등록하세요"
-            href="/dashboard/services/new"
+            title="새 웹사이트 만들기"
+            description="AI로 1분 만에 웹사이트를 생성하세요"
+            href="/dashboard/websites/new"
             icon={<Plus className="w-6 h-6" />}
             gradient="from-primary-500 to-purple-600"
           />
           <ActionCard
-            title="쿠폰 만들기"
-            description="할인 쿠폰을 생성하세요"
-            href="/dashboard/coupons"
-            icon={<TrendingUp className="w-6 h-6" />}
+            title="내 웹사이트 보기"
+            description="만든 웹사이트를 확인하세요"
+            href="/dashboard/websites"
+            icon={<Globe className="w-6 h-6" />}
+            gradient="from-blue-500 to-cyan-600"
+          />
+          <ActionCard
+            title="프로필 설정"
+            description="내 정보를 수정하세요"
+            href="/dashboard/settings"
+            icon={<Sparkles className="w-6 h-6" />}
             gradient="from-emerald-500 to-teal-600"
           />
         </div>
       </div>
 
-      {/* 최근 주문 */}
+      {/* 최근 웹사이트 */}
       <div>
-        <h2 className="text-2xl font-bold text-white mb-6">최근 주문</h2>
+        <h2 className="text-2xl font-bold text-white mb-6">최근 웹사이트</h2>
         <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl overflow-hidden">
-          {!recentOrders || recentOrders.length === 0 ? (
+          {!websites || websites.length === 0 ? (
             <div className="p-12 text-center">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-800 rounded-2xl mb-6">
-                <ShoppingBag className="w-10 h-10 text-gray-600" />
+                <Layout className="w-10 h-10 text-gray-600" />
               </div>
-              <p className="text-gray-400 text-lg mb-4">아직 주문이 없습니다</p>
+              <p className="text-gray-400 text-lg mb-4">아직 웹사이트가 없습니다</p>
               <Link
-                href="/dashboard/services/new"
+                href="/dashboard/websites/new"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-primary-500/20 transition-all font-semibold"
               >
-                첫 서비스 등록하기
+                첫 웹사이트 만들기
                 <ArrowUpRight className="w-5 h-5" />
               </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-800">
-                <thead>
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      주문번호
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      서비스
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      구매자
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      금액
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      상태
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-800">
-                  {recentOrders.map((order: any) => (
-                    <tr key={order.id} className="hover:bg-gray-800/30 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
-                        {order.order_number}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {order.service?.title || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        {order.buyer?.name || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">
-                        {formatCurrency(order.final_amount)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <StatusBadge status={order.status} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="p-6 grid gap-4">
+              {websites.slice(0, 5).map((website: any) => (
+                <Link
+                  key={website.id}
+                  href={`/dashboard/websites/${website.id}/edit`}
+                  className="flex items-center justify-between p-4 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 rounded-xl transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl">
+                      <Globe className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white group-hover:text-primary-400 transition-colors">
+                        {website.title}
+                      </h3>
+                      <p className="text-sm text-gray-400 font-mono">
+                        /{profile.username}/{website.slug}
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-primary-400 transition-colors" />
+                </Link>
+              ))}
             </div>
           )}
         </div>
@@ -214,13 +153,11 @@ function StatCard({
   title,
   value,
   icon,
-  trend,
   gradient,
 }: {
   title: string
   value: string
   icon: React.ReactNode
-  trend?: string
   gradient: string
 }) {
   return (
@@ -236,13 +173,6 @@ function StatCard({
             {icon}
           </div>
         </div>
-        {trend && (
-          <div className="flex items-center gap-1 text-emerald-400 text-sm font-semibold">
-            <TrendingUp className="w-4 h-4" />
-            <span>{trend}</span>
-            <span className="text-gray-500">이번 달</span>
-          </div>
-        )}
       </div>
     </div>
   )
@@ -285,7 +215,7 @@ function ActionCard({
   )
 }
 
-function OnboardingGuide({ profileUrl }: { profileUrl: string }) {
+function OnboardingGuide({ username }: { username: string }) {
   return (
     <div className="mb-10">
       <div className="relative">
@@ -299,10 +229,10 @@ function OnboardingGuide({ profileUrl }: { profileUrl: string }) {
               <Rocket className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold text-white mb-3">
-              🎉 환영합니다! 첫 수익을 만들어보세요
+              🎉 환영합니다! 첫 웹사이트를 만들어보세요
             </h2>
             <p className="text-gray-400 text-lg">
-              평균 24시간 내 첫 주문 발생! 지금 바로 시작하세요
+              AI로 1분 만에 완성! 지금 바로 시작하세요
             </p>
           </div>
 
@@ -311,29 +241,28 @@ function OnboardingGuide({ profileUrl }: { profileUrl: string }) {
             <OnboardingStep
               step="1"
               icon={<Plus className="w-6 h-6" />}
-              title="서비스 등록"
-              description="3분이면 충분해요. 온라인 강의, 멘토링, 컨설팅 중 선택하세요."
-              actionText="서비스 등록하기"
-              actionHref="/dashboard/services/new"
+              title="템플릿 선택"
+              description="Modern, Minimal, Creative 중 마음에 드는 템플릿을 선택하세요."
+              actionText="웹사이트 만들기"
+              actionHref="/dashboard/websites/new"
               gradient="from-blue-500 to-cyan-500"
             />
             <OnboardingStep
               step="2"
-              icon={<Users className="w-6 h-6" />}
-              title="SNS에 공유"
-              description="인스타그램, 유튜브에 링크를 올리면 팔로워가 고객이 됩니다."
-              actionText="내 링크 보기"
-              actionHref={`/p/${profileUrl}`}
+              icon={<Sparkles className="w-6 h-6" />}
+              title="AI로 작성"
+              description="제목, 설명만 입력하면 AI가 나머지를 채워줍니다."
+              actionText="AI 기능 보기"
+              actionHref="/dashboard/websites/new"
               gradient="from-purple-500 to-pink-500"
-              isExternal
             />
             <OnboardingStep
               step="3"
-              icon={<DollarSign className="w-6 h-6" />}
-              title="수익 받기"
-              description="주문이 들어오면 자동으로 정산. 별도 작업 없이 수익 창출!"
+              icon={<Globe className="w-6 h-6" />}
+              title="즉시 배포"
+              description="클릭 한 번으로 배포 완료! 링크를 공유하세요."
               actionText="대시보드 둘러보기"
-              actionHref="/dashboard/orders"
+              actionHref="/dashboard"
               gradient="from-emerald-500 to-teal-500"
             />
           </div>
@@ -347,20 +276,20 @@ function OnboardingGuide({ profileUrl }: { profileUrl: string }) {
               <div className="flex-1">
                 <h3 className="text-xl font-bold text-white mb-2">💡 성공 팁</h3>
                 <p className="text-gray-300 mb-3">
-                  <strong className="text-primary-400">김OO 파트너</strong>님은 인스타그램 스토리에 링크를 올려서 <strong className="text-white">첫 날 3건의 주문</strong>을 받았어요!
+                  <strong className="text-primary-400">김OO 님</strong>은 AI 템플릿으로 <strong className="text-white">1분 만에 포트폴리오 사이트</strong>를 완성했어요!
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-700/50 rounded-full text-sm text-gray-300">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    첫 달 매출 ₩500만원
+                    제작 시간 1분
                   </span>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-700/50 rounded-full text-sm text-gray-300">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    만족도 4.9★
+                    반응형 디자인
                   </span>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-700/50 rounded-full text-sm text-gray-300">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    재구매율 80%
+                    SEO 최적화
                   </span>
                 </div>
               </div>
@@ -380,7 +309,6 @@ function OnboardingStep({
   actionText,
   actionHref,
   gradient,
-  isExternal = false,
 }: {
   step: string
   icon: React.ReactNode
@@ -389,7 +317,6 @@ function OnboardingStep({
   actionText: string
   actionHref: string
   gradient: string
-  isExternal?: boolean
 }) {
   return (
     <div className="relative group">
@@ -411,7 +338,6 @@ function OnboardingStep({
         {/* Action Button */}
         <Link
           href={actionHref}
-          target={isExternal ? '_blank' : undefined}
           className={`inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r ${gradient} text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all text-sm`}
         >
           {actionText}
@@ -419,36 +345,5 @@ function OnboardingStep({
         </Link>
       </div>
     </div>
-  )
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const statusConfig = {
-    completed: {
-      label: '완료',
-      className: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    },
-    pending: {
-      label: '대기중',
-      className: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-    },
-    cancelled: {
-      label: '취소',
-      className: 'bg-gray-500/10 text-gray-400 border-gray-500/20',
-    },
-    refunded: {
-      label: '환불',
-      className: 'bg-red-500/10 text-red-400 border-red-500/20',
-    },
-  }
-
-  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
-
-  return (
-    <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${config.className}`}
-    >
-      {config.label}
-    </span>
   )
 }

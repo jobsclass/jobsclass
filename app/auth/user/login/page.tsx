@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-export default function PartnerLoginPage() {
+export default function UserLoginPage() {
   const router = useRouter()
   const supabase = createClient()
   
@@ -53,10 +53,10 @@ export default function PartnerLoginPage() {
             <span className="text-3xl font-bold text-white">Corefy</span>
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-white">
-            파트너 로그인
+            로그인
           </h2>
           <p className="mt-2 text-gray-400">
-            대시보드에 접속하세요
+            내 웹사이트 관리하기
           </p>
         </div>
 
@@ -113,7 +113,7 @@ export default function PartnerLoginPage() {
             <p className="text-sm text-gray-400">
               아직 계정이 없으신가요?{' '}
               <Link
-                href="/auth/partner/signup"
+                href="/auth/user/signup"
                 className="text-primary-400 hover:text-primary-300 font-semibold transition-colors"
               >
                 회원가입

@@ -80,9 +80,12 @@ export default function UserSignupPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-8">
             <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
-              <span className="text-white font-bold text-xl">C</span>
+              <span className="text-white font-bold text-xl">J</span>
             </div>
-            <span className="text-3xl font-bold text-white">Jobs Build</span>
+            <div className="flex flex-col items-start">
+              <span className="text-3xl font-bold text-white leading-none">잡스빌드</span>
+              <span className="text-xs text-gray-400 leading-none">Jobs Build</span>
+            </div>
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-white">
             회원가입

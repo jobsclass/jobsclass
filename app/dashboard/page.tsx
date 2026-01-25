@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { formatCurrency } from '@/lib/utils'
-import { DollarSign, ShoppingBag, Package, Plus, TrendingUp, ArrowUpRight, Eye } from 'lucide-react'
+import { DollarSign, ShoppingBag, Package, Plus, TrendingUp, ArrowUpRight, Eye, Globe, ExternalLink } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -90,20 +90,39 @@ export default async function DashboardPage() {
       {/* 빠른 액션 */}
       <div className="mb-10">
         <h2 className="text-2xl font-bold text-white mb-6">빠른 액션</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* 내 웹사이트 카드 - 강조 */}
+          <Link
+            href={`/p/${profile?.profile_url}`}
+            target="_blank"
+            className="relative group col-span-1 md:col-span-2"
+          >
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-300"></div>
+            <div className="relative bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 h-full">
+              <div className="flex items-start justify-between mb-4">
+                <div className="p-3 bg-gradient-to-br from-primary-500 to-purple-600 rounded-xl">
+                  <Globe className="w-6 h-6 text-white" />
+                </div>
+                <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">내 웹사이트</h3>
+              <p className="text-gray-400 text-sm mb-3">
+                고객이 보는 페이지를 확인하세요
+              </p>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-primary-400 font-mono">
+                  corefy.com/p/{profile?.profile_url}
+                </span>
+              </div>
+            </div>
+          </Link>
+
           <ActionCard
             title="새 서비스 등록"
             description="새로운 강의나 서비스를 등록하세요"
             href="/dashboard/services/new"
             icon={<Plus className="w-6 h-6" />}
             gradient="from-primary-500 to-purple-600"
-          />
-          <ActionCard
-            title="내 페이지 보기"
-            description="고객이 보는 페이지를 확인하세요"
-            href={`/p/${profile?.profile_url}`}
-            icon={<Eye className="w-6 h-6" />}
-            gradient="from-blue-500 to-cyan-600"
           />
           <ActionCard
             title="쿠폰 만들기"

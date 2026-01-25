@@ -9,9 +9,12 @@ import {
   Ticket, 
   Settings,
   LogOut,
-  PlayCircle
+  PlayCircle,
+  Globe,
+  Eye
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState } from 'react'
 
 const navigation = [
   { name: '대시보드', href: '/dashboard', icon: LayoutDashboard },
@@ -25,6 +28,25 @@ export function DashboardSidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const [profileUrl, setProfileUrl] = useState<string>('')
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from('partner_profiles')
+          .select('profile_url')
+          .eq('user_id', user.id)
+          .single()
+        
+        if (profile) {
+          setProfileUrl(profile.profile_url)
+        }
+      }
+    }
+    fetchProfile()
+  }, [])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -65,6 +87,26 @@ export function DashboardSidebar() {
             </Link>
           )
         })}
+
+        {/* 내 웹사이트 섹션 */}
+        {profileUrl && (
+          <>
+            <div className="pt-6 pb-2 px-4">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                내 웹사이트
+              </h3>
+            </div>
+            <Link
+              href={`/p/${profileUrl}`}
+              target="_blank"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-primary-500/10 hover:text-primary-400 transition-all duration-200 group"
+            >
+              <Globe className="w-5 h-5" />
+              <span className="font-medium">미리보기</span>
+              <Eye className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Link>
+          </>
+        )}
       </nav>
 
       <div className="p-4 border-t border-gray-800">

@@ -13,6 +13,13 @@ export default async function ServicesPage() {
 
   if (!user) return null
 
+  // 파트너 프로필 가져오기
+  const { data: profile } = await supabase
+    .from('partner_profiles')
+    .select('profile_url')
+    .eq('user_id', user.id)
+    .single()
+
   const { data: services } = await supabase
     .from('services')
     .select('*')
@@ -58,7 +65,7 @@ export default async function ServicesPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
             {services.map((service) => (
-              <ServiceCard key={service.id} service={service} />
+              <ServiceCard key={service.id} service={service} profileUrl={profile?.profile_url} />
             ))}
           </div>
         )}
@@ -67,7 +74,7 @@ export default async function ServicesPage() {
   )
 }
 
-function ServiceCard({ service }: { service: any }) {
+function ServiceCard({ service, profileUrl }: { service: any; profileUrl?: string }) {
   const category = service.category_1 ? getCategoryById(service.category_1) : null
   const subcategory =
     service.category_1 && service.category_2
@@ -150,14 +157,15 @@ function ServiceCard({ service }: { service: any }) {
           {/* 액션 버튼 */}
           <div className="flex gap-2">
             <Link
-              href={`/dashboard/services/${service.id}`}
+              href={`/dashboard/services/${service.id}/edit`}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
             >
               <Edit className="w-4 h-4" />
               수정
             </Link>
             <Link
-              href={`/p/partner/${service.slug}`}
+              href={`/p/${profileUrl}/${service.slug}`}
+              target="_blank"
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary-600/10 text-primary-400 border border-primary-500/20 rounded-lg hover:bg-primary-600/20 transition-colors text-sm font-medium"
             >
               <Eye className="w-4 h-4" />

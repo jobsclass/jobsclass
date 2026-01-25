@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, X, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import FileUpload from '@/components/FileUpload'
+import AIImageGenerator from '@/components/AIImageGenerator'
 
 // 🎓 지식 서비스 카테고리 (직관적으로!)
 const serviceCategories = [
@@ -464,20 +465,29 @@ export default function NewServicePage() {
 
               {/* 썸네일 */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-300">
-                    썸네일 이미지
-                  </label>
-                  <button
-                    type="button"
-                    onClick={handleAIImageGenerate}
-                    disabled={isGeneratingImage || !formData.title}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:from-gray-700 disabled:to-gray-700 text-white text-sm rounded-lg font-medium transition-all"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    {isGeneratingImage ? 'AI 생성 중...' : 'AI 이미지 생성'}
-                  </button>
+                <label className="block text-sm font-medium text-gray-300 mb-3">
+                  썸네일 이미지
+                </label>
+                
+                {/* AI 이미지 생성기 */}
+                <AIImageGenerator
+                  title={formData.title}
+                  category={formData.category}
+                  description={formData.description}
+                  onImageGenerated={(imageUrl) => {
+                    setThumbnailPreview(imageUrl)
+                    // TODO: 이미지 URL을 File 객체로 변환 필요
+                  }}
+                />
+
+                {/* 구분선 */}
+                <div className="flex items-center gap-4 my-6">
+                  <div className="flex-1 h-px bg-gray-700"></div>
+                  <span className="text-sm text-gray-500">또는 직접 업로드</span>
+                  <div className="flex-1 h-px bg-gray-700"></div>
                 </div>
+
+                {/* 수동 업로드 */}
                 <FileUpload
                   onChange={(file: File | null, previewUrl?: string) => {
                     handleInputChange('thumbnail', file)

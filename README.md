@@ -382,7 +382,7 @@ MIT License
 ---
 
 ## 📞 문의
-- GitHub Issues: https://github.com/jobsclass/corefy/issues
+- GitHub Issues: https://github.com/jobsclass/jobsbuild/issues
 - Email: startupjobs824@gmail.com
 
 ---

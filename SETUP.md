@@ -1,7 +1,8 @@
-# Corefy 개발 환경 세팅 가이드
+# Jobs Build 개발 환경 세팅 가이드
 
 > **소요 시간**: 약 15분  
-> **최종 업데이트**: 2026.01.24
+> **최종 업데이트**: 2026.01.25
+> **JobsClass 에코시스템의 첫 번째 제품**
 
 ---
 
@@ -23,8 +24,8 @@
 ## 🚀 1단계: 저장소 클론
 
 ```bash
-git clone https://github.com/jobsclass/corefy.git
-cd corefy
+git clone https://github.com/jobsclass/jobsbuild.git
+cd jobsbuild
 ```
 
 ---
@@ -51,7 +52,7 @@ npm install
 1. [Supabase Dashboard](https://app.supabase.com) 접속
 2. "New Project" 클릭
 3. 프로젝트 정보 입력:
-   - **Name**: `corefy` (또는 원하는 이름)
+   - **Name**: `jobsbuild` (또는 원하는 이름)
    - **Database Password**: 안전한 비밀번호 설정 (복사해두세요!)
    - **Region**: `Northeast Asia (Seoul)` 권장
 4. "Create new project" 클릭 (약 2분 소요)
@@ -145,7 +146,7 @@ npm run dev
 ### 6-2. 파트너 회원가입 테스트
 1. http://localhost:3000/auth/partner/signup 접속
 2. 테스트 계정 생성:
-   - **이메일**: `test@corefy.com`
+   - **이메일**: `test@jobsbuild.com`
    - **비밀번호**: `test1234`
    - **표시 이름**: `테스트 파트너`
    - **URL**: `test-partner`
@@ -230,20 +231,20 @@ npm run dev
 ### 1. Vercel 프로젝트 생성
 1. [Vercel Dashboard](https://vercel.com) 접속
 2. "New Project" 클릭
-3. GitHub 저장소 연결 (`jobsclass/corefy`)
+3. GitHub 저장소 연결 (`jobsclass/jobsbuild`)
 4. "Import" 클릭
 
 ### 2. 환경변수 설정
 1. "Environment Variables" 섹션에서 `.env.local`의 모든 변수 입력
 2. **주의**: `NEXT_PUBLIC_APP_URL`을 Vercel URL로 변경
    ```
-   NEXT_PUBLIC_APP_URL=https://corefy.vercel.app
+   NEXT_PUBLIC_APP_URL=https://jobsbuild.vercel.app
    ```
 
 ### 3. 배포
 1. "Deploy" 클릭
 2. 약 2분 후 배포 완료
-3. ✅ 배포 URL 확인 (예: `https://corefy.vercel.app`)
+3. ✅ 배포 URL 확인 (예: `https://jobsbuild.vercel.app`)
 
 ---
 
@@ -271,7 +272,7 @@ git checkout -b genspark_ai_developer
 
 ## 📞 문의
 
-- **GitHub Issues**: https://github.com/jobsclass/corefy/issues
+- **GitHub Issues**: https://github.com/jobsclass/jobsbuild/issues
 - **프로젝트 관리자**: @jobsclass
 
 ---

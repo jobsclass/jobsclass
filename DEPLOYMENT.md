@@ -35,7 +35,7 @@ OPENAI_API_KEY=sk-proj-...
 
 2. **프로젝트 Import**
    - "Add New..." → "Project" 클릭
-   - GitHub 저장소 `jobsclass/corefy` 선택
+   - GitHub 저장소 `jobsclass/jobsbuild` 선택
    - "Import" 클릭
 
 ---

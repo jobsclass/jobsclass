@@ -3,6 +3,44 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { formatCurrency } from '@/lib/utils'
 import { ExternalLink } from 'lucide-react'
+import { Metadata } from 'next'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ partner: string }>
+}): Promise<Metadata> {
+  const { partner } = await params
+  const supabase = await createClient()
+
+  const { data: profile } = await supabase
+    .from('partner_profiles')
+    .select('*')
+    .eq('profile_url', partner)
+    .single()
+
+  if (!profile) {
+    return {
+      title: '파트너를 찾을 수 없습니다',
+    }
+  }
+
+  return {
+    title: `${profile.display_name} - Corefy`,
+    description: profile.bio || `${profile.display_name}의 서비스를 만나보세요`,
+    openGraph: {
+      title: profile.display_name,
+      description: profile.bio || `${profile.display_name}의 서비스를 만나보세요`,
+      images: profile.avatar_url ? [profile.avatar_url] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: profile.display_name,
+      description: profile.bio || `${profile.display_name}의 서비스를 만나보세요`,
+      images: profile.avatar_url ? [profile.avatar_url] : [],
+    },
+  }
+}
 
 export default async function PartnerPublicPage({
   params,

@@ -1,30 +1,84 @@
-import { createClient } from '@/lib/supabase/server'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Plus, Edit, Eye, Sparkles } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { getCategoryById, getSubcategoryById } from '@/lib/categories'
 
-export default async function ServicesPage() {
-  const supabase = await createClient()
-  
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+export default function ServicesPage() {
+  const router = useRouter()
+  const supabase = createClient()
+  const [services, setServices] = useState<any[]>([])
+  const [profileUrl, setProfileUrl] = useState<string>('')
+  const [loading, setLoading] = useState(true)
 
-  if (!user) return null
+  useEffect(() => {
+    const loadData = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
 
-  // 파트너 프로필 가져오기
-  const { data: profile } = await supabase
-    .from('partner_profiles')
-    .select('profile_url')
-    .eq('user_id', user.id)
-    .single()
+      if (!user) {
+        router.push('/auth/partner/login')
+        return
+      }
 
-  const { data: services } = await supabase
-    .from('services')
-    .select('*')
-    .eq('partner_id', user.id)
-    .order('created_at', { ascending: false })
+      // 파트너 프로필 가져오기
+      const { data: profile } = await supabase
+        .from('partner_profiles')
+        .select('profile_url')
+        .eq('user_id', user.id)
+        .single()
+
+      if (profile) {
+        setProfileUrl(profile.profile_url)
+      }
+
+      const { data: servicesData } = await supabase
+        .from('services')
+        .select('*')
+        .eq('partner_id', user.id)
+        .order('created_at', { ascending: false })
+
+      setServices(servicesData || [])
+      setLoading(false)
+    }
+
+    loadData()
+  }, [])
+
+  const handleTogglePublish = async (serviceId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('services')
+        .update({ is_published: !currentStatus })
+        .eq('id', serviceId)
+
+      if (error) throw error
+
+      // 목록 새로고침
+      setServices(services.map(s => 
+        s.id === serviceId ? { ...s, is_published: !currentStatus } : s
+      ))
+    } catch (err: any) {
+      console.error('Toggle error:', err)
+      alert('상태 변경 중 오류가 발생했습니다')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">불러오는 중...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-8">
@@ -65,7 +119,12 @@ export default async function ServicesPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
             {services.map((service) => (
-              <ServiceCard key={service.id} service={service} profileUrl={profile?.profile_url} />
+              <ServiceCard 
+                key={service.id} 
+                service={service} 
+                profileUrl={profileUrl}
+                onTogglePublish={handleTogglePublish}
+              />
             ))}
           </div>
         )}
@@ -74,7 +133,15 @@ export default async function ServicesPage() {
   )
 }
 
-function ServiceCard({ service, profileUrl }: { service: any; profileUrl?: string }) {
+function ServiceCard({ 
+  service, 
+  profileUrl,
+  onTogglePublish 
+}: { 
+  service: any
+  profileUrl?: string
+  onTogglePublish: (id: string, currentStatus: boolean) => void
+}) {
   const category = service.category_1 ? getCategoryById(service.category_1) : null
   const subcategory =
     service.category_1 && service.category_2
@@ -97,15 +164,16 @@ function ServiceCard({ service, profileUrl }: { service: any; profileUrl?: strin
             <div className="text-6xl">📚</div>
           )}
           <div className="absolute top-3 right-3">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+            <button
+              onClick={() => onTogglePublish(service.id, service.is_published)}
+              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
                 service.is_published
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                  : 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20'
+                  : 'bg-gray-500/10 text-gray-400 border-gray-500/20 hover:bg-gray-500/20'
               }`}
             >
               {service.is_published ? '공개' : '비공개'}
-            </span>
+            </button>
           </div>
         </div>
 

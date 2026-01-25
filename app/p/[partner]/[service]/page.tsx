@@ -4,9 +4,57 @@ import { formatCurrency } from '@/lib/utils'
 import { ShoppingCart, Tag, Clock, Users, Star } from 'lucide-react'
 import { getCategoryById, getSubcategoryById } from '@/lib/categories'
 import Link from 'next/link'
+import { Metadata } from 'next'
 
 interface PageProps {
   params: Promise<{ partner: string; service: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { partner, service: serviceSlug } = await params
+  const supabase = await createClient()
+
+  const { data: profile } = await supabase
+    .from('partner_profiles')
+    .select('*, user_id')
+    .eq('profile_url', partner)
+    .single()
+
+  if (!profile) {
+    return {
+      title: '서비스를 찾을 수 없습니다',
+    }
+  }
+
+  const { data: service } = await supabase
+    .from('services')
+    .select('*')
+    .eq('partner_id', profile.user_id)
+    .eq('slug', serviceSlug)
+    .eq('is_published', true)
+    .single()
+
+  if (!service) {
+    return {
+      title: '서비스를 찾을 수 없습니다',
+    }
+  }
+
+  return {
+    title: `${service.title} - ${profile.display_name} | Corefy`,
+    description: service.description?.substring(0, 160) || `${service.title}을(를) 배워보세요`,
+    openGraph: {
+      title: service.title,
+      description: service.description?.substring(0, 160) || `${service.title}을(를) 배워보세요`,
+      images: service.thumbnail_url ? [service.thumbnail_url] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: service.title,
+      description: service.description?.substring(0, 160) || `${service.title}을(를) 배워보세요`,
+      images: service.thumbnail_url ? [service.thumbnail_url] : [],
+    },
+  }
 }
 
 export default async function PublicServicePage({ params }: PageProps) {

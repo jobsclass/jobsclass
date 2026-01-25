@@ -32,10 +32,10 @@ const navigation = [
     description: '기본 정보·프로필·디자인'
   },
   { 
-    name: '상품', 
-    href: '/dashboard/products', 
+    name: '서비스', 
+    href: '/dashboard/services', 
     icon: Package,
-    description: '상품 관리'
+    description: '지식 서비스 관리'
   },
   { 
     name: '블로그', 

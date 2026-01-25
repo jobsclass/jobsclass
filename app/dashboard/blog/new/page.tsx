@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Upload } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import FileUpload from '@/components/FileUpload'
 
 export default function NewBlogPage() {
   const router = useRouter()
@@ -18,6 +19,8 @@ export default function NewBlogPage() {
     seoTitle: '',
     seoDescription: '',
   })
+
+  const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('')
 
   const handleInputChange = (field: string, value: any) => {
     const newData = { ...formData, [field]: value }
@@ -127,13 +130,18 @@ export default function NewBlogPage() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">대표 이미지</label>
-            <div className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-primary-500 transition-colors cursor-pointer">
-              <Upload className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-              <p className="text-gray-400 text-sm">클릭하여 이미지 업로드</p>
-            </div>
-          </div>
+          <FileUpload
+            label="대표 이미지"
+            description="클릭하여 이미지 업로드 (권장 크기: 1200x630px)"
+            accept="image/*"
+            maxSize={5}
+            value={featuredImagePreview}
+            onChange={(file, preview) => {
+              handleInputChange('featuredImage', file)
+              if (preview) setFeaturedImagePreview(preview)
+            }}
+            preview={true}
+          />
         </div>
 
         <div className="flex justify-end gap-4">

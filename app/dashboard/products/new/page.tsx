@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Upload, Plus, X } from 'lucide-react'
+import { ArrowLeft, Plus, X } from 'lucide-react'
 import Link from 'next/link'
+import FileUpload from '@/components/FileUpload'
 
 const problemCategories = [
   { value: 'revenue', label: '💰 수익 창출', description: '돈을 더 벌고 싶어요' },
@@ -46,6 +47,7 @@ export default function NewProductPage() {
   })
 
   const [currentStep, setCurrentStep] = useState(1)
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>('')
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -351,11 +353,17 @@ export default function NewProductPage() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     썸네일 이미지
                   </label>
-                  <div className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-primary-500 transition-colors cursor-pointer">
-                    <Upload className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                    <p className="text-gray-400 text-sm mb-1">클릭하여 이미지 업로드</p>
-                    <p className="text-gray-600 text-xs">PNG, JPG (최대 5MB)</p>
-                  </div>
+                  <FileUpload
+                    description="클릭하여 이미지 업로드"
+                    accept="image/*"
+                    maxSize={5}
+                    value={thumbnailPreview}
+                    onChange={(file, preview) => {
+                      handleInputChange('thumbnail', file)
+                      if (preview) setThumbnailPreview(preview)
+                    }}
+                    preview={true}
+                  />
                 </div>
               </div>
             </div>

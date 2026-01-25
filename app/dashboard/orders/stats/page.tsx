@@ -22,10 +22,10 @@ export default function OrderStatsPage() {
           <div key={index} className="bg-gray-900/50 backdrop-blur-xl rounded-2xl border border-gray-800 p-6">
             <div className="flex items-center justify-between mb-4">
               <p className="text-gray-400 text-sm">{stat.label}</p>
-              <stat.icon className={\`w-5 h-5 \${stat.color}\`} />
+              <stat.icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             <p className="text-3xl font-bold text-white mb-2">{stat.value}</p>
-            <p className={\`text-sm \${stat.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}\`}>
+            <p className={`text-sm ${stat.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
               {stat.change} 지난 달 대비
             </p>
           </div>

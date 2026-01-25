@@ -21,7 +21,7 @@ export default function InquiriesPage() {
       closed: '종료',
     }
     return (
-      <span className={\`px-3 py-1 rounded-lg text-sm \${styles[status as keyof typeof styles]}\`}>
+      <span className={`px-3 py-1 rounded-lg text-sm ${styles[status as keyof typeof styles]}`}>
         {labels[status as keyof typeof labels]}
       </span>
     )

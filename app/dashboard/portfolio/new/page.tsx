@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Upload, Plus, X } from 'lucide-react'
+import { ArrowLeft, Plus, X } from 'lucide-react'
 import Link from 'next/link'
+import FileUpload from '@/components/FileUpload'
 
 export default function NewPortfolioPage() {
   const router = useRouter()
@@ -18,6 +19,8 @@ export default function NewPortfolioPage() {
     technologies: [''],
     category: '',
   })
+
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>('')
 
   const handleInputChange = (field: string, value: any) => {
     const newData = { ...formData, [field]: value }
@@ -150,13 +153,18 @@ export default function NewPortfolioPage() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">프로젝트 이미지</label>
-            <div className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-primary-500 transition-colors cursor-pointer">
-              <Upload className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-              <p className="text-gray-400 text-sm">클릭하여 이미지 업로드</p>
-            </div>
-          </div>
+          <FileUpload
+            label="프로젝트 이미지"
+            description="클릭하여 이미지 업로드 (권장 크기: 1200x800px)"
+            accept="image/*"
+            maxSize={5}
+            value={thumbnailPreview}
+            onChange={(file, preview) => {
+              // handleInputChange('thumbnail', file)
+              if (preview) setThumbnailPreview(preview)
+            }}
+            preview={true}
+          />
         </div>
 
         <div className="flex justify-end gap-4">

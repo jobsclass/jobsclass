@@ -3,7 +3,7 @@
 > **프로젝트**: JobsBuild (구 Corefy)  
 > **작성일**: 2026-01-25  
 > **예상 소요 시간**: 약 60분  
-> **최종 커밋**: [6a5545b](https://github.com/jobsclass/corefy/commit/6a5545b)
+> **최종 커밋**: [c646afb](https://github.com/jobsclass/corefy/commit/c646afb) → **v2 최종본**
 
 ---
 
@@ -16,7 +16,7 @@
   - [ ] `schema.sql` (기본 스키마)
   - [ ] `add_onboarding_complete.sql` (온보딩)
   - [ ] `add_profile_and_service_types.sql` (프로필/서비스 타입)
-  - [ ] `add_orders_payments_fixed.sql` ⭐ **최신 수정본** (주문/결제)
+  - [ ] `add_orders_payments_v2.sql` ⭐ **v2 최종본** (주문/결제)
 - [ ] Table Editor에서 10개 테이블 확인
 - [ ] RLS 정책 확인 (Authentication → Policies)
 - [ ] 스토리지 버킷 3개 생성 (`avatars`, `thumbnails`, `uploads`)

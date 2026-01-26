@@ -51,23 +51,28 @@ Supabase Dashboard → SQL Editor → New query에서 아래 순서대로 실행
    - `user_profiles.profile_type`, `organization_name` 추가
    - `services.service_type`, `external_url`, `inquiry_enabled` 등 추가
 
-4. **주문 및 결제 시스템** (`supabase/migrations/add_orders_payments_fixed.sql`) ⭐ **최신 수정본**
+4. **주문 및 결제 시스템** (`supabase/migrations/add_orders_payments_v2.sql`) ⭐ **v2 최종본**
    - `customers` 테이블 업데이트 (이미 존재하므로 ALTER TABLE 사용)
-   - `orders`, `payments`, `subscriptions`, `subscription_invoices`, `ai_usage_logs` 생성
+   - `orders`, `payments`, `subscriptions`, `ai_usage_logs` 생성
+   - **중요**: `orders.seller_id` → `orders.user_id`로 변경 (간소화)
 
 ### 2.2 마이그레이션 4 실행 방법
 
-**중요**: 기존 `add_orders_payments.sql` 대신 **`add_orders_payments_fixed.sql`** 사용!
+**중요**: 최신 버전 **`add_orders_payments_v2.sql`** 사용! ⭐
 
 ```sql
 -- Supabase SQL Editor에 아래 파일 내용 복사하여 실행
--- 파일 위치: supabase/migrations/add_orders_payments_fixed.sql
+-- 파일 위치: supabase/migrations/add_orders_payments_v2.sql
 ```
 
-**주요 변경사항**:
-- ❌ `CREATE TABLE customers` (실패, 이미 존재함)
-- ✅ `ALTER TABLE customers` (성공, 기존 테이블에 컬럼 추가)
-- ✅ `IF NOT EXISTS` 체크로 안전하게 컬럼 추가
+**주요 변경사항 (v1 → v2)**:
+- ❌ ~~`add_orders_payments.sql`~~ (v0, CREATE TABLE 에러)
+- ❌ ~~`add_orders_payments_fixed.sql`~~ (v1, seller_id 에러)
+- ✅ **`add_orders_payments_v2.sql`** (v2, 최종본)
+  - `orders.seller_id` → `orders.user_id` 변경
+  - `orders.buyer_id` 제거 (비회원 주문 지원)
+  - `ALTER TABLE customers` 사용 (안전한 컬럼 추가)
+  - `IF NOT EXISTS` 체크로 중복 방지
 
 ---
 
@@ -120,7 +125,35 @@ Supabase Dashboard → Storage → Create a new bucket
 
 ## 5. 문제 해결
 
-### 5.1 "column 'service_id' does not exist" 에러
+### 5.1 "column 'seller_id' does not exist" 에러
+
+**원인**: orders 테이블 스키마가 변경되었습니다 (v1 → v2)
+
+**변경 내용**:
+```sql
+-- ❌ v1 (실패)
+CREATE TABLE orders (
+  seller_id UUID NOT NULL,  -- 존재하지 않는 컬럼
+  buyer_id UUID,             -- 제거됨
+  ...
+);
+
+-- ✅ v2 (성공)
+CREATE TABLE orders (
+  user_id UUID NOT NULL,     -- seller_id 대체
+  -- buyer_id 제거
+  ...
+);
+```
+
+**해결**:
+1. Supabase SQL Editor 열기
+2. `supabase/migrations/add_orders_payments_v2.sql` 파일 내용 복사
+3. 붙여넣기 후 **Run**
+
+---
+
+### 5.2 "column 'service_id' does not exist" 에러 (해결됨)
 
 **원인**: 기존 `customers` 테이블이 이미 존재하는데 `CREATE TABLE`로 시도
 
@@ -149,7 +182,9 @@ END $$;
 2. `/supabase/migrations/add_orders_payments_fixed.sql` 파일 내용 복사
 3. SQL Editor에 붙여넣기 후 Run
 
-### 5.2 Supabase 연결 오류
+---
+
+### 5.3 Supabase 연결 오류
 
 **증상**: `Failed to fetch` 또는 `Network error`
 
@@ -167,7 +202,7 @@ echo $NEXT_PUBLIC_SUPABASE_ANON_KEY
 # Vercel Dashboard → Settings → Environment Variables → Redeploy
 ```
 
-### 5.3 RLS 정책 오류
+### 5.4 RLS 정책 오류
 
 **증상**: `row-level security policy` 위반
 
@@ -203,15 +238,20 @@ WHERE schemaname = 'public'
 | 테이블 | 설명 | 주요 필드 |
 |--------|------|-----------|
 | `customers` | 고객 문의 | name, email, phone, status, **service_id** ⭐ |
-| `orders` | 주문 관리 | order_number, seller_id, buyer_id, service_id, status |
+| `orders` | 주문 관리 | order_number, **user_id** ⭐, service_id, status |
 | `payments` | 결제 내역 | payment_key, method, total_amount, status |
+
+**중요 변경사항 (v2)**:
+- `orders.seller_id` → `orders.user_id` (판매자 = 사용자)
+- `orders.buyer_id` 제거 (비회원 주문 지원)
 
 ### 6.3 Subscriptions & AI (구독 및 AI)
 | 테이블 | 설명 | 주요 필드 |
 |--------|------|-----------|
 | `subscriptions` | 구독 관리 | plan, status, ai_images_used, ai_copywriting_used |
-| `subscription_invoices` | 구독 결제 내역 | amount, billing_period, payment_key |
 | `ai_usage_logs` | AI 사용 로그 | feature_type, cost_usd, cost_krw, metadata |
+
+**참고**: `subscription_invoices` 테이블은 v2에서 제거됨 (간소화)
 
 ---
 
@@ -230,5 +270,5 @@ WHERE schemaname = 'public'
 ---
 
 **작성일**: 2026-01-25  
-**최종 업데이트**: fa7dbf2  
+**최종 업데이트**: c646afb → **v2 최종본**  
 **프로젝트**: JobsBuild (구 Corefy)

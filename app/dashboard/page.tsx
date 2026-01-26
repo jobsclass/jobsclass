@@ -18,12 +18,21 @@ export default async function DashboardPage({
     redirect('/auth/user/login')
   }
 
-  // 유저 프로필 가져오기
-  const { data: profile } = await supabase
-    .from('user_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
+  // ⚡ 성능 개선: 병렬로 데이터 가져오기
+  const [profileResult, websitesResult] = await Promise.all([
+    supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single(),
+    supabase
+      .from('websites')
+      .select('id, title, slug')
+      .eq('user_id', user.id)
+  ])
+
+  const profile = profileResult.data
+  const websites = websitesResult.data
 
   if (!profile) {
     redirect('/auth/user/signup')
@@ -31,12 +40,6 @@ export default async function DashboardPage({
 
   // 온보딩 완료 여부 확인 (필수!)
   const onboardingComplete = profile.onboarding_complete === true
-
-  // 웹사이트 개수 가져오기
-  const { data: websites } = await supabase
-    .from('websites')
-    .select('id, title, slug')
-    .eq('user_id', user.id)
 
   // 온보딩 가이드 표시 조건: 온보딩 완료했지만 웹사이트가 없을 때만
   const showOnboardingGuide = onboardingComplete && (!websites || websites.length === 0)

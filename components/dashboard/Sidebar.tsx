@@ -110,7 +110,7 @@ export function DashboardSidebar() {
               <span className="text-white font-bold text-lg">J</span>
             </div>
             <div>
-              <h1 className="text-white font-bold text-lg">잡스빌드</h1>
+              <h1 className="text-white font-bold text-lg">JobsClass</h1>
             </div>
           </Link>
 
@@ -150,8 +150,8 @@ export function DashboardSidebar() {
               <span className="text-white font-bold text-lg">J</span>
             </div>
             <div>
-              <h1 className="text-white font-bold group-hover:text-primary-400 transition-colors">잡스빌드</h1>
-              <p className="text-xs text-gray-500">AI 웹빌더</p>
+              <h1 className="text-white font-bold group-hover:text-primary-400 transition-colors">JobsClass</h1>
+              <p className="text-xs text-gray-500">AI 지식 마켓플레이스</p>
             </div>
           </Link>
         </div>

@@ -90,7 +90,7 @@ const organizationQuestions = [
   {
     id: 5,
     question: '주요 제품/서비스는 무엇인가요? (최대 3개)',
-    placeholder: '예: 잡스빌드, 잡스벤처스, 잡스마켓',
+    placeholder: '예: AI 강의, 멘토링, 컨설팅',
     field: 'products',
     multiline: true,
     optional: true

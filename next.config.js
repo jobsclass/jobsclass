@@ -1,12 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Cross-origin 설정 (샌드박스 환경)
-  experimental: {
-    allowedDevOrigins: [
-      'https://*.sandbox.novita.ai',
-    ],
-  },
-  
   // 서버 외부 패키지 최적화
   serverExternalPackages: ['@supabase/supabase-js'],
   

@@ -23,7 +23,7 @@ const serviceTypes = [
     title: '🔗 외부 링크',
     subtitle: '별도 웹사이트로 연결',
     description: '독립 서비스, 파트너십, 외부 플랫폼',
-    examples: ['잡스빌드', '잡스벤처스', '잡스마켓']
+    examples: ['JobsClass', 'JobsVentures', 'JobsMarket']
   },
   {
     id: 'inquiry',
@@ -780,7 +780,7 @@ export default function NewServicePage() {
                     className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-1">예: https://잡스빌드.com, https://잡스벤처스.com</p>
+                  <p className="text-xs text-gray-500 mt-1">예: https://jobsclass.com, https://jobsventures.com</p>
                 </div>
 
                 <div>

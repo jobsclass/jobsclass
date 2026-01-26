@@ -50,7 +50,7 @@ export default function UserLoginPage() {
             <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
               <span className="text-white font-bold text-xl">J</span>
             </div>
-            <span className="text-3xl font-bold text-white">잡스빌드</span>
+            <span className="text-3xl font-bold text-white">JobsClass</span>
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-white">
             로그인

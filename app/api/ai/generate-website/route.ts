@@ -34,27 +34,36 @@ export async function POST(request: NextRequest) {
     }
 
     const answers = await request.json()
-    const { occupation, targetAudience, services, experience, achievements } = answers
+    const { profileType, organizationName, occupation, targetAudience, services, experience, achievements, tagline, products } = answers
 
     console.log('🚀 대화형 온보딩 - AI 웹사이트 자동 생성 시작')
-    console.log('📝 사용자 답변:', { occupation, targetAudience, services, experience, achievements })
+    console.log('📝 사용자 답변:', answers)
+    
+    // ✅ 사용자 입력 그대로 사용 (AI가 변경하지 않음)
+    const userDisplayName = organizationName || occupation || ''
+    const userTagline = tagline || ''
 
-    // AI 프롬프트 생성 (멀티모달 고려)
-    const prompt = `당신은 전문 웹사이트 빌더입니다. 다음 정보를 바탕으로 전문적인 웹사이트 콘텐츠를 생성해주세요:
+    // AI 프롬프트 생성 (사용자 입력은 그대로 유지!)
+    const prompt = `당신은 전문 마케팅 카피라이터입니다. 다음 정보를 바탕으로 웹사이트 콘텐츠를 생성해주세요.
 
-직업: ${occupation}
+⚠️ 중요: 회사명, 사용자 이름, 태그라인은 절대 변경하지 마세요! 그대로 사용하세요!
+
+프로필 타입: ${profileType}
+회사/이름: ${userDisplayName} (변경 금지!)
+태그라인: ${userTagline || '생성 필요'}
+직업: ${occupation || ''}
 타겟 고객: ${targetAudience}
 제공 서비스: ${services}
-경력: ${experience}
+경력: ${experience || ''}
 주요 성과: ${achievements || '없음'}
+주요 제품: ${products || ''}
 
 다음 형식의 JSON으로 응답해주세요:
 {
   "profile": {
-    "displayName": "이름",
-    "jobTitle": "직함",
-    "tagline": "한 줄 소개 (20자 이내)",
-    "bio": "자기소개 (200-300자)",
+    "jobTitle": "직함 (간단히)",
+    "tagline": "${userTagline || '한 줄 소개 생성 (30자 이내)'}",
+    "bio": "자기소개 (200-300자, 매력적이고 전문적으로)",
     "expertise": ["전문분야1", "전문분야2", "전문분야3"]
   },
   "services": [
@@ -123,15 +132,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '프로필을 찾을 수 없습니다' }, { status: 404 })
     }
 
-    // 1. 프로필 업데이트
+    // 1. 프로필 업데이트 (사용자 입력 그대로 사용!)
     await supabase
       .from('user_profiles')
       .update({
-        display_name: generatedContent.profile.displayName,
+        display_name: userDisplayName, // ✅ 사용자 입력 그대로!
         job_title: generatedContent.profile.jobTitle,
-        tagline: generatedContent.profile.tagline,
+        tagline: userTagline || generatedContent.profile.tagline, // ✅ 사용자 입력 우선!
         bio: generatedContent.profile.bio,
-        expertise: generatedContent.profile.expertise
+        expertise: generatedContent.profile.expertise,
+        profile_type: profileType
       })
       .eq('user_id', user.id)
 

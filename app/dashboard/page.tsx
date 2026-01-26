@@ -100,8 +100,7 @@ export default async function DashboardPage({
         </p>
       </div>
 
-      {/* 온보딩 가이드 (온보딩 완료 & 웹사이트 0개일 때만 표시) */}
-      {showOnboardingGuide && <OnboardingGuide username={profile.username || ''} />}
+      {/* 온보딩 가이드 제거 - 더 이상 필요 없음 */}
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

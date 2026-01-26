@@ -278,7 +278,7 @@ export default function AdminPage() {
 }
 
 // 통계 카드
-function StatCard({ icon: Icon, title, value, color }: any) {
+function StatCard({ icon: Icon, title, value, color }: { icon: any; title: string; value: string | number; color: 'blue' | 'orange' | 'green' | 'purple' }) {
   const colors = {
     blue: 'bg-blue-500',
     orange: 'bg-orange-500',

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   Globe, 
   User, 
@@ -13,12 +13,15 @@ import {
   Upload
 } from 'lucide-react'
 import FileUpload from '@/components/FileUpload'
+import { createClient } from '@/lib/supabase/client'
 
 type Tab = 'basic' | 'profile' | 'design' | 'sections'
 
 export default function WebsiteSettingsPage() {
   const [activeTab, setActiveTab] = useState<Tab>('basic')
   const [isTeam, setIsTeam] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string | null>(null)
   
   // 기본 정보
   const [basicInfo, setBasicInfo] = useState({
@@ -110,9 +113,107 @@ export default function WebsiteSettingsPage() {
     }))
   }
 
-  const handleSave = () => {
-    console.log('Saving all settings:', { basicInfo, profileInfo, teamMembers, design, sections, isTeam })
-    alert('설정이 저장되었습니다!')
+  const handleSave = async () => {
+    if (!userId) {
+      alert('사용자 정보를 찾을 수 없습니다.')
+      return
+    }
+
+    try {
+      const supabase = createClient()
+
+      // 프로필 정보 저장
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .update({
+          display_name: profileInfo.displayName,
+          tagline: profileInfo.tagline,
+          bio: profileInfo.bio,
+          email: profileInfo.email,
+          phone: profileInfo.phone,
+          location: profileInfo.location,
+          expertise: profileInfo.expertise,
+          profile_type: isTeam ? 'organization' : 'individual'
+        })
+        .eq('user_id', userId)
+
+      if (profileError) throw profileError
+
+      alert('✅ 설정이 저장되었습니다!')
+    } catch (error: any) {
+      console.error('저장 오류:', error)
+      alert('❌ 저장 중 오류가 발생했습니다: ' + error.message)
+    }
+  }
+
+  // 데이터 로드
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const supabase = createClient()
+        
+        // 사용자 정보 가져오기
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+        if (authError || !user) {
+          alert('로그인이 필요합니다.')
+          return
+        }
+
+        setUserId(user.id)
+
+        // 프로필 정보 가져오기
+        const { data: profile, error: profileError } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single()
+
+        if (profileError) {
+          console.error('프로필 로드 오류:', profileError)
+          return
+        }
+
+        // 온보딩 데이터를 웹사이트 설정에 자동 반영
+        if (profile) {
+          setIsTeam(profile.profile_type === 'organization')
+          
+          setBasicInfo(prev => ({
+            ...prev,
+            title: profile.display_name || '',
+            slug: profile.username || '',
+            description: profile.tagline || ''
+          }))
+
+          setProfileInfo({
+            displayName: profile.display_name || '',
+            tagline: profile.tagline || '',
+            bio: profile.bio || '',
+            profileImage: null,
+            email: profile.email || '',
+            phone: profile.phone || '',
+            location: profile.location || '',
+            expertise: profile.expertise || []
+          })
+        }
+      } catch (error) {
+        console.error('데이터 로드 오류:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-400">설정을 불러오는 중...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

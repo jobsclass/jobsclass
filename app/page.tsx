@@ -218,6 +218,156 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* For Partners - 파트너를 위한 */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-dark-900">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-6">
+              <span className="text-blue-400 font-bold">👨‍🏫 파트너</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              지식을 <span className="text-gradient">수익</span>으로
+            </h2>
+            <p className="text-base sm:text-xl text-gray-400">
+              AI가 판매를 자동화하는 동안, 당신은 콘텐츠에만 집중하세요
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="card p-6">
+              <div className="text-4xl mb-4">⚡</div>
+              <h3 className="text-2xl font-bold text-white mb-3">3분 만에 등록</h3>
+              <p className="text-gray-400 mb-4">
+                제목, 가격, 카테고리만 입력하세요. AI가 썸네일, 설명, 커리큘럼을 자동 생성합니다.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>AI 썸네일 자동 생성</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>매력적인 상품 설명 작성</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>최적 가격 추천</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="card p-6">
+              <div className="text-4xl mb-4">💰</div>
+              <h3 className="text-2xl font-bold text-white mb-3">업계 최저 수수료</h3>
+              <p className="text-gray-400 mb-4">
+                5-15% 수수료로 더 많은 수익을 가져가세요. 정산도 자동화됩니다.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>타 플랫폼 대비 50% 절감</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>자동 정산 시스템</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>투명한 수익 리포트</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="card p-6">
+              <div className="text-4xl mb-4">📊</div>
+              <h3 className="text-2xl font-bold text-white mb-3">실시간 분석</h3>
+              <p className="text-gray-400 mb-4">
+                판매, 조회수, 전환율을 실시간으로 추적하고 최적화하세요.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>판매 대시보드</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>구매자 인사이트</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>AI 최적화 제안</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="card p-6">
+              <div className="text-4xl mb-4">🎯</div>
+              <h3 className="text-2xl font-bold text-white mb-3">마케팅 자동화</h3>
+              <p className="text-gray-400 mb-4">
+                AI가 자동으로 블로그 포스팅, SEO 최적화, 소셜 미디어를 관리합니다.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>자동 블로그 작성</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>SEO 최적화</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span>이메일 마케팅</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* For Learners - 러너를 위한 */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-dark-950 to-dark-900">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full mb-6">
+              <span className="text-purple-400 font-bold">👨‍🎓 러너</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              당신에게 <span className="text-gradient">딱 맞는</span> 학습
+            </h2>
+            <p className="text-base sm:text-xl text-gray-400">
+              AI가 당신의 수준과 목표에 맞춰 최적의 강의를 추천합니다
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="card p-6 text-center">
+              <div className="text-5xl mb-4">🤖</div>
+              <h3 className="text-xl font-bold text-white mb-3">AI 학습 경로</h3>
+              <p className="text-gray-400">
+                당신의 현재 수준을 분석하고, 목표 달성을 위한 최적의 학습 순서를 제안합니다.
+              </p>
+            </div>
+
+            <div className="card p-6 text-center">
+              <div className="text-5xl mb-4">💬</div>
+              <h3 className="text-xl font-bold text-white mb-3">AI 상담</h3>
+              <p className="text-gray-400">
+                고민이 있나요? AI가 24/7 상담하고, 필요한 강의와 파트너를 추천합니다.
+              </p>
+            </div>
+
+            <div className="card p-6 text-center">
+              <div className="text-5xl mb-4">⭐</div>
+              <h3 className="text-xl font-bold text-white mb-3">검증된 파트너</h3>
+              <p className="text-gray-400">
+                실제 수강생 리뷰와 AI 분석으로 검증된 파트너만 만나세요.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Key Features - 핵심 기능 */}
       <section className="py-16 sm:py-20 px-4 sm:px-6">
         <div className="container mx-auto">
@@ -267,6 +417,118 @@ export default function HomePage() {
               description="구매자에게 맞춤형 강의를 추천합니다."
               gradient="from-purple-500 to-indigo-500"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing - 가격 */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-dark-900 to-dark-950">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              투명한 <span className="text-gradient">가격 정책</span>
+            </h2>
+            <p className="text-base sm:text-xl text-gray-400">
+              파트너 플랜은 판매 수수료만, 러너는 무료입니다
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* 파트너 플랜 */}
+            <div className="card p-8 border-2 border-blue-500/20">
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 rounded-full mb-4">
+                  <span className="text-blue-400 font-bold">👨‍🏫 파트너</span>
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-2">판매 수수료제</h3>
+                <p className="text-gray-400">초기 비용 없이 판매된 만큼만 지불</p>
+              </div>
+              
+              <div className="text-center mb-6">
+                <div className="text-5xl font-bold text-white mb-2">
+                  5-15<span className="text-2xl">%</span>
+                </div>
+                <p className="text-gray-400">판매액의 수수료</p>
+              </div>
+
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>무제한 상품 등록</span>
+                </li>
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>AI 콘텐츠 자동 생성</span>
+                </li>
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>판매 분석 대시보드</span>
+                </li>
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>자동 정산 (월 2회)</span>
+                </li>
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>24/7 고객 지원</span>
+                </li>
+              </ul>
+
+              <Link
+                href="/auth/user/signup"
+                className="btn-primary w-full text-center block"
+              >
+                파트너로 시작하기
+              </Link>
+            </div>
+
+            {/* 러너 플랜 */}
+            <div className="card p-8 border-2 border-purple-500/20">
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-full mb-4">
+                  <span className="text-purple-400 font-bold">👨‍🎓 러너</span>
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-2">완전 무료</h3>
+                <p className="text-gray-400">강의만 구매하면 됩니다</p>
+              </div>
+              
+              <div className="text-center mb-6">
+                <div className="text-5xl font-bold text-white mb-2">
+                  0<span className="text-2xl">원</span>
+                </div>
+                <p className="text-gray-400">가입비/월 이용료 없음</p>
+              </div>
+
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>무제한 강의 탐색</span>
+                </li>
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>AI 학습 경로 추천</span>
+                </li>
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>AI 상담 (무제한)</span>
+                </li>
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>안전한 결제 시스템</span>
+                </li>
+                <li className="flex items-center gap-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>리뷰 작성 & 확인</span>
+                </li>
+              </ul>
+
+              <Link
+                href="/auth/user/signup"
+                className="btn-secondary w-full text-center block"
+              >
+                러너로 시작하기
+              </Link>
+            </div>
           </div>
         </div>
       </section>

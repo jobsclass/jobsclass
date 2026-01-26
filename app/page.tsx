@@ -13,10 +13,16 @@ export default function HomePage() {
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-primary flex items-center justify-center">
               <span className="text-white font-bold text-lg sm:text-xl">J</span>
             </div>
-            <span className="text-xl sm:text-2xl font-bold text-white">잡스빌드</span>
+            <span className="text-xl sm:text-2xl font-bold text-white">JobsClass</span>
           </Link>
           
           <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/marketplace"
+              className="btn-ghost text-xs sm:text-sm px-3 sm:px-4 py-2"
+            >
+              마켓플레이스
+            </Link>
             <Link
               href="/auth/user/login"
               className="btn-ghost text-xs sm:text-sm px-3 sm:px-4 py-2"
@@ -41,18 +47,18 @@ export default function HomePage() {
         <div className="container mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-500/10 border border-primary-500/20 rounded-full mb-6 sm:mb-8">
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" />
-            <span className="text-xs sm:text-sm text-primary-300 font-medium">질문 5개로 웹사이트 완성</span>
+            <span className="text-xs sm:text-sm text-primary-300 font-medium">AI 지식 마켓플레이스</span>
           </div>
           
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6 px-2">
-            <span className="text-white">AI가 10분 만에</span>
+            <span className="text-white">AI로 3분 만에</span>
             <br />
-            <span className="text-gradient">당신의 웹사이트를 완성합니다</span>
+            <span className="text-gradient">지식을 판매하세요</span>
           </h1>
           
           <p className="text-base sm:text-xl text-gray-400 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
-            <span className="text-white font-semibold">5개 질문에 답하면</span> AI가 프로필, 서비스, 블로그, 포트폴리오까지<br className="hidden sm:block" />
-            <span className="text-primary-400 font-semibold">자동으로 생성하고 즉시 배포</span>합니다.
+            <span className="text-white font-semibold">강의, 컨설팅, 템플릿을 판매</span>하고 <br className="hidden sm:block" />
+            <span className="text-primary-400 font-semibold">AI가 자동으로 콘텐츠를 생성</span>합니다.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 px-4">
@@ -64,10 +70,10 @@ export default function HomePage() {
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              href="#demo"
+              href="/marketplace"
               className="btn-secondary w-full sm:w-auto text-base sm:text-lg"
             >
-              실제 화면 보기
+              마켓플레이스 보기
             </Link>
           </div>
 
@@ -75,18 +81,18 @@ export default function HomePage() {
           <div className="grid grid-cols-3 gap-3 sm:gap-8 max-w-3xl mx-auto px-2">
             <div className="card text-center p-3 sm:p-6">
               <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-primary-400 mx-auto mb-2 sm:mb-3" />
-              <div className="text-2xl sm:text-3xl font-bold text-white mb-1">10분</div>
-              <div className="text-xs sm:text-sm text-gray-400">웹사이트 완성</div>
+              <div className="text-2xl sm:text-3xl font-bold text-white mb-1">3분</div>
+              <div className="text-xs sm:text-sm text-gray-400">상품 등록</div>
             </div>
             <div className="card text-center p-3 sm:p-6">
               <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400 mx-auto mb-2 sm:mb-3" />
-              <div className="text-2xl sm:text-3xl font-bold text-white mb-1">0원</div>
-              <div className="text-xs sm:text-sm text-gray-400">시작 비용</div>
+              <div className="text-2xl sm:text-3xl font-bold text-white mb-1">5%</div>
+              <div className="text-xs sm:text-sm text-gray-400">수수료</div>
             </div>
             <div className="card text-center p-3 sm:p-6">
               <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mx-auto mb-2 sm:mb-3" />
               <div className="text-2xl sm:text-3xl font-bold text-white mb-1">즉시</div>
-              <div className="text-xs sm:text-sm text-gray-400">배포 완료</div>
+              <div className="text-xs sm:text-sm text-gray-400">AI 콘텐츠 생성</div>
             </div>
           </div>
         </div>
@@ -100,44 +106,36 @@ export default function HomePage() {
               이렇게 <span className="text-gradient">쉽습니다</span>
             </h2>
             <p className="text-base sm:text-xl text-gray-400">
-              실제 관리자 화면에서 모든 것을 관리하세요
+              AI가 모든 콘텐츠를 자동으로 생성합니다
             </p>
           </div>
 
           {/* Screenshot Placeholder - 실제 대시보드 */}
           <div className="space-y-8 sm:space-y-12">
-            {/* 1. 온보딩 화면 */}
+            {/* 1. 상품 등록 */}
             <div className="card p-4 sm:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-primary-500/20 flex items-center justify-center">
                   <span className="text-primary-400 font-bold">1</span>
                 </div>
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white">5개 질문에 답변</h3>
-                  <p className="text-sm sm:text-base text-gray-400">AI가 당신의 정보를 분석합니다</p>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">상품 기본 정보 입력</h3>
+                  <p className="text-sm sm:text-base text-gray-400">제목, 가격, 카테고리만 입력하세요</p>
                 </div>
               </div>
               <div className="bg-dark-900 rounded-xl p-6 sm:p-8 border border-dark-800">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-primary-400 flex-shrink-0" />
-                    <span className="text-white">무슨 일을 하시나요?</span>
+                    <span className="text-white">강의 제목 입력</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-primary-400 flex-shrink-0" />
-                    <span className="text-white">주로 누구를 도와주시나요?</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-primary-400 flex-shrink-0" />
-                    <span className="text-white">어떤 서비스를 제공하시나요?</span>
+                    <span className="text-white">가격 및 카테고리 선택</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-gray-600 flex-shrink-0" />
-                    <span className="text-gray-500">경력이 어떻게 되시나요?</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-gray-600 flex-shrink-0" />
-                    <span className="text-gray-500">특별한 성과가 있나요?</span>
+                    <span className="text-gray-500">AI가 자동으로 나머지 생성</span>
                   </div>
                 </div>
               </div>
@@ -151,66 +149,66 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-bold text-white">AI가 자동으로 생성</h3>
-                  <p className="text-sm sm:text-base text-gray-400">프로필, 서비스, 블로그, 포트폴리오, 커리어</p>
+                  <p className="text-sm sm:text-base text-gray-400">썸네일, 설명, 커리큘럼, 블로그 포스팅</p>
                 </div>
               </div>
               <div className="bg-dark-900 rounded-xl p-4 sm:p-6 border border-dark-800">
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   <div className="bg-dark-950 p-4 rounded-lg border border-dark-700">
-                    <div className="text-primary-400 font-semibold mb-2">✨ 프로필</div>
-                    <div className="text-sm text-gray-400">자기소개, 직함, 전문분야</div>
+                    <div className="text-primary-400 font-semibold mb-2">🎨 AI 썸네일</div>
+                    <div className="text-sm text-gray-400">자동 이미지 생성</div>
                   </div>
                   <div className="bg-dark-950 p-4 rounded-lg border border-dark-700">
-                    <div className="text-accent-400 font-semibold mb-2">💼 서비스 3개</div>
-                    <div className="text-sm text-gray-400">제목, 설명, 가격, 특징</div>
+                    <div className="text-accent-400 font-semibold mb-2">📝 상품 설명</div>
+                    <div className="text-sm text-gray-400">매력적인 설명 작성</div>
                   </div>
                   <div className="bg-dark-950 p-4 rounded-lg border border-dark-700">
-                    <div className="text-blue-400 font-semibold mb-2">📝 블로그 5개</div>
-                    <div className="text-sm text-gray-400">주제, 본문, 요약</div>
+                    <div className="text-blue-400 font-semibold mb-2">📚 커리큘럼</div>
+                    <div className="text-sm text-gray-400">강의 구성 자동화</div>
                   </div>
                   <div className="bg-dark-950 p-4 rounded-lg border border-dark-700">
-                    <div className="text-green-400 font-semibold mb-2">🎨 포트폴리오 3개</div>
-                    <div className="text-sm text-gray-400">프로젝트, 설명, 기술</div>
+                    <div className="text-green-400 font-semibold mb-2">💰 가격 추천</div>
+                    <div className="text-sm text-gray-400">시장 기반 가격 제안</div>
                   </div>
                   <div className="bg-dark-950 p-4 rounded-lg border border-dark-700">
-                    <div className="text-purple-400 font-semibold mb-2">💪 커리어</div>
-                    <div className="text-sm text-gray-400">경력, 직책, 업무</div>
+                    <div className="text-purple-400 font-semibold mb-2">📰 블로그 포스팅</div>
+                    <div className="text-sm text-gray-400">홍보 콘텐츠 자동 작성</div>
                   </div>
                   <div className="bg-dark-950 p-4 rounded-lg border border-dark-700">
-                    <div className="text-yellow-400 font-semibold mb-2">🖼️ 이미지</div>
-                    <div className="text-sm text-gray-400">AI 이미지 생성</div>
+                    <div className="text-yellow-400 font-semibold mb-2">🎯 SEO 최적화</div>
+                    <div className="text-sm text-gray-400">검색 노출 자동화</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* 3. 관리자 대시보드 */}
+            {/* 3. 판매 시작 */}
             <div className="card p-4 sm:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
                   <span className="text-green-400 font-bold">3</span>
                 </div>
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white">실시간 수정 & 관리</h3>
-                  <p className="text-sm sm:text-base text-gray-400">모바일에서도 쉽게 편집 가능</p>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">즉시 판매 시작</h3>
+                  <p className="text-sm sm:text-base text-gray-400">결제, 리뷰, 분석까지 자동화</p>
                 </div>
               </div>
               <div className="bg-dark-900 rounded-xl p-4 sm:p-6 border border-dark-800">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-dark-950 rounded-lg border border-dark-700">
-                    <span className="text-white">✏️ 프로필 수정</span>
+                    <span className="text-white">💳 결제 자동화</span>
                     <ArrowRight className="w-4 h-4 text-gray-500" />
                   </div>
                   <div className="flex items-center justify-between p-3 bg-dark-950 rounded-lg border border-dark-700">
-                    <span className="text-white">📦 서비스 관리</span>
+                    <span className="text-white">⭐ 리뷰 관리</span>
                     <ArrowRight className="w-4 h-4 text-gray-500" />
                   </div>
                   <div className="flex items-center justify-between p-3 bg-dark-950 rounded-lg border border-dark-700">
-                    <span className="text-white">📰 블로그 작성</span>
+                    <span className="text-white">📊 판매 분석</span>
                     <ArrowRight className="w-4 h-4 text-gray-500" />
                   </div>
                   <div className="flex items-center justify-between p-3 bg-dark-950 rounded-lg border border-dark-700">
-                    <span className="text-white">🎯 포트폴리오 추가</span>
+                    <span className="text-white">💰 정산 자동화</span>
                     <ArrowRight className="w-4 h-4 text-gray-500" />
                   </div>
                 </div>
@@ -225,48 +223,48 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              왜 <span className="text-gradient">잡스빌드</span>인가요?
+              왜 <span className="text-gradient">JobsClass</span>인가요?
             </h2>
             <p className="text-base sm:text-xl text-gray-400">
-              전문가가 아니어도 10분이면 충분합니다
+              AI가 모든 것을 자동화합니다
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <FeatureCard
               icon={<Sparkles className="w-8 h-8" />}
-              title="AI 멀티모달 생성"
-              description="텍스트와 이미지를 동시에 생성. 일관성 있는 콘텐츠를 한 번에."
+              title="AI 콘텐츠 생성"
+              description="썸네일, 설명, 커리큘럼을 AI가 자동으로 생성합니다."
               gradient="from-primary-500 to-accent-500"
             />
             <FeatureCard
               icon={<Clock className="w-8 h-8" />}
-              title="10분 완성"
-              description="5개 질문에 답하면 끝. AI가 나머지를 모두 처리합니다."
+              title="3분 만에 등록"
+              description="제목과 가격만 입력하면 끝. AI가 나머지를 처리합니다."
               gradient="from-yellow-500 to-orange-500"
             />
             <FeatureCard
               icon={<Palette className="w-8 h-8" />}
-              title="실시간 편집"
-              description="생성 후에도 언제든 수정 가능. 모바일에서도 작업 가능."
+              title="업계 최저 수수료"
+              description="5-15% 수수료로 더 많은 수익을 가져가세요."
               gradient="from-cyan-500 to-blue-500"
             />
             <FeatureCard
               icon={<Zap className="w-8 h-8" />}
-              title="즉시 배포"
-              description="yourname.잡스빌드.com 으로 바로 공개. 별도 호스팅 불필요."
+              title="안전한 결제"
+              description="Toss Payments 통합으로 안전하고 빠른 결제."
               gradient="from-green-500 to-emerald-500"
             />
             <FeatureCard
               icon={<Code className="w-8 h-8" />}
-              title="코딩 불필요"
-              description="복잡한 코드 없이 폼만 작성. 기술 지식 제로로 시작."
+              title="리뷰 시스템"
+              description="구매자 리뷰로 신뢰도를 높이세요."
               gradient="from-pink-500 to-rose-500"
             />
             <FeatureCard
               icon={<Rocket className="w-8 h-8" />}
-              title="SEO 최적화"
-              description="검색 엔진 최적화 자동 적용. 더 많은 사람들에게 노출."
+              title="AI 학습 추천"
+              description="구매자에게 맞춤형 강의를 추천합니다."
               gradient="from-purple-500 to-indigo-500"
             />
           </div>
@@ -281,7 +279,7 @@ export default function HomePage() {
               지금 바로 시작하세요
             </h2>
             <p className="text-base sm:text-xl text-gray-300 mb-8">
-              신용카드 없이 무료로 시작. 10분이면 당신의 웹사이트가 완성됩니다.
+              신용카드 없이 무료로 시작. 3분이면 당신의 지식 상품이 완성됩니다.
             </p>
             <Link
               href="/auth/user/signup"
@@ -302,11 +300,11 @@ export default function HomePage() {
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-primary flex items-center justify-center">
                 <span className="text-white font-bold text-sm sm:text-base">J</span>
               </div>
-              <span className="text-lg sm:text-xl font-bold text-white">잡스빌드</span>
+              <span className="text-lg sm:text-xl font-bold text-white">JobsClass</span>
             </div>
             
             <p className="text-gray-500 text-xs sm:text-sm text-center">
-              © 2026 잡스빌드. AI로 10분 만에 웹사이트 완성.
+              © 2026 JobsClass. AI 지식 마켓플레이스.
             </p>
           </div>
         </div>

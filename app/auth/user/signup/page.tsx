@@ -176,14 +176,14 @@ export default function UserSignupPage() {
               </div>
             </button>
 
-            {/* 러너 카드 */}
+            {/* 클라이언트 카드 */}
             <button
               onClick={() => setRole('buyer')}
               className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 text-left group border-4 border-transparent hover:border-purple-500"
             >
               <div className="text-6xl mb-6">👨‍🎓</div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition">
-                러너 (학습자)
+                클라이언트
               </h2>
               <p className="text-gray-700 text-lg mb-6">
                 새로운 것을 배우고 싶어요
@@ -203,7 +203,7 @@ export default function UserSignupPage() {
                 </li>
               </ul>
               <div className="mt-6 text-purple-600 font-bold text-lg group-hover:underline">
-                러너로 시작하기 →
+                클라이언트로 시작하기 →
               </div>
             </button>
           </div>
@@ -236,7 +236,7 @@ export default function UserSignupPage() {
             <span className="text-3xl font-bold text-white">JobsClass</span>
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-white">
-            {role === 'partner' ? '파트너' : '러너'} 회원가입
+            {role === 'partner' ? '파트너' : '클라이언트'} 회원가입
           </h2>
           <p className="mt-2 text-gray-400">
             {role === 'partner' ? 'AI로 3분 만에 상품을 등록하세요' : '새로운 학습 여정을 시작하세요'}

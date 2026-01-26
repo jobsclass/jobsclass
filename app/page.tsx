@@ -325,12 +325,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* For Learners - 러너를 위한 */}
+      {/* For Clients - 클라이언트를 위한 */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-dark-950 to-dark-900">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12 sm:mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full mb-6">
-              <span className="text-purple-400 font-bold">👨‍🎓 러너</span>
+              <span className="text-purple-400 font-bold">👨‍🎓 클라이언트</span>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
               당신에게 <span className="text-gradient">딱 맞는</span> 학습
@@ -429,7 +429,7 @@ export default function HomePage() {
               투명한 <span className="text-gradient">가격 정책</span>
             </h2>
             <p className="text-base sm:text-xl text-gray-400">
-              파트너 플랜은 판매 수수료만, 러너는 무료입니다
+              파트너 플랜은 판매 수수료만, 클라이언트는 무료입니다
             </p>
           </div>
 
@@ -482,11 +482,11 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* 러너 플랜 */}
+            {/* 클라이언트 플랜 */}
             <div className="card p-8 border-2 border-purple-500/20">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-full mb-4">
-                  <span className="text-purple-400 font-bold">👨‍🎓 러너</span>
+                  <span className="text-purple-400 font-bold">👨‍🎓 클라이언트</span>
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2">완전 무료</h3>
                 <p className="text-gray-400">강의만 구매하면 됩니다</p>
@@ -526,7 +526,7 @@ export default function HomePage() {
                 href="/auth/user/signup"
                 className="btn-secondary w-full text-center block"
               >
-                러너로 시작하기
+                클라이언트로 시작하기
               </Link>
             </div>
           </div>

@@ -14,7 +14,8 @@ import {
   Eye,
   Sparkles,
   Menu,
-  X
+  X,
+  Star
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'

@@ -92,7 +92,61 @@ export default function HomePage() {
 
       {/* Stats */}
       <section className="py-16 px-4 border-t border-white/10">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-6xl">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-12">
+            다양한 지식 서비스 카테고리
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+            <Link href="/marketplace?category=development" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">💻</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">개발</h3>
+              <p className="text-xs text-gray-400">웹/앱 개발, 시스템</p>
+            </Link>
+
+            <Link href="/marketplace?category=design" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">🎨</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">디자인</h3>
+              <p className="text-xs text-gray-400">UI/UX, 그래픽</p>
+            </Link>
+
+            <Link href="/marketplace?category=marketing" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">📢</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">마케팅</h3>
+              <p className="text-xs text-gray-400">SNS, 콘텐츠</p>
+            </Link>
+
+            <Link href="/marketplace?category=business" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">📊</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">비즈니스</h3>
+              <p className="text-xs text-gray-400">컨설팅, 전략</p>
+            </Link>
+
+            <Link href="/marketplace?category=education" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">📚</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">교육</h3>
+              <p className="text-xs text-gray-400">강의, 멘토링</p>
+            </Link>
+
+            <Link href="/marketplace?category=content" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">✍️</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">콘텐츠</h3>
+              <p className="text-xs text-gray-400">글쓰기, 번역</p>
+            </Link>
+
+            <Link href="/marketplace?category=video" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">🎬</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">영상</h3>
+              <p className="text-xs text-gray-400">편집, 촬영</p>
+            </Link>
+
+            <Link href="/marketplace?category=etc" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">🔧</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">기타</h3>
+              <p className="text-xs text-gray-400">다양한 서비스</p>
+            </Link>
+          </div>
+
           <div className="grid grid-cols-3 gap-8 text-center">
             <div>
               <div className="flex items-center justify-center mb-3">

@@ -21,8 +21,8 @@ type Product = {
   description: string
   price: number
   category: string
-  thumbnail_url?: string
-  partner: {
+  image_url?: string
+  user_profiles: {
     display_name: string
     username: string
   }
@@ -100,7 +100,7 @@ export default function MarketplacePage() {
     return (
       product.title.toLowerCase().includes(query) ||
       product.description.toLowerCase().includes(query) ||
-      product.partner.display_name.toLowerCase().includes(query)
+      product.user_profiles.display_name.toLowerCase().includes(query)
     )
   })
 
@@ -323,9 +323,9 @@ export default function MarketplacePage() {
               >
                 {/* Thumbnail */}
                 <div className="h-48 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 flex items-center justify-center relative overflow-hidden">
-                  {product.thumbnail_url ? (
+                  {product.image_url ? (
                     <img
-                      src={product.thumbnail_url}
+                      src={product.image_url}
                       alt={product.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
@@ -351,10 +351,10 @@ export default function MarketplacePage() {
                   {/* Partner Info */}
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                      {product.partner.display_name[0]}
+                      {product.user_profiles.display_name[0]}
                     </div>
                     <span className="text-sm text-gray-700 font-medium">
-                      {product.partner.display_name}
+                      {product.user_profiles.display_name}
                     </span>
                   </div>
 

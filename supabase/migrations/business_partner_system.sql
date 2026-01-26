@@ -22,15 +22,15 @@ CREATE TABLE IF NOT EXISTS partner_plans (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 기본 요금제 데이터 삽입
+-- 기본 요금제 데이터 삽입 (파트너 중심 수익 모델)
 INSERT INTO partner_plans (id, name, name_ko, price_monthly, price_yearly, revenue_share_rate, max_products, ai_content_limit, priority_listing, banner_ad, interview_benefit, features)
 VALUES 
-  ('basic', 'BASIC', '베이직', 29000, 278400, 15.00, 5, 20, false, false, false, 
-   '["상품 등록 5개", "AI 콘텐츠 생성 제한적", "기본 분석 도구"]'::jsonb),
-  ('pro', 'PRO', '프로', 79000, 758400, 10.00, NULL, NULL, true, false, false, 
-   '["상품 등록 무제한", "AI 콘텐츠 생성 무제한", "우선 노출", "고급 분석 도구"]'::jsonb),
-  ('enterprise', 'ENTERPRISE', '엔터프라이즈', 199000, 1910400, 5.00, NULL, NULL, true, true, true, 
-   '["상품 등록 무제한", "AI 콘텐츠 생성 무제한", "최우선 노출", "배너 광고", "스타트업잡스 인터뷰 (년결제)", "전담 매니저"]'::jsonb)
+  ('basic', 'BASIC', '베이직', 0, 0, 20.00, 5, 10, false, false, false, 
+   '["월 요금 무료", "서비스 등록 5개", "매출 쉐어 20%", "기본 관리 도구", "니즈 제안 가능"]'::jsonb),
+  ('pro', 'PRO', '프로', 49000, 470400, 12.00, NULL, NULL, true, false, false, 
+   '["서비스 등록 무제한", "매출 쉐어 12%", "우선 노출", "AI 프로필 작성", "고급 분석 도구", "니즈 우선 알림"]'::jsonb),
+  ('enterprise', 'ENTERPRISE', '엔터프라이즈', 99000, 950400, 8.00, NULL, NULL, true, true, true, 
+   '["서비스 등록 무제한", "매출 쉐어 8%", "최우선 노출", "AI 프로필 작성", "배너 광고", "스타트업잡스 인터뷰", "전담 매니저", "니즈 최우선 알림"]'::jsonb)
 ON CONFLICT (id) DO UPDATE SET
   price_monthly = EXCLUDED.price_monthly,
   price_yearly = EXCLUDED.price_yearly,

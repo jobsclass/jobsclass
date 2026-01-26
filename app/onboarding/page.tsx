@@ -117,43 +117,47 @@ export default function PartnerOnboardingPage() {
       id: 'basic',
       name: 'BASIC',
       nameKo: '베이직',
-      price: { monthly: 29000, yearly: 278400 },
-      revenueShare: '15%',
+      price: { monthly: 0, yearly: 0 },
+      revenueShare: '20%',
       features: [
-        '상품 등록 5개',
-        'AI 콘텐츠 생성 제한적',
-        '기본 분석 도구',
-        '이메일 지원'
+        '월 요금 무료',
+        '서비스 등록 5개',
+        '매출 쉐어 20%',
+        '기본 관리 도구',
+        '니즈 제안 가능'
       ]
     },
     {
       id: 'pro',
       name: 'PRO',
       nameKo: '프로',
-      price: { monthly: 79000, yearly: 758400 },
-      revenueShare: '10%',
+      price: { monthly: 49000, yearly: 470400 },
+      revenueShare: '12%',
       recommended: true,
       features: [
-        '상품 등록 무제한',
-        'AI 콘텐츠 생성 무제한',
+        '서비스 등록 무제한',
+        '매출 쉐어 12%',
         '우선 노출',
+        'AI 프로필 작성',
         '고급 분석 도구',
-        '우선 지원'
+        '니즈 우선 알림'
       ]
     },
     {
       id: 'enterprise',
       name: 'ENTERPRISE',
       nameKo: '엔터프라이즈',
-      price: { monthly: 199000, yearly: 1910400 },
-      revenueShare: '5%',
+      price: { monthly: 99000, yearly: 950400 },
+      revenueShare: '8%',
       features: [
-        '상품 등록 무제한',
-        'AI 콘텐츠 생성 무제한',
+        '서비스 등록 무제한',
+        '매출 쉐어 8%',
         '최우선 노출',
+        'AI 프로필 작성',
         '배너 광고',
-        '스타트업잡스 인터뷰 (년결제)',
-        '전담 매니저'
+        '스타트업잡스 인터뷰',
+        '전담 매니저',
+        '니즈 최우선 알림'
       ]
     }
   ]

@@ -42,14 +42,14 @@ export default function HomePage() {
           </div>
           
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6 px-2">
-            <span className="text-white">전문성과 영향력을</span>
+            <span className="text-white">당신의 전문성을</span>
             <br />
-            <span className="text-gradient">수익으로 만드세요</span>
+            <span className="text-gradient">비즈니스로 만드세요</span>
           </h1>
           
           <p className="text-base sm:text-xl text-gray-400 mb-12 sm:mb-16 max-w-3xl mx-auto leading-relaxed px-4">
-            온라인 강의, 멘토링, 컨설팅을 <span className="text-primary-400 font-semibold">AI로 3분 만에 등록</span>하고<br className="hidden sm:block" />
-            바로 판매를 시작하세요
+            <span className="text-primary-400 font-semibold">파트너가 성공할 수 있도록</span> 관리 도구와 플랫폼을 제공합니다<br className="hidden sm:block" />
+            양방향 매칭으로 클라이언트와 파트너를 연결합니다
           </p>
 
           {/* 초기 가입 혜택 배너 */}
@@ -64,16 +64,16 @@ export default function HomePage() {
               </p>
               <div className="grid sm:grid-cols-3 gap-4 text-sm">
                 <div className="bg-dark-900/50 rounded-lg p-4">
-                  <div className="text-yellow-400 font-bold mb-1">3개월</div>
-                  <div className="text-gray-400">수수료 0%</div>
+                  <div className="text-yellow-400 font-bold mb-1">BASIC 무료</div>
+                  <div className="text-gray-400">매출 쉐어 20%만</div>
                 </div>
                 <div className="bg-dark-900/50 rounded-lg p-4">
-                  <div className="text-yellow-400 font-bold mb-1">무제한</div>
-                  <div className="text-gray-400">AI 콘텐츠 생성</div>
+                  <div className="text-yellow-400 font-bold mb-1">양방향 매칭</div>
+                  <div className="text-gray-400">니즈 & 제안 시스템</div>
                 </div>
                 <div className="bg-dark-900/50 rounded-lg p-4">
-                  <div className="text-yellow-400 font-bold mb-1">우선</div>
-                  <div className="text-gray-400">홈페이지 노출</div>
+                  <div className="text-yellow-400 font-bold mb-1">AI 프로필</div>
+                  <div className="text-gray-400">자동 소개 작성</div>
                 </div>
               </div>
             </div>

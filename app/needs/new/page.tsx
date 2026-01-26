@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Sparkles, ArrowRight, Loader2, Calendar, DollarSign, MapPin } from 'lucide-react'
@@ -34,7 +34,7 @@ export default function CreateNeedPage() {
   // AI 제안
   const [aiSuggestion, setAiSuggestion] = useState<string>('')
 
-  useState(() => {
+  useEffect(() => {
     loadUser()
   }, [])
 

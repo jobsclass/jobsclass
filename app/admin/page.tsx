@@ -14,7 +14,7 @@ interface Partner {
   business_registration_file: string
   verification_status: 'pending' | 'approved' | 'rejected'
   verification_message: string | null
-  partner_plan_id: string | null
+  ai_credits: number
   total_revenue: number
   total_orders: number
   created_at: string
@@ -231,7 +231,7 @@ export default function AdminPage() {
                       상태
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      요금제
+                      AI 크레딧
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       매출
@@ -257,7 +257,7 @@ export default function AdminPage() {
                         <StatusBadge status={partner.verification_status} />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {partner.partner_plan_id?.toUpperCase() || '-'}
+                        {partner.ai_credits || 0} 크레딧
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         ₩{(partner.total_revenue || 0).toLocaleString()}

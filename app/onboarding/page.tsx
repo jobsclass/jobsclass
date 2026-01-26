@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Sparkles, ArrowRight, Loader2, Upload, CheckCircle, Building2, FileText } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
-type OnboardingStep = 'business_info' | 'business_file' | 'plan_selection' | 'complete'
+type OnboardingStep = 'business_info' | 'business_file' | 'complete'
 
 export default function PartnerOnboardingPage() {
   const router = useRouter()
@@ -18,10 +18,6 @@ export default function PartnerOnboardingPage() {
   const [businessNumber, setBusinessNumber] = useState('')
   const [businessFile, setBusinessFile] = useState<File | null>(null)
   const [filePreview, setFilePreview] = useState<string | null>(null)
-  
-  // 선택한 요금제
-  const [selectedPlan, setSelectedPlan] = useState<'basic' | 'pro' | 'enterprise'>('pro')
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
 
   // 사업자등록번호 포맷팅
   const formatBusinessNumber = (value: string) => {
@@ -62,8 +58,6 @@ export default function PartnerOnboardingPage() {
         alert('사업자등록증을 업로드해주세요.')
         return
       }
-      setCurrentStep('plan_selection')
-    } else if (currentStep === 'plan_selection') {
       await handleSubmit()
     }
   }
@@ -178,11 +172,9 @@ export default function PartnerOnboardingPage() {
 
         {/* 진행 단계 */}
         <div className="flex items-center justify-center gap-4 mb-12">
-          <Step number={1} title="사업자 정보" active={currentStep === 'business_info'} completed={['business_file', 'plan_selection', 'complete'].includes(currentStep)} />
+          <Step number={1} title="사업자 정보" active={currentStep === 'business_info'} completed={['business_file', 'complete'].includes(currentStep)} />
           <div className="h-0.5 w-12 bg-gray-700" />
-          <Step number={2} title="서류 업로드" active={currentStep === 'business_file'} completed={['plan_selection', 'complete'].includes(currentStep)} />
-          <div className="h-0.5 w-12 bg-gray-700" />
-          <Step number={3} title="요금제 선택" active={currentStep === 'plan_selection'} completed={currentStep === 'complete'} />
+          <Step number={2} title="서류 업로드" active={currentStep === 'business_file'} completed={currentStep === 'complete'} />
         </div>
 
         {/* Step 1: 사업자 정보 */}
@@ -304,124 +296,7 @@ export default function PartnerOnboardingPage() {
           </div>
         )}
 
-        {/* Step 3: 요금제 선택 */}
-        {currentStep === 'plan_selection' && (
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-white mb-2">요금제 선택</h2>
-              <p className="text-gray-400">
-                파트너 요금제를 선택하세요. 언제든지 변경 가능합니다.
-              </p>
-            </div>
-
-            {/* 결제 주기 선택 */}
-            <div className="flex items-center justify-center gap-4">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                  billingCycle === 'monthly'
-                    ? 'bg-primary-500 text-white'
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                }`}
-              >
-                월간
-              </button>
-              <button
-                onClick={() => setBillingCycle('yearly')}
-                className={`px-6 py-2 rounded-lg font-medium transition-all relative ${
-                  billingCycle === 'yearly'
-                    ? 'bg-primary-500 text-white'
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                }`}
-              >
-                연간
-                <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded-full">
-                  20% 할인
-                </span>
-              </button>
-            </div>
-
-            {/* 요금제 카드 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {plans.map((plan) => (
-                <button
-                  key={plan.id}
-                  onClick={() => setSelectedPlan(plan.id as any)}
-                  className={`relative p-6 rounded-2xl border-2 transition-all text-left ${
-                    selectedPlan === plan.id
-                      ? 'border-primary-500 bg-primary-500/10'
-                      : 'border-gray-700 bg-white/5 hover:border-gray-600'
-                  } ${plan.recommended ? 'ring-2 ring-primary-500 ring-offset-2 ring-offset-gray-900' : ''}`}
-                >
-                  {plan.recommended && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-primary-500 to-purple-500 text-white text-xs font-bold rounded-full">
-                      추천
-                    </div>
-                  )}
-
-                  <div className="mb-4">
-                    <h3 className="text-xl font-bold text-white">{plan.nameKo}</h3>
-                    <p className="text-sm text-gray-400">{plan.name}</p>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="text-3xl font-bold text-white">
-                      ₩{(plan.price[billingCycle] / (billingCycle === 'yearly' ? 12 : 1)).toLocaleString()}
-                      <span className="text-lg text-gray-400 font-normal">/월</span>
-                    </div>
-                    {billingCycle === 'yearly' && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        (₩{plan.price.yearly.toLocaleString()}/년)
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="mb-4 p-3 bg-white/5 rounded-lg">
-                    <p className="text-sm text-gray-400">매출 쉐어</p>
-                    <p className="text-2xl font-bold text-primary-400">{plan.revenueShare}</p>
-                  </div>
-
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-300">
-                        <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() => setCurrentStep('business_file')}
-                className="px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-white hover:bg-white/10 transition-colors"
-              >
-                이전
-              </button>
-              <button
-                onClick={handleNext}
-                disabled={loading}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-primary-500 to-purple-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    제출 중...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-5 h-5" />
-                    등록 완료
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 4: 완료 */}
+        {/* Step 3: 완료 */}
         {currentStep === 'complete' && (
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center">
             <div className="flex justify-center mb-6">
@@ -433,8 +308,17 @@ export default function PartnerOnboardingPage() {
             <h2 className="text-3xl font-bold text-white mb-4">등록 완료!</h2>
             <p className="text-gray-400 mb-8">
               사업자 정보가 제출되었습니다.<br />
-              관리자 확인 후 24시간 내에 승인 결과를 이메일로 알려드립니다.
+              관리자 확인 후 24시간 내에 승인 결과를 이메일로 알려드립니다.<br /><br />
+              <span className="text-primary-400 font-semibold">💡 매출 쉐어 10% 고정 + AI 크레딧으로 운영됩니다</span>
             </p>
+
+            <div className="p-6 bg-primary-500/10 border border-primary-500/20 rounded-xl mb-8">
+              <h3 className="text-white font-semibold mb-2">🎉 가입 축하 선물</h3>
+              <p className="text-primary-300">50 AI 크레딧이 지급되었습니다!</p>
+              <p className="text-sm text-gray-400 mt-2">
+                AI 프로필 생성, 니즈 매칭 등에 사용하세요
+              </p>
+            </div>
 
             <div className="space-y-4">
               <button

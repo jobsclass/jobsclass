@@ -9,7 +9,7 @@
 CREATE TABLE IF NOT EXISTS ai_credits (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES user_profiles(user_id) ON DELETE CASCADE,
-  amount INTEGER NOT NULL DEFAULT 0, -- 현재 보유 크레딧
+  amount INTEGER NOT NULL DEFAULT 100, -- 현재 보유 크레딧 (신규 가입 시 100 크레딧 무료 제공)
   total_purchased INTEGER DEFAULT 0, -- 총 구매 크레딧
   total_used INTEGER DEFAULT 0, -- 총 사용 크레딧
   created_at TIMESTAMPTZ DEFAULT NOW(),

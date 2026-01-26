@@ -1,298 +1,185 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, Zap, Sparkles, Clock, CheckCircle, TrendingUp, Users, Shield, Gift } from 'lucide-react'
+import { ArrowRight, Sparkles, TrendingUp, Users, Gift } from 'lucide-react'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-dark-950">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 glass border-b border-dark-800/50">
-        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+      <nav className="fixed top-0 w-full z-50 bg-gray-900/80 backdrop-blur-xl border-b border-white/10">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-primary flex items-center justify-center">
-              <span className="text-white font-bold text-lg sm:text-xl">J</span>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center">
+              <span className="text-white font-bold text-xl">J</span>
             </div>
-            <span className="text-xl sm:text-2xl font-bold text-white">JobsClass</span>
+            <span className="text-xl font-bold text-white">JobsClass</span>
           </Link>
           
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link href="/for-partners" className="btn-ghost text-xs sm:text-sm px-3 sm:px-4 py-2">
-              파트너 되기
-            </Link>
-            <Link href="/marketplace" className="btn-ghost text-xs sm:text-sm px-3 sm:px-4 py-2">
+          <div className="flex items-center gap-3">
+            <Link href="/marketplace" className="hidden md:block px-4 py-2 text-gray-300 hover:text-white transition-colors">
               마켓플레이스
             </Link>
-            <Link href="/auth/user/login" className="btn-ghost text-xs sm:text-sm px-3 sm:px-4 py-2">
+            <Link href="/auth/user/login" className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white transition-colors">
               로그인
+            </Link>
+            <Link href="/auth/user/signup" className="px-4 py-2 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg text-white font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all">
+              시작하기
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-24 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-900/20 via-dark-950 to-accent-900/20"></div>
-        <div className="absolute top-0 right-0 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-primary-500/10 rounded-full blur-3xl"></div>
-        
-        <div className="container mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-500/10 border border-primary-500/20 rounded-full mb-6 sm:mb-8">
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" />
-            <span className="text-xs sm:text-sm text-primary-300 font-medium">AI 지식 마켓플레이스</span>
+      {/* Hero */}
+      <section className="pt-32 pb-20 px-4">
+        <div className="container mx-auto text-center max-w-4xl">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full mb-8">
+            <Sparkles className="w-4 h-4 text-primary-400" />
+            <span className="text-sm text-primary-300 font-medium">전문가와 클라이언트를 연결하는 플랫폼</span>
           </div>
           
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6 px-2">
-            <span className="text-white">당신의 전문성을</span>
-            <br />
-            <span className="text-gradient">비즈니스로 만드세요</span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight">
+            당신의 전문성을<br />
+            <span className="bg-gradient-to-r from-primary-400 to-purple-400 bg-clip-text text-transparent">
+              비즈니스로 만드세요
+            </span>
           </h1>
           
-          <p className="text-base sm:text-xl text-gray-400 mb-12 sm:mb-16 max-w-3xl mx-auto leading-relaxed px-4">
-            <span className="text-primary-400 font-semibold">파트너가 성공할 수 있도록</span> 관리 도구와 플랫폼을 제공합니다<br className="hidden sm:block" />
-            양방향 매칭으로 클라이언트와 파트너를 연결합니다
+          <p className="text-lg md:text-xl text-gray-400 mb-12 leading-relaxed">
+            파트너는 서비스를 판매하고, 클라이언트는 필요한 전문가를 찾습니다
           </p>
 
-          {/* 초기 가입 혜택 배너 */}
-          <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
-            <div className="card bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-2 border-yellow-500/30 p-6">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Gift className="w-8 h-8 text-yellow-400" />
-                <h3 className="text-2xl font-bold text-white">🎉 얼리버드 혜택</h3>
+          {/* 얼리버드 */}
+          <div className="max-w-2xl mx-auto mb-12 p-6 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-2xl">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Gift className="w-6 h-6 text-yellow-400" />
+              <h3 className="text-xl font-bold text-white">🎉 얼리버드 혜택</h3>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4 text-sm">
+              <div className="bg-gray-900/50 rounded-lg p-4">
+                <div className="text-yellow-400 font-bold mb-1">100 AI 크레딧</div>
+                <div className="text-gray-400">무료 제공</div>
               </div>
-              <p className="text-gray-300 mb-4">
-                첫 100명의 파트너에게 특별한 혜택을 드립니다
-              </p>
-              <div className="grid sm:grid-cols-3 gap-4 text-sm">
-                <div className="bg-dark-900/50 rounded-lg p-4">
-                  <div className="text-yellow-400 font-bold mb-1">BASIC 무료</div>
-                  <div className="text-gray-400">매출 쉐어 20%만</div>
-                </div>
-                <div className="bg-dark-900/50 rounded-lg p-4">
-                  <div className="text-yellow-400 font-bold mb-1">양방향 매칭</div>
-                  <div className="text-gray-400">니즈 & 제안 시스템</div>
-                </div>
-                <div className="bg-dark-900/50 rounded-lg p-4">
-                  <div className="text-yellow-400 font-bold mb-1">AI 프로필</div>
-                  <div className="text-gray-400">자동 소개 작성</div>
-                </div>
+              <div className="bg-gray-900/50 rounded-lg p-4">
+                <div className="text-yellow-400 font-bold mb-1">매출 쉐어 10%</div>
+                <div className="text-gray-400">낮은 수수료</div>
+              </div>
+              <div className="bg-gray-900/50 rounded-lg p-4">
+                <div className="text-yellow-400 font-bold mb-1">양방향 매칭</div>
+                <div className="text-gray-400">니즈 & 제안</div>
               </div>
             </div>
           </div>
           
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 px-4">
+          {/* CTA */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/for-partners"
-              className="btn-primary w-full sm:w-auto text-lg px-8 py-4 flex items-center justify-center gap-2 group"
+              href="/auth/user/signup?type=partner"
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary-500 to-purple-500 rounded-xl text-white font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all flex items-center justify-center gap-2 group"
             >
               파트너로 시작하기
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              href="/for-clients"
-              className="btn-secondary w-full sm:w-auto text-lg px-8 py-4"
+              href="/marketplace"
+              className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 rounded-xl text-white font-semibold hover:bg-white/10 transition-colors"
             >
               서비스 둘러보기
             </Link>
           </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-3 sm:gap-8 max-w-3xl mx-auto px-2">
-            <div className="card text-center p-4 sm:p-6">
-              <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-primary-400 mx-auto mb-2" />
-              <div className="text-2xl sm:text-3xl font-bold text-white mb-1">3분</div>
-              <div className="text-xs sm:text-sm text-gray-400">상품 등록</div>
-            </div>
-            <div className="card text-center p-4 sm:p-6">
-              <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400 mx-auto mb-2" />
-              <div className="text-2xl sm:text-3xl font-bold text-white mb-1">0-5%</div>
-              <div className="text-xs sm:text-sm text-gray-400">수수료</div>
-            </div>
-            <div className="card text-center p-4 sm:p-6">
-              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mx-auto mb-2" />
-              <div className="text-2xl sm:text-3xl font-bold text-white mb-1">즉시</div>
-              <div className="text-xs sm:text-sm text-gray-400">판매 시작</div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Who Can Be a Partner */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-dark-900">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4">
-              누가 <span className="text-gradient">파트너</span>가 될 수 있나요?
-            </h2>
-            <p className="text-xl text-gray-400">
-              전문성과 영향력을 가진 모든 분들을 환영합니다
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="card p-8 text-center hover:border-primary-500/30 transition-all">
-              <div className="text-5xl mb-4">👨‍🏫</div>
-              <h3 className="text-2xl font-bold text-white mb-3">전문가</h3>
-              <p className="text-gray-400 mb-4">
-                특정 분야의 깊은 지식과 경험을 보유한 전문가
-              </p>
-              <ul className="text-sm text-gray-500 space-y-2 text-left">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>개발자, 디자이너, 마케터</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>컨설턴트, 코치, 강사</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>자격증 보유자, 실무 전문가</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="card p-8 text-center hover:border-primary-500/30 transition-all">
-              <div className="text-5xl mb-4">🎬</div>
-              <h3 className="text-2xl font-bold text-white mb-3">크리에이터</h3>
-              <p className="text-gray-400 mb-4">
-                콘텐츠로 영향력을 만들어가는 크리에이터
-              </p>
-              <ul className="text-sm text-gray-500 space-y-2 text-left">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>유튜버, 인스타그래머</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>블로거, 작가, 강연자</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>팔로워 1000+ 또는 조회수 증명 가능</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="card p-8 text-center hover:border-primary-500/30 transition-all">
-              <div className="text-5xl mb-4">🏢</div>
-              <h3 className="text-2xl font-bold text-white mb-3">비즈니스</h3>
-              <p className="text-gray-400 mb-4">
-                검증된 서비스를 제공하는 비즈니스
-              </p>
-              <ul className="text-sm text-gray-500 space-y-2 text-left">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>교육 기관, 학원, 학회</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>컨설팅 회사, 에이전시</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-1" />
-                  <span>사업자등록증 보유</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <Link
-              href="/for-partners"
-              className="btn-primary inline-flex items-center gap-2 text-lg"
-            >
-              자세히 알아보기
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Why JobsClass */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4">
-              왜 <span className="text-gradient">JobsClass</span>인가요?
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="card p-8">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-blue-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white">AI 자동화</h3>
-              </div>
-              <p className="text-gray-400">
-                썸네일, 설명, 커리큘럼을 AI가 자동 생성. 3분이면 상품 등록 완료.
-              </p>
-            </div>
-
-            <div className="card p-8">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-green-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white">업계 최저 수수료</h3>
-              </div>
-              <p className="text-gray-400">
-                초기 파트너는 3개월 무료, 이후에도 5% 수수료로 더 많은 수익 보장.
-              </p>
-            </div>
-
-            <div className="card p-8">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-purple-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white">타겟 고객 매칭</h3>
-              </div>
-              <p className="text-gray-400">
-                AI가 클라이언트에게 맞춤형 서비스를 추천해 전환율 향상.
-              </p>
-            </div>
-
-            <div className="card p-8">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-yellow-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white">안전한 거래</h3>
-              </div>
-              <p className="text-gray-400">
-                Toss Payments 통합으로 안전한 결제, 자동 정산 시스템.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6">
+      {/* Stats */}
+      <section className="py-16 px-4 border-t border-white/10">
         <div className="container mx-auto max-w-4xl">
-          <div className="card bg-gradient-to-br from-primary-900/30 to-accent-900/30 border-primary-500/20 p-8 sm:p-12 text-center">
-            <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4">
-              지금 바로 시작하세요
-            </h2>
-            <p className="text-xl text-gray-300 mb-8">
-              얼리버드 혜택은 선착순 100명에게만 제공됩니다
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="grid grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="flex items-center justify-center mb-3">
+                <TrendingUp className="w-8 h-8 text-primary-400" />
+              </div>
+              <div className="text-3xl font-bold text-white mb-1">10%</div>
+              <div className="text-sm text-gray-400">낮은 수수료</div>
+            </div>
+            <div>
+              <div className="flex items-center justify-center mb-3">
+                <Users className="w-8 h-8 text-green-400" />
+              </div>
+              <div className="text-3xl font-bold text-white mb-1">100+</div>
+              <div className="text-sm text-gray-400">얼리 파트너</div>
+            </div>
+            <div>
+              <div className="flex items-center justify-center mb-3">
+                <Sparkles className="w-8 h-8 text-purple-400" />
+              </div>
+              <div className="text-3xl font-bold text-white mb-1">AI</div>
+              <div className="text-sm text-gray-400">자동 매칭</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-16">
+            어떻게 작동하나요?
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* 파트너 */}
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+              <div className="inline-block px-4 py-2 bg-primary-500/20 rounded-lg mb-4">
+                <span className="text-primary-400 font-semibold">파트너</span>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">서비스를 판매하세요</h3>
+              <ul className="space-y-3 text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary-400 font-bold">1.</span>
+                  <span>사업자 정보 등록 (사업자등록번호 필수)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary-400 font-bold">2.</span>
+                  <span>서비스 등록 또는 니즈에 제안</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary-400 font-bold">3.</span>
+                  <span>클라이언트와 거래 시작</span>
+                </li>
+              </ul>
               <Link
-                href="/auth/user/signup"
-                className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2"
+                href="/auth/user/signup?type=partner"
+                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-lg text-white font-semibold transition-colors"
               >
-                파트너로 시작하기
-                <ArrowRight className="w-5 h-5" />
+                파트너 등록하기 →
               </Link>
+            </div>
+
+            {/* 클라이언트 */}
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+              <div className="inline-block px-4 py-2 bg-green-500/20 rounded-lg mb-4">
+                <span className="text-green-400 font-semibold">클라이언트</span>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">전문가를 찾으세요</h3>
+              <ul className="space-y-3 text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 font-bold">1.</span>
+                  <span>무료 회원가입 (간단한 이메일 인증)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 font-bold">2.</span>
+                  <span>서비스 구매 또는 니즈 등록</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 font-bold">3.</span>
+                  <span>파트너의 제안서 확인 및 선택</span>
+                </li>
+              </ul>
               <Link
-                href="/marketplace"
-                className="btn-secondary text-lg px-8 py-4"
+                href="/auth/user/signup?type=client"
+                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 rounded-lg text-white font-semibold transition-colors"
               >
-                서비스 둘러보기
+                시작하기 →
               </Link>
             </div>
           </div>
@@ -300,20 +187,11 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-dark-800 py-8 sm:py-12 px-4 sm:px-6">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-primary flex items-center justify-center">
-                <span className="text-white font-bold text-sm sm:text-base">J</span>
-              </div>
-              <span className="text-lg sm:text-xl font-bold text-white">JobsClass</span>
-            </div>
-            
-            <p className="text-gray-500 text-xs sm:text-sm text-center">
-              © 2026 JobsClass. AI 지식 마켓플레이스.
-            </p>
-          </div>
+      <footer className="py-12 px-4 border-t border-white/10">
+        <div className="container mx-auto text-center">
+          <p className="text-gray-400 text-sm">
+            © 2026 JobsClass. 전문가와 클라이언트를 연결하는 플랫폼.
+          </p>
         </div>
       </footer>
     </div>

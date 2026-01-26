@@ -155,7 +155,7 @@ export default function OnboardingPage() {
     }
   }
 
-  const canProceed = currentStep < 0 || currentQuestion.optional || answers[currentQuestion.field]?.trim()
+  const canProceed = currentStep < 0 || currentQuestion?.optional || answers[currentQuestion?.field || '']?.trim()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center p-4">
@@ -241,9 +241,9 @@ export default function OnboardingPage() {
                 />
               </div>
             </div>
-        </div>
 
-        {/* 질문 카드 */}
+            {/* 질문 카드 */}
+            {currentQuestion && (
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 mb-6">
           <h2 className="text-2xl font-bold text-white mb-6">
             {currentQuestion.question}
@@ -271,6 +271,7 @@ export default function OnboardingPage() {
             />
           )}
         </div>
+            )}
 
         {/* 버튼 */}
         <div className="flex gap-4">
@@ -315,9 +316,9 @@ export default function OnboardingPage() {
             </p>
           </div>
         )}
-          </>
-        )}
-      </div>
-    </div>
+      </>
+    )}
+  </div>
+</div>
   )
 }

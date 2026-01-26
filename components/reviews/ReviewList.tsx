@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Star } from 'lucide-react'
 
 interface Review {
@@ -14,10 +15,40 @@ interface Review {
 }
 
 interface ReviewListProps {
-  reviews: Review[]
+  productId: string
+  currentUserId?: string
 }
 
-export function ReviewList({ reviews }: ReviewListProps) {
+export function ReviewList({ productId, currentUserId }: ReviewListProps) {
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchReviews()
+  }, [productId])
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(`/api/reviews?productId=${productId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setReviews(data.reviews || [])
+      }
+    } catch (error) {
+      console.error('Failed to fetch reviews:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">리뷰를 불러오는 중...</p>
+      </div>
+    )
+  }
+
   if (reviews.length === 0) {
     return (
       <div className="text-center py-12">

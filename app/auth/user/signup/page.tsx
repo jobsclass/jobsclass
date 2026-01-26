@@ -145,14 +145,14 @@ export default function UserSignupPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {/* 판매자 카드 */}
+            {/* 파트너 카드 */}
             <button
               onClick={() => setRole('partner')}
               className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 text-left group border-4 border-transparent hover:border-blue-500"
             >
               <div className="text-6xl mb-6">👨‍🏫</div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition">
-                판매자
+                파트너
               </h2>
               <p className="text-gray-700 text-lg mb-6">
                 내 지식을 판매하고 싶어요
@@ -172,18 +172,18 @@ export default function UserSignupPage() {
                 </li>
               </ul>
               <div className="mt-6 text-blue-600 font-bold text-lg group-hover:underline">
-                판매자로 시작하기 →
+                파트너로 시작하기 →
               </div>
             </button>
 
-            {/* 구매자 카드 */}
+            {/* 러너 카드 */}
             <button
               onClick={() => setRole('buyer')}
               className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 text-left group border-4 border-transparent hover:border-purple-500"
             >
               <div className="text-6xl mb-6">👨‍🎓</div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition">
-                구매자
+                러너 (학습자)
               </h2>
               <p className="text-gray-700 text-lg mb-6">
                 새로운 것을 배우고 싶어요
@@ -203,7 +203,7 @@ export default function UserSignupPage() {
                 </li>
               </ul>
               <div className="mt-6 text-purple-600 font-bold text-lg group-hover:underline">
-                구매자로 시작하기 →
+                러너로 시작하기 →
               </div>
             </button>
           </div>
@@ -236,7 +236,7 @@ export default function UserSignupPage() {
             <span className="text-3xl font-bold text-white">JobsClass</span>
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-white">
-            {role === 'partner' ? '판매자' : '구매자'} 회원가입
+            {role === 'partner' ? '파트너' : '러너'} 회원가입
           </h2>
           <p className="mt-2 text-gray-400">
             {role === 'partner' ? 'AI로 3분 만에 상품을 등록하세요' : '새로운 학습 여정을 시작하세요'}

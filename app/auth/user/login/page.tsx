@@ -30,7 +30,18 @@ export default function UserLoginPage() {
       if (authError) throw authError
       if (!data.user) throw new Error('로그인에 실패했습니다')
 
-      router.push('/dashboard')
+      // role에 따라 리디렉션
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .single()
+
+      if (profile?.role === 'partner') {
+        router.push('/dashboard')
+      } else {
+        router.push('/marketplace')
+      }
     } catch (err: any) {
       console.error('Login error:', err)
       setError(err.message || '로그인 중 오류가 발생했습니다')
@@ -56,7 +67,7 @@ export default function UserLoginPage() {
             로그인
           </h2>
           <p className="mt-2 text-gray-400">
-            내 웹사이트 관리하기
+            나의 학습/판매 관리하기
           </p>
         </div>
 

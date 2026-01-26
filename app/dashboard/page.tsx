@@ -38,13 +38,13 @@ export default async function DashboardPage({
     .select('id, title, slug')
     .eq('user_id', user.id)
 
-  // 온보딩 여부 확인 (웹사이트 0개)
-  const needsOnboarding = !websites || websites.length === 0
+  // 온보딩 가이드 표시 조건: 온보딩 완료했지만 웹사이트가 없을 때만
+  const showOnboardingGuide = onboardingComplete && (!websites || websites.length === 0)
   const params = await searchParams
   const onboardingSuccess = params.onboarding === 'complete'
 
   return (
-    <div className="p-8">
+    <div>
       {/* 온보딩 미완료 경고 */}
       {!onboardingComplete && (
         <div className="mb-8 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl p-6">
@@ -100,8 +100,8 @@ export default async function DashboardPage({
         </p>
       </div>
 
-      {/* 온보딩 가이드 (웹사이트 0개일 때만 표시) */}
-      {needsOnboarding && <OnboardingGuide username={profile.username || ''} />}
+      {/* 온보딩 가이드 (온보딩 완료 & 웹사이트 0개일 때만 표시) */}
+      {showOnboardingGuide && <OnboardingGuide username={profile.username || ''} />}
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

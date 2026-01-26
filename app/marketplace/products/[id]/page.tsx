@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { ReviewList } from '@/components/reviews/ReviewList'
 import { ReviewForm } from '@/components/reviews/ReviewForm'
-import { ArrowLeft, ShoppingCart, User } from 'lucide-react'
+import { ArrowLeft, ShoppingCart, User, MessageCircle } from 'lucide-react'
 import { getPlaceholderImage } from '@/lib/storage/image-upload'
+import { createClient } from '@/lib/supabase/client'
 
 interface Product {
   id: string
@@ -35,6 +36,7 @@ export default function ProductDetailPage({
   params: Promise<{ id: string }>
 }) {
   const router = useRouter()
+  const supabase = createClient()
   const [productId, setProductId] = useState<string>('')
   const [product, setProduct] = useState<Product | null>(null)
   const [creator, setCreator] = useState<Creator | null>(null)
@@ -43,11 +45,60 @@ export default function ProductDetailPage({
   const [showReviewForm, setShowReviewForm] = useState(false)
 
   useEffect(() => {
+    loadCurrentUser()
     params.then((p) => {
       setProductId(p.id)
       fetchProduct(p.id)
     })
   }, [])
+
+  const loadCurrentUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      setCurrentUserId(user.id)
+    }
+  }
+
+  const handleContact = async () => {
+    if (!currentUserId) {
+      router.push('/auth/user/login')
+      return
+    }
+
+    try {
+      // 대화가 이미 존재하는지 확인
+      const { data: existing } = await supabase
+        .from('conversations')
+        .select('id')
+        .eq('partner_id', product!.partner_id)
+        .eq('client_id', currentUserId)
+        .eq('service_id', productId)
+        .single()
+
+      if (existing) {
+        router.push('/messages')
+        return
+      }
+
+      // 새로운 대화 생성
+      const { data: newConv, error } = await supabase
+        .from('conversations')
+        .insert({
+          partner_id: product!.partner_id,
+          client_id: currentUserId,
+          service_id: productId
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      router.push('/messages')
+    } catch (error) {
+      console.error('대화 생성 오류:', error)
+      alert('문의 시작에 실패했습니다.')
+    }
+  }
 
   const fetchProduct = async (id: string) => {
     try {
@@ -261,9 +312,20 @@ export default function ProductDetailPage({
                   </div>
 
                   {/* Purchase Button */}
-                  <Button className="w-full mb-4" size="lg" onClick={handlePurchase}>
+                  <Button className="w-full mb-3" size="lg" onClick={handlePurchase}>
                     <ShoppingCart className="h-5 w-5 mr-2" />
                     구매하기
+                  </Button>
+
+                  {/* Contact Button */}
+                  <Button 
+                    className="w-full mb-4" 
+                    size="lg" 
+                    variant="outline"
+                    onClick={handleContact}
+                  >
+                    <MessageCircle className="h-5 w-5 mr-2" />
+                    파트너에게 문의하기
                   </Button>
 
                   {/* Creator Info */}

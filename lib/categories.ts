@@ -1,4 +1,4 @@
-// Corefy 카테고리 시스템
+// JobsBuild 카테고리 시스템
 // 8개 대분류 (Depth 1) + 세부 분류 (Depth 2)
 
 export interface Category {

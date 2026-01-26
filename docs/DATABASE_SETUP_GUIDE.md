@@ -12,7 +12,7 @@
 ## 1. Supabase 프로젝트 설정
 
 ### 1.1 기존 프로젝트 사용 ✅
-- **프로젝트명**: `corefy` → `jobsbuild` (리브랜딩)
+- **프로젝트명**: `jobsbuild` → `jobsbuild` (리브랜딩)
 - **상태**: Active
 - **지역**: Northeast Asia (Seoul)
 
@@ -271,4 +271,4 @@ WHERE schemaname = 'public'
 
 **작성일**: 2026-01-25  
 **최종 업데이트**: c646afb → **v2 최종본**  
-**프로젝트**: JobsBuild (구 Corefy)
+**프로젝트**: JobsBuild (구 JobsBuild)

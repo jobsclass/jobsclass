@@ -63,7 +63,7 @@ export default function WebsiteSettingsPage() {
               URL 슬러그
             </label>
             <div className="flex items-center gap-3">
-              <span className="text-gray-500">corefy.co/</span>
+              <span className="text-gray-500">jobsbuild.co/</span>
               <input
                 type="text"
                 value={formData.slug}
@@ -209,7 +209,7 @@ export default function WebsiteSettingsPage() {
             <div className="space-y-2 text-xs text-gray-400">
               <p>1. 도메인 관리 페이지에서 DNS 설정으로 이동</p>
               <p>2. A 레코드 추가: @ → 123.45.67.89</p>
-              <p>3. CNAME 레코드 추가: www → corefy.co</p>
+              <p>3. CNAME 레코드 추가: www → jobsbuild.co</p>
             </div>
           </div>
         </div>

@@ -173,7 +173,7 @@ function WebsiteCard({
           {website.title}
         </h3>
         <p className="text-sm text-gray-400 mb-4">
-          corefy.com{publicUrl}
+          jobsbuild.com{publicUrl}
         </p>
 
         {/* 통계 */}

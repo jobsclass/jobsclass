@@ -244,8 +244,8 @@
 
 ## 🔗 **관련 링크**
 
-- **GitHub Repo**: https://github.com/jobsclass/corefy
-- **최신 커밋**: https://github.com/jobsclass/corefy/commit/47e501d
+- **GitHub Repo**: https://github.com/jobsclass/jobsbuild
+- **최신 커밋**: https://github.com/jobsclass/jobsbuild/commit/47e501d
 - **개발 서버**: https://3001-igdgp155rq2qwind0nws7-02b9cc79.sandbox.novita.ai
 
 ---

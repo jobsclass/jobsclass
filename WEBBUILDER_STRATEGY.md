@@ -1,4 +1,4 @@
-# Corefy 웹빌더 전략 (리멤버 모델)
+# JobsBuild 웹빌더 전략 (리멤버 모델)
 
 > **핵심**: 프로덕트로 승부 → 기술력 차별화 → 유튜브 바이럴
 
@@ -8,7 +8,7 @@
 
 ### 구독 기반 SaaS
 ```
-FREE:     ₩0/월      (제한적 기능, Corefy 브랜딩)
+FREE:     ₩0/월      (제한적 기능, JobsBuild 브랜딩)
 STARTER:  ₩9,900/월  (기본 기능, 커스텀 도메인)
 PRO:      ₩29,900/월 (AI 고급 기능, 무제한)
 ```
@@ -31,7 +31,7 @@ PRO:      ₩29,900/월 (AI 고급 기능, 무제한)
 ❌ 아임웹: 너무 복잡 (학습 곡선 높음)
 ❌ Wix/Webflow: 드래그앤드롭 (시간 오래 걸림)
 
-✅ Corefy: 폼 기반 + AI
+✅ JobsBuild: 폼 기반 + AI
 - 드래그앤드롭 없음
 - 질문 답변만으로 완성
 - 1분 만에 실제 배포
@@ -57,7 +57,7 @@ PRO:      ₩29,900/월 (AI 고급 기능, 무제한)
 ### 3️⃣ 속도
 ```
 기존 웹빌더: 30분 ~ 2시간
-Corefy:      1분 ~ 5분
+JobsBuild:      1분 ~ 5분
 
 비결:
 - 템플릿 기반 (5~10개)
@@ -110,7 +110,7 @@ Step 1: 템플릿 선택 (3~5개)
 Step 2: 기본 정보 입력 (제목, 부제목, 로고)
 Step 3: 섹션 구성 (Hero, About, Services, Contact)
 Step 4: 색상/폰트 (AI 추천 또는 직접 선택)
-Step 5: 배포 (my-site.corefy.com)
+Step 5: 배포 (my-site.jobsbuild.com)
 ```
 
 #### 3. 배포 시스템
@@ -217,7 +217,7 @@ async function recommendImages(businessType: string) {
    - 실전 예제
    - 예상 조회수: 5만+
 
-3. "리틀리 vs 아임웹 vs Corefy 비교"
+3. "리틀리 vs 아임웹 vs JobsBuild 비교"
    - 속도, 기능, 가격 비교
    - 공정한 평가
    - 예상 조회수: 3만+
@@ -231,7 +231,7 @@ async function recommendImages(businessType: string) {
 ### 전환 퍼널
 ```
 유튜브 영상 시청
-→ 설명란 링크 클릭 (corefy.com)
+→ 설명란 링크 클릭 (jobsbuild.com)
 → 무료 체험 가입
 → 웹사이트 생성 (1분)
 → 유료 전환 (7일 후)
@@ -337,4 +337,4 @@ Day 6-7: 테스트 & 배포
 
 ---
 
-**Corefy - 1분 만에 완성하는 AI 웹빌더** 🚀
+**JobsBuild - 1분 만에 완성하는 AI 웹빌더** 🚀

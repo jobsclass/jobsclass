@@ -175,7 +175,7 @@ export default function WebsiteSettingsPage() {
                     URL 슬러그
                   </label>
                   <div className="flex items-center gap-3">
-                    <span className="text-gray-500">corefy.co/</span>
+                    <span className="text-gray-500">jobsbuild.co/</span>
                     <input
                       type="text"
                       value={basicInfo.slug}

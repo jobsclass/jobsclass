@@ -1,16 +1,16 @@
 # ✅ JobsBuild 배포 세팅 체크리스트
 
-> **프로젝트**: JobsBuild (구 Corefy)  
+> **프로젝트**: JobsBuild (구 JobsBuild)  
 > **작성일**: 2026-01-25  
 > **예상 소요 시간**: 약 60분  
-> **최종 커밋**: [c646afb](https://github.com/jobsclass/corefy/commit/c646afb) → **v2 최종본**
+> **최종 커밋**: [c646afb](https://github.com/jobsclass/jobsbuild/commit/c646afb) → **v2 최종본**
 
 ---
 
 ## 📋 전체 체크리스트
 
 ### 1️⃣ Supabase 설정 (15분)
-- [ ] 기존 프로젝트 확인 (`corefy` → `jobsbuild`)
+- [ ] 기존 프로젝트 확인 (`jobsbuild` → `jobsbuild`)
 - [ ] API 키 3개 복사 (URL, anon key, service_role key)
 - [ ] 마이그레이션 4개 순서대로 실행
   - [ ] `schema.sql` (기본 스키마)
@@ -43,7 +43,7 @@
 - [ ] (운영 전환 시) 사업자 서류 제출
 
 ### 4️⃣ Vercel 배포 설정 (20분)
-- [ ] GitHub 저장소 연결 (`jobsclass/corefy`)
+- [ ] GitHub 저장소 연결 (`jobsclass/jobsbuild`)
 - [ ] 프로젝트 기본 설정 확인
   - Framework: Next.js
   - Root Directory: `./`
@@ -289,8 +289,8 @@ git push origin main
 - [최종 개발 현황](./FINAL_PROGRESS_REPORT_2026_01_25.md)
 
 ### GitHub
-- Repository: https://github.com/jobsclass/corefy
-- Latest Commit: https://github.com/jobsclass/corefy/commit/6a5545b
+- Repository: https://github.com/jobsclass/jobsbuild
+- Latest Commit: https://github.com/jobsclass/jobsbuild/commit/6a5545b
 
 ---
 
@@ -300,7 +300,7 @@ git push origin main
 
 ```bash
 # Vercel 배포 URL (예시)
-https://corefy.vercel.app
+https://jobsbuild.vercel.app
 
 # 테스트 계정으로 회원가입
 이메일: test@jobsbuild.com

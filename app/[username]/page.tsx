@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!profile) {
     return {
-      title: '사용자를 찾을 수 없습니다 | Corefy',
+      title: '사용자를 찾을 수 없습니다 | JobsBuild',
     }
   }
 
   return {
-    title: `${profile.display_name} | Corefy`,
+    title: `${profile.display_name} | JobsBuild`,
     description: profile.tagline || profile.bio || `${profile.display_name}의 프로필`,
   }
 }
@@ -260,7 +260,7 @@ export default async function UserProfilePage({ params }: PageProps) {
       <footer className="py-12 px-4 border-t border-gray-800">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-500">
-            Powered by <span className="text-primary-400 font-semibold">Corefy</span>
+            Powered by <span className="text-primary-400 font-semibold">JobsBuild</span>
           </p>
         </div>
       </footer>

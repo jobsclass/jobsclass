@@ -163,9 +163,9 @@ END IF;
 
 ## 🔗 링크
 
-- **GitHub**: https://github.com/jobsclass/corefy
-- **마이그레이션 파일**: https://github.com/jobsclass/corefy/blob/main/supabase/migrations/add_orders_payments_final.sql
-- **최신 커밋**: https://github.com/jobsclass/corefy/commit/335950b
+- **GitHub**: https://github.com/jobsclass/jobsbuild
+- **마이그레이션 파일**: https://github.com/jobsclass/jobsbuild/blob/main/supabase/migrations/add_orders_payments_final.sql
+- **최신 커밋**: https://github.com/jobsclass/jobsbuild/commit/335950b
 
 ---
 

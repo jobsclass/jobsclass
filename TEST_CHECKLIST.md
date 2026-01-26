@@ -1,7 +1,7 @@
-# 🧪 Corefy 테스트 체크리스트
+# 🧪 JobsBuild 테스트 체크리스트
 
 ## 📍 테스트 URL
-**프로덕션**: https://corefy.vercel.app
+**프로덕션**: https://jobsbuild.vercel.app
 
 ## 🔐 테스트 계정
 - **이메일**: startupjobs824@gmail.com

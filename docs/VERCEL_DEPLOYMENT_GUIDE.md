@@ -60,7 +60,7 @@ NEXTAUTH_SECRET=your-secret-key-here
 
 1. Vercel 대시보드 접속: https://vercel.com/
 2. "Add New" → "Project" 클릭
-3. GitHub 저장소 선택: `jobsclass/corefy`
+3. GitHub 저장소 선택: `jobsclass/jobsbuild`
 4. "Import" 클릭
 
 ### Step 2: 프로젝트 설정
@@ -116,12 +116,12 @@ CVC: 123
 
 ### Development (개발)
 - 브랜치: `dev`
-- 도메인: `corefy-dev.vercel.app`
+- 도메인: `jobsbuild-dev.vercel.app`
 - 환경 변수: 테스트 API 키 사용
 
 ### Staging (스테이징)
 - 브랜치: `staging`
-- 도메인: `corefy-staging.vercel.app`
+- 도메인: `jobsbuild-staging.vercel.app`
 - 환경 변수: 테스트 API 키 사용
 
 ### Production (운영)

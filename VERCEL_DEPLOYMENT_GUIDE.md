@@ -13,7 +13,7 @@
 
 ### 1️⃣ Vercel 대시보드에서 환경 변수 설정
 
-**접속:** https://vercel.com/jobsclass/corefy/settings/environment-variables
+**접속:** https://vercel.com/jobsclass/jobsbuild/settings/environment-variables
 
 **필수 환경 변수 7개를 추가하세요:**
 
@@ -27,7 +27,7 @@ SUPABASE_SERVICE_ROLE_KEY=(Supabase 대시보드에서 확인)
 #### JWT & 앱 설정 (2개)
 ```
 JWT_SECRET=(랜덤 문자열 32자 이상)
-NEXT_PUBLIC_APP_URL=https://corefy.vercel.app
+NEXT_PUBLIC_APP_URL=https://jobsbuild.vercel.app
 ```
 
 #### Toss Payments (2개) - 선택사항
@@ -44,7 +44,7 @@ TOSS_SECRET_KEY=(결제 연동 시 필요)
 
 ### 2️⃣ Vercel 프로젝트 설정 확인
 
-**접속:** https://vercel.com/jobsclass/corefy/settings/general
+**접속:** https://vercel.com/jobsclass/jobsbuild/settings/general
 
 #### Build & Development Settings
 ```
@@ -73,7 +73,7 @@ git push origin main
 ```
 
 **방법 2: Vercel 대시보드에서 수동 배포**
-1. https://vercel.com/jobsclass/corefy
+1. https://vercel.com/jobsclass/jobsbuild
 2. "Deployments" 탭
 3. 최신 배포 클릭
 4. "Redeploy" 버튼 클릭
@@ -83,7 +83,7 @@ git push origin main
 ## 🔍 배포 로그 확인
 
 **배포 실패 시 로그 확인:**
-1. https://vercel.com/jobsclass/corefy/deployments
+1. https://vercel.com/jobsclass/jobsbuild/deployments
 2. 실패한 배포 클릭
 3. "Building" 탭에서 에러 메시지 확인
 4. "Runtime Logs" 탭에서 실행 에러 확인
@@ -152,7 +152,7 @@ vercel env add JWT_SECRET production
 ## 🚀 배포 성공 후
 
 배포 성공 시:
-- **Production URL:** https://corefy.vercel.app
+- **Production URL:** https://jobsbuild.vercel.app
 - **Custom Domain 설정:** Vercel 대시보드 → Domains
 
 **테스트:**

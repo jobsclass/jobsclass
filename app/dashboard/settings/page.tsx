@@ -147,7 +147,7 @@ export default function SettingsPage() {
                 프로필 URL
               </label>
               <div className="flex items-center gap-2">
-                <span className="text-gray-400">corefy.com/p/</span>
+                <span className="text-gray-400">jobsbuild.com/p/</span>
                 <input
                   type="text"
                   value={profile?.profile_url}

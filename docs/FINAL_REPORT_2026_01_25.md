@@ -287,7 +287,7 @@ UI/UX:    ████████████░░░░░░░░ 60%
 ## 🔗 **관련 링크**
 
 ```
-GitHub: https://github.com/jobsclass/corefy
+GitHub: https://github.com/jobsclass/jobsbuild
 개발 서버: https://3001-igdgp155rq2qwind0nws7-02b9cc79.sandbox.novita.ai
 최신 커밋: 41f8d34
 

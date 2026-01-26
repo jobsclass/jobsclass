@@ -566,7 +566,7 @@ export default function NewServicePage() {
                   URL 슬러그
                 </label>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-500">corefy.co/yourname/</span>
+                  <span className="text-gray-500">jobsbuild.co/yourname/</span>
                   <input
                     type="text"
                     value={formData.slug}

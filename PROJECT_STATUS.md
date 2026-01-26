@@ -1,10 +1,10 @@
-# Corefy 프로젝트 현황 (2026.01.24)
+# JobsBuild 프로젝트 현황 (2026.01.24)
 
 ## 📊 프로젝트 개요
 
-**Corefy**는 인플루언서와 전문가가 자신의 지식 서비스를 쉽게 판매할 수 있는 독립형 쇼핑몰 플랫폼입니다.
+**JobsBuild**는 인플루언서와 전문가가 자신의 지식 서비스를 쉽게 판매할 수 있는 독립형 쇼핑몰 플랫폼입니다.
 
-- **GitHub**: https://github.com/jobsclass/corefy
+- **GitHub**: https://github.com/jobsclass/jobsbuild
 - **개발 시작일**: 2026.01.24
 - **현재 완성도**: 40%
 - **목표**: 6주 내 Phase 1 완성
@@ -14,7 +14,7 @@
 ## ✅ 완료된 작업
 
 ### 브랜드 전환
-- ✅ JobsClass → **Corefy** 브랜드명 변경
+- ✅ JobsClass → **JobsBuild** 브랜드명 변경
 - ✅ 모든 문서 및 코드 업데이트
 
 ### 개발 환경
@@ -76,7 +76,7 @@
 ## 📁 프로젝트 구조
 
 ```
-corefy/
+jobsbuild/
 ├── app/
 │   ├── auth/partner/          # 파트너 인증
 │   │   ├── signup/
@@ -193,8 +193,8 @@ corefy/
 
 ### 1. 저장소 클론
 ```bash
-git clone https://github.com/jobsclass/corefy.git
-cd corefy
+git clone https://github.com/jobsclass/jobsbuild.git
+cd jobsbuild
 ```
 
 ### 2. 의존성 설치
@@ -259,8 +259,8 @@ npm run dev
 
 ## 📞 문의
 
-- **GitHub Issues**: https://github.com/jobsclass/corefy/issues
-- **Repository**: https://github.com/jobsclass/corefy
+- **GitHub Issues**: https://github.com/jobsclass/jobsbuild/issues
+- **Repository**: https://github.com/jobsclass/jobsbuild
 
 ---
 
@@ -272,7 +272,7 @@ npm run dev
 
 ---
 
-**Corefy - 6주 만에 완성하는 지식 판매 플랫폼** 🚀
+**JobsBuild - 6주 만에 완성하는 지식 판매 플랫폼** 🚀
 
 **마지막 업데이트**: 2026.01.24  
 **다음 업데이트**: Week 1 완료 후 (2026.02.01)

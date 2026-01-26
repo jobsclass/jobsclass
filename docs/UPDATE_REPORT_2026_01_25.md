@@ -127,7 +127,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 **추가 라인**: 921줄  
 **삭제 라인**: 7줄
 
-**GitHub URL**: https://github.com/jobsclass/corefy/commit/1d1c102
+**GitHub URL**: https://github.com/jobsclass/jobsbuild/commit/1d1c102
 
 ---
 
@@ -135,7 +135,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 
 **개발 서버**: https://3001-igdgp155rq2qwind0nws7-02b9cc79.sandbox.novita.ai  
 **Vercel 배포**: 자동 배포 진행 중 (2~3분 소요)  
-**배포 URL**: https://corefy.vercel.app (업데이트 예정)
+**배포 URL**: https://jobsbuild.vercel.app (업데이트 예정)
 
 ---
 

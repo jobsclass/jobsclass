@@ -1,4 +1,4 @@
-# Corefy - AI 웹사이트 빌더 🚀
+# JobsBuild - AI 웹사이트 빌더 🚀
 
 > 🏆 **특허 핵심 기술 3가지 탑재**
 > 1. 멀티모달 AI 생성 (텍스트 + 이미지 동시 생성)
@@ -36,7 +36,7 @@
 - 시장 인사이트 자동 분석
 
 ### 🌐 공개 웹사이트 자동 배포
-- `corefy.vercel.app/{username}` 즉시 공개
+- `jobsbuild.vercel.app/{username}` 즉시 공개
 - SEO 최적화 자동 적용
 - 반응형 디자인
 
@@ -107,8 +107,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ### 1. 저장소 클론
 ```bash
-git clone https://github.com/jobsclass/corefy.git
-cd corefy
+git clone https://github.com/jobsclass/jobsbuild.git
+cd jobsbuild
 ```
 
 ### 2. 패키지 설치
@@ -309,7 +309,7 @@ OPENAI_API_KEY=sk-proj-your_key  ← 🔴 AI 기능 필수!
 
 ### 프로젝트 구조
 ```
-corefy/
+jobsbuild/
 ├── app/                      # Next.js App Router
 │   ├── api/                  # API Routes
 │   │   ├── ai/              # AI 관련 API
@@ -346,7 +346,7 @@ corefy/
 
 ## 🐛 트러블슈팅
 
-### 배포 에러: "There was an error deploying corefy"
+### 배포 에러: "There was an error deploying jobsbuild"
 **원인**: OpenAI API 키 미설정
 
 **해결**:

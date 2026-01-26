@@ -480,7 +480,7 @@ function Step3BasicInfo({
           URL 슬러그 *
         </label>
         <div className="flex items-center gap-2">
-          <span className="text-gray-500">corefy.com/username/</span>
+          <span className="text-gray-500">jobsbuild.com/username/</span>
           <input
             type="text"
             placeholder="blog-revenue"
@@ -684,7 +684,7 @@ function Step5Deploy({ formData }: { formData: FormData }) {
         <div>
           <span className="text-gray-400">URL:</span>
           <span className="ml-2 text-primary-400 font-semibold">
-            corefy.com/[username]/{formData.slug}
+            jobsbuild.com/[username]/{formData.slug}
           </span>
         </div>
       </div>

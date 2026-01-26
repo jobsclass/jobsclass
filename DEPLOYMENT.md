@@ -68,7 +68,7 @@ OPENAI_API_KEY=sk-proj-...
    NEXT_PUBLIC_SUPABASE_ANON_KEY     | eyJhbGc...            | Production, Preview, Development
    SUPABASE_SERVICE_ROLE_KEY         | eyJhbGc...            | Production, Preview, Development
    JWT_SECRET                        | your_secret...         | Production, Preview, Development
-   NEXT_PUBLIC_APP_URL               | https://corefy.vercel..| Production, Preview, Development
+   NEXT_PUBLIC_APP_URL               | https://jobsbuild.vercel..| Production, Preview, Development
    OPENAI_API_KEY                    | sk-proj-...           | Production, Preview, Development
    ```
 
@@ -108,7 +108,7 @@ OPENAI_API_KEY=sk-proj-...
 ### Step 5: 배포 확인 및 테스트
 
 1. **배포 URL 확인**
-   - `https://corefy-xxx.vercel.app` 형태
+   - `https://jobsbuild-xxx.vercel.app` 형태
    - 또는 커스텀 도메인 설정 가능
 
 2. **테스트 체크리스트**
@@ -126,7 +126,7 @@ OPENAI_API_KEY=sk-proj-...
 
 ## 🐛 배포 에러 해결 가이드
 
-### 에러 1: "There was an error deploying corefy"
+### 에러 1: "There was an error deploying jobsbuild"
 
 **원인**: 환경 변수 누락 또는 잘못된 값
 
@@ -327,18 +327,18 @@ echo $OPENAI_API_KEY                 # sk-proj-로 시작하는가?
 - Next.js Discord: https://nextjs.org/discord
 
 ### 프로젝트 이슈
-- GitHub Issues: https://github.com/jobsclass/corefy/issues
+- GitHub Issues: https://github.com/jobsclass/jobsbuild/issues
 - Email: startupjobs824@gmail.com
 
 ---
 
 ## 🎉 배포 완료!
 
-축하합니다! Corefy가 성공적으로 배포되었습니다. 🚀
+축하합니다! JobsBuild가 성공적으로 배포되었습니다. 🚀
 
 다음 URL로 접속하세요:
-- **프로덕션**: https://corefy.vercel.app
-- **공개 프로필**: https://corefy.vercel.app/{username}
+- **프로덕션**: https://jobsbuild.vercel.app
+- **공개 프로필**: https://jobsbuild.vercel.app/{username}
 
 ---
 

@@ -1,8 +1,8 @@
-# Corefy WebBuilder - 프로젝트 요약
+# JobsBuild WebBuilder - 프로젝트 요약
 
 ## 📋 프로젝트 개요
 
-**프로젝트명**: Corefy WebBuilder  
+**프로젝트명**: JobsBuild WebBuilder  
 **버전**: v1.0.0  
 **개발 기간**: 2025년 1월  
 **목적**: 지식 창작자를 위한 No-Code 웹사이트 빌더
@@ -167,7 +167,7 @@
 ### 즉시 가능
 1. **Vercel 배포**: UI만으로도 충분히 데모 가능
 2. **피드백 수집**: 사용자 경험 개선
-3. **마케팅 페이지**: Corefy 소개 페이지
+3. **마케팅 페이지**: JobsBuild 소개 페이지
 
 ### 단기 (1-2주)
 1. **DB 스키마 적용**: 실제 데이터 연동
@@ -214,7 +214,7 @@
 
 ## 🔗 중요 링크
 
-- **GitHub**: https://github.com/jobsclass/corefy
+- **GitHub**: https://github.com/jobsclass/jobsbuild
 - **개발 서버**: https://3009-igdgp155rq2qwind0nws7-02b9cc79.sandbox.novita.ai
 - **Supabase 프로젝트**: https://supabase.com/dashboard/project/pzjedtgqrqcipfmtkoce
 
@@ -224,7 +224,7 @@
 
 > **"고객의 문제를 해결하는 상품을 만들고, 명확하게 전달하자"**
 
-Corefy는 단순한 웹사이트 빌더가 아닙니다. 
+JobsBuild는 단순한 웹사이트 빌더가 아닙니다. 
 지식 창작자가 자신의 전문성을 비즈니스로 전환할 수 있도록 돕는 **완전한 플랫폼**입니다.
 
 ---

@@ -28,7 +28,7 @@
 
 ```sql
 -- ============================================
--- Corefy SaaS Platform - Database Schema
+-- JobsBuild SaaS Platform - Database Schema
 -- Phase 1: 웹빌더 SaaS (마켓플레이스 제외)
 -- ============================================
 

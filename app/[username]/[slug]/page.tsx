@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!profile) {
     return {
-      title: '웹사이트를 찾을 수 없습니다 | Corefy',
+      title: '웹사이트를 찾을 수 없습니다 | JobsBuild',
     }
   }
 
@@ -44,12 +44,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!website) {
     return {
-      title: '웹사이트를 찾을 수 없습니다 | Corefy',
+      title: '웹사이트를 찾을 수 없습니다 | JobsBuild',
     }
   }
 
   return {
-    title: `${website.title} - ${profile.display_name} | Corefy`,
+    title: `${website.title} - ${profile.display_name} | JobsBuild`,
     description: website.description || `${profile.display_name}의 웹사이트`,
     openGraph: {
       title: website.title,
@@ -765,12 +765,12 @@ function Footer({ website, profile }: any) {
           <p className="text-gray-500 text-sm">
             Powered by{' '}
             <a
-              href="https://corefy.com"
+              href="https://jobsbuild.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary-400 hover:text-primary-300 transition-colors"
             >
-              Corefy
+              JobsBuild
             </a>
           </p>
         </div>

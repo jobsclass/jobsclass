@@ -5,8 +5,8 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: '잡스빌드 - 1클릭으로 웹사이트 완성',
-  description: 'AI가 자동으로 만드는 전문가급 웹사이트. 온라인 강의, 멘토링, 컨설팅을 10분 만에 시작하세요.',
+  title: 'JobsClass - AI 기반 지식 마켓플레이스',
+  description: 'AI 기반 지식 마켓플레이스. 판매자는 AI로 콘텐츠 제작, 구매자는 AI 상담으로 맞춤 추천. 온라인 강의, 멘토링, 컨설팅을 3분 만에 시작하세요.',
 }
 
 export default function RootLayout({

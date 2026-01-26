@@ -23,10 +23,10 @@ async function verifyAuth(request: NextRequest) {
 // GET /api/products/[id] - 상품 상세 조회
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await context.params
     const supabase = await createServerClient()
 
     const { data: product, error } = await supabase
@@ -68,7 +68,7 @@ export async function GET(
 // PATCH /api/products/[id] - 상품 수정
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAuth(request)
@@ -79,7 +79,7 @@ export async function PATCH(
       )
     }
 
-    const { id } = params
+    const { id } = await context.params
     const body = await request.json()
     const supabase = await createServerClient()
 
@@ -139,7 +139,7 @@ export async function PATCH(
 // DELETE /api/products/[id] - 상품 삭제
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAuth(request)
@@ -150,7 +150,7 @@ export async function DELETE(
       )
     }
 
-    const { id } = params
+    const { id } = await context.params
     const supabase = await createServerClient()
 
     // Check if product belongs to user

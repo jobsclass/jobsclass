@@ -47,3 +47,30 @@ export async function deleteImage(url: string): Promise<void> {
     throw new Error(`Delete failed: ${error.message}`)
   }
 }
+
+export function getPlaceholderImage(category?: string): string {
+  // Return a placeholder gradient based on category
+  const gradients = {
+    course: 'from-blue-400 to-blue-600',
+    mentoring: 'from-purple-400 to-purple-600',
+    consulting: 'from-green-400 to-green-600',
+    ebook: 'from-pink-400 to-pink-600',
+    template: 'from-yellow-400 to-yellow-600',
+    default: 'from-gray-400 to-gray-600'
+  }
+  
+  const gradient = gradients[category as keyof typeof gradients] || gradients.default
+  
+  // Return a data URL with gradient
+  return `data:image/svg+xml,${encodeURIComponent(`
+    <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:rgb(59,130,246);stop-opacity:1" />
+          <stop offset="100%" style="stop-color:rgb(147,51,234);stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <rect width="400" height="300" fill="url(#grad)"/>
+    </svg>
+  `)}`
+}

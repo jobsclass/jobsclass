@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/Button'
 
 interface ReviewFormProps {
   productId: string
-  onSubmit: (data: { rating: number; title: string; content: string }) => Promise<void>
+  userId?: string
+  onSuccess?: () => void
+  onCancel?: () => void
 }
 
-export function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
+export function ReviewForm({ productId, userId, onSuccess, onCancel }: ReviewFormProps) {
   const [rating, setRating] = useState(5)
   const [hoveredRating, setHoveredRating] = useState(0)
   const [title, setTitle] = useState('')
@@ -20,12 +22,29 @@ export function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
     e.preventDefault()
     setLoading(true)
     try {
-      await onSubmit({ rating, title, content })
+      // TODO: API 호출로 리뷰 제출
+      const response = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId,
+          userId,
+          rating,
+          title,
+          content
+        })
+      })
+
+      if (!response.ok) throw new Error('Failed to submit review')
+
       setRating(5)
       setTitle('')
       setContent('')
+      
+      if (onSuccess) onSuccess()
     } catch (error) {
       console.error('Review submission error:', error)
+      alert('리뷰 작성에 실패했습니다. 다시 시도해주세요.')
     } finally {
       setLoading(false)
     }
@@ -94,10 +113,26 @@ export function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
         />
       </div>
 
-      {/* Submit */}
-      <Button type="submit" disabled={loading || !content.trim()} className="w-full">
-        {loading ? '작성 중...' : '리뷰 등록'}
-      </Button>
+      {/* Submit & Cancel */}
+      <div className="flex gap-3">
+        {onCancel && (
+          <Button 
+            type="button" 
+            onClick={onCancel}
+            variant="outline" 
+            className="flex-1"
+          >
+            취소
+          </Button>
+        )}
+        <Button 
+          type="submit" 
+          disabled={loading || !content.trim()} 
+          className="flex-1"
+        >
+          {loading ? '작성 중...' : '리뷰 등록'}
+        </Button>
+      </div>
     </form>
   )
 }

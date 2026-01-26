@@ -117,7 +117,7 @@ export default function ProductDetailPage({
                 />
               ) : (
                 <img
-                  src={getPlaceholderImage(800, 600, product.category)}
+                  src={getPlaceholderImage(product.category)}
                   alt={product.title}
                   className="w-full h-full object-cover"
                 />

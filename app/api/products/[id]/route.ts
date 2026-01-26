@@ -30,11 +30,10 @@ export async function GET(
     const supabase = await createServerClient()
 
     const { data: product, error } = await supabase
-      .from('products')
+      .from('services')
       .select(`
         *,
-        users!inner(id, name, username, avatar_url),
-        partner_profiles!inner(*)
+        user_profiles!inner(id, display_name, username, avatar_url)
       `)
       .eq('id', id)
       .single()
@@ -48,7 +47,7 @@ export async function GET(
 
     // Increment view count
     await supabase
-      .from('products')
+      .from('services')
       .update({ view_count: (product.view_count || 0) + 1 })
       .eq('id', id)
 
@@ -85,8 +84,8 @@ export async function PATCH(
 
     // Check if product belongs to user
     const { data: existingProduct, error: fetchError } = await supabase
-      .from('products')
-      .select('partner_id')
+      .from('services')
+      .select('user_id')
       .eq('id', id)
       .single()
 
@@ -97,7 +96,7 @@ export async function PATCH(
       )
     }
 
-    if (existingProduct.partner_id !== user.userId) {
+    if (existingProduct.user_id !== user.userId) {
       return NextResponse.json(
         { error: '권한이 없습니다' },
         { status: 403 }
@@ -106,7 +105,7 @@ export async function PATCH(
 
     // Update product
     const { data: product, error: updateError } = await supabase
-      .from('products')
+      .from('services')
       .update({
         ...body,
         updated_at: new Date().toISOString(),
@@ -155,8 +154,8 @@ export async function DELETE(
 
     // Check if product belongs to user
     const { data: existingProduct, error: fetchError } = await supabase
-      .from('products')
-      .select('partner_id')
+      .from('services')
+      .select('user_id')
       .eq('id', id)
       .single()
 
@@ -167,7 +166,7 @@ export async function DELETE(
       )
     }
 
-    if (existingProduct.partner_id !== user.userId) {
+    if (existingProduct.user_id !== user.userId) {
       return NextResponse.json(
         { error: '권한이 없습니다' },
         { status: 403 }
@@ -176,7 +175,7 @@ export async function DELETE(
 
     // Delete product
     const { error: deleteError } = await supabase
-      .from('products')
+      .from('services')
       .delete()
       .eq('id', id)
 

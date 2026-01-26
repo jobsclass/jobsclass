@@ -34,14 +34,14 @@ export async function GET(request: NextRequest) {
 
     const supabase = await createServerClient()
     let query = supabase
-      .from('products')
-      .select('*, users!inner(name, username)')
+      .from('services')
+      .select('*, user_profiles!inner(display_name, username)')
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
     // Filter by partner
     if (partnerId) {
-      query = query.eq('partner_id', partnerId)
+      query = query.eq('user_id', partnerId)
     }
 
     // Filter by category
@@ -51,9 +51,9 @@ export async function GET(request: NextRequest) {
 
     // Filter by published status
     if (published === 'true') {
-      query = query.eq('is_published', true)
+      query = query.eq('status', 'active')
     } else if (published === 'false') {
-      query = query.eq('is_published', false)
+      query = query.neq('status', 'active')
     }
 
     const { data: products, error, count } = await query
@@ -143,9 +143,9 @@ export async function POST(request: NextRequest) {
 
     // Create product
     const { data: product, error: productError } = await supabase
-      .from('products')
+      .from('services')
       .insert({
-        partner_id: user.userId as string,
+        user_id: user.userId as string,
         title,
         slug,
         description,
@@ -153,17 +153,14 @@ export async function POST(request: NextRequest) {
         subcategory,
         price: parseFloat(price),
         discount_price: discount_price ? parseFloat(discount_price) : null,
-        product_type,
-        thumbnail_url,
+        service_type: product_type || 'direct_sale',
+        image_url: thumbnail_url,
         images: images || [],
         video_url,
         tags: tags || [],
         difficulty_level,
         duration,
-        includes: includes || [],
-        requirements: requirements || [],
-        target_audience: target_audience || [],
-        is_published: false, // 기본적으로 비공개
+        status: 'draft', // 기본적으로 draft
       })
       .select()
       .single()

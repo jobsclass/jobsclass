@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { email, password, displayName, profileUrl } = body
+    const { email, password, displayName, profileUrl, role } = body
 
     // Validation
     if (!email || !password || !displayName || !profileUrl) {
@@ -13,6 +13,9 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
+
+    // Validate role (optional, default to 'buyer')
+    const userRole = role && ['partner', 'buyer', 'admin'].includes(role) ? role : 'buyer'
 
     // Service Role 클라이언트 생성 (RLS 우회)
     const supabaseAdmin = createClient(
@@ -56,6 +59,7 @@ export async function POST(request: Request) {
         display_name: displayName,
         email: email,
         username: profileUrl, // username으로 매핑
+        role: userRole, // role 추가 (partner/buyer/admin)
         subscription_plan: 'FREE',
         subscription_status: 'active',
       })

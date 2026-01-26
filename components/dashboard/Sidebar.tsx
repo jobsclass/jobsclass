@@ -15,7 +15,8 @@ import {
   Sparkles,
   Menu,
   X,
-  Star
+  Star,
+  MessageCircle
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
@@ -39,6 +40,12 @@ const navigation = [
     href: '/dashboard/products/new', 
     icon: Sparkles,
     description: 'AI로 3분 만에 등록'
+  },
+  { 
+    name: '메시지', 
+    href: '/messages', 
+    icon: MessageCircle,
+    description: '클라이언트 문의'
   },
   { 
     name: '주문/결제', 

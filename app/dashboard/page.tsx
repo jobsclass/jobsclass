@@ -38,6 +38,14 @@ export default async function DashboardPage({
     redirect('/auth/user/signup')
   }
 
+  // 🚀 프로필 타입에 따라 대시보드 분기
+  if (profile.profile_type === 'partner') {
+    redirect('/partner/dashboard')
+  }
+  if (profile.profile_type === 'client') {
+    redirect('/client/dashboard')
+  }
+
   // 온보딩 완료 여부 확인 (필수!)
   const onboardingComplete = profile.onboarding_complete === true
 

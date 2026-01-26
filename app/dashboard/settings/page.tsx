@@ -93,7 +93,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
           <p className="text-gray-400">불러오는 중...</p>
@@ -103,7 +103,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="max-w-4xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">설정</h1>
         <p className="text-gray-400">프로필 및 계정 설정을 관리하세요</p>

@@ -95,7 +95,7 @@ export default function CustomersPage() {
   }
 
   return (
-    <div className="p-8">
+    <div>
       {/* 헤더 */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white mb-2">

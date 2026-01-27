@@ -32,7 +32,7 @@ export default async function ClientDashboard() {
       .select(`
         id, title, status, proposed_amount, created_at,
         client_needs!inner(id, client_id),
-        user_profiles(full_name)
+        user_profiles(display_name)
       `)
       .eq('client_needs.client_id', user.id)
       .order('created_at', { ascending: false })
@@ -54,7 +54,7 @@ export default async function ClientDashboard() {
         
         {/* 헤더 */}
         <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold mb-1">안녕하세요, {profile.full_name}님! 👋</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-1">안녕하세요, {profile.display_name}님! 👋</h1>
           <p className="text-gray-400 text-sm md:text-base">필요한 서비스를 찾아보세요</p>
         </div>
 
@@ -162,7 +162,7 @@ export default async function ClientDashboard() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold truncate">{proposal.title}</h3>
                       <p className="text-xs text-gray-400 mt-1">
-                        {proposal.user_profiles?.full_name || '익명 파트너'}
+                        {proposal.user_profiles?.display_name || '익명 파트너'}
                       </p>
                     </div>
                     <div className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-2 ${

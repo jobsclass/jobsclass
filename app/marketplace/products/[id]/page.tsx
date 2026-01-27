@@ -20,7 +20,7 @@ interface Product {
   type: string
   image_url?: string
   video_url?: string
-  partner_id: string
+  user_id: string
   created_at: string
 }
 
@@ -70,7 +70,7 @@ export default function ProductDetailPage({
       const { data: existing } = await supabase
         .from('conversations')
         .select('id')
-        .eq('partner_id', product!.partner_id)
+        .eq('partner_id', product!.user_id)
         .eq('client_id', currentUserId)
         .eq('service_id', productId)
         .single()
@@ -84,7 +84,7 @@ export default function ProductDetailPage({
       const { data: newConv, error } = await supabase
         .from('conversations')
         .insert({
-          partner_id: product!.partner_id,
+          partner_id: product!.user_id,
           client_id: currentUserId,
           service_id: productId
         })
@@ -108,7 +108,7 @@ export default function ProductDetailPage({
       if (data.product) {
         setProduct(data.product)
         // TODO: Fetch creator info
-        // fetchCreator(data.product.partner_id)
+        // fetchCreator(data.product.user_id)
       }
 
       setLoading(false)

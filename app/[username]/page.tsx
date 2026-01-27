@@ -53,9 +53,9 @@ export default async function UserProfilePage({ params }: PageProps) {
 
   // 서비스 목록 조회
   const { data: services } = await supabase
-    .from('services')
+    .from('products')
     .select('*')
-    .eq('partner_id', profile.user_id)
+    .eq('user_id', profile.user_id)
     .eq('is_published', true)
     .order('created_at', { ascending: false })
 

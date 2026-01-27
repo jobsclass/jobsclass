@@ -98,7 +98,7 @@ export default function PartnerDashboard() {
         .eq('status', 'completed');
 
       // Calculate stats
-      const activeServices = services?.filter((s) => s.status === 'active').length || 0;
+      const activeServices = services?.filter((s) => s.is_published === true && s.is_available === true).length || 0;
       const totalSales = transactions?.length || 0;
       const totalEarnings =
         transactions?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
@@ -317,19 +317,19 @@ export default function PartnerDashboard() {
               label="서비스 등록"
             />
             <QuickActionButton
-              href="/partner/services"
+              href="/dashboard/services"
               icon={<ShoppingBagIcon className="h-6 w-6" />}
               label="서비스 관리"
             />
             <QuickActionButton
-              href="/partner/quotations"
+              href="/dashboard/blog"
               icon={<ChatBubbleLeftRightIcon className="h-6 w-6" />}
-              label="견적 관리"
+              label="블로그 관리"
             />
             <QuickActionButton
-              href="/partner/earnings"
+              href="/dashboard/portfolio"
               icon={<CurrencyDollarIcon className="h-6 w-6" />}
-              label="수익 조회"
+              label="포트폴리오 관리"
             />
           </div>
         </div>

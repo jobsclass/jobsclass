@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
         tagline: userTagline || generatedContent.profile.tagline, // ✅ 사용자 입력 우선!
         bio: generatedContent.profile.bio,
         expertise: generatedContent.profile.expertise,
-        profile_type: profileType
+        user_type: profileType
       })
       .eq('user_id', user.id)
 

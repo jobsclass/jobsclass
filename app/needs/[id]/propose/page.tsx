@@ -56,7 +56,7 @@ export default function ProposeNeedPage({
       .eq('user_id', user.id)
       .single()
 
-    if (profile?.profile_type !== 'partner') {
+    if (profile?.user_type !== 'partner') {
       alert('파트너만 제안서를 제출할 수 있습니다.')
       router.back()
       return

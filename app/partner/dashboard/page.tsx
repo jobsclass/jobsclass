@@ -44,9 +44,9 @@ interface Quotation {
   budget_range: string;
   status: string;
   created_at: string;
-  client: {
-    name: string;
-  };
+  user_profiles: {
+    display_name: string;
+  } | null;
 }
 
 export default function PartnerDashboard() {
@@ -78,19 +78,23 @@ export default function PartnerDashboard() {
       const { data: services } = await supabase
         .from('products')
         .select('*')
-        .eq('partner_id', user.id);
+        .eq('user_id', user.id);
 
       const { data: quotations } = await supabase
         .from('quotation_requests')
-        .select('*, user_profiles!client_id(name)')
-        .eq('partner_id', user.id)
+        .select(`
+          *,
+          user_profiles!quotation_requests_client_id_fkey(display_name),
+          products!inner(user_id)
+        `)
+        .eq('products.user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(5);
 
       const { data: transactions } = await supabase
         .from('payment_transactions')
         .select('amount, status, created_at')
-        .eq('partner_id', user.id)
+        .eq('user_id', user.id)
         .eq('status', 'completed');
 
       // Calculate stats
@@ -292,7 +296,7 @@ export default function PartnerDashboard() {
                     </p>
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-gray-400">
-                        {quotation.client?.name || '익명'}
+                        {quotation.user_profiles?.display_name || '익명'}
                       </span>
                       <span className="text-purple-400">{quotation.budget_range}</span>
                     </div>

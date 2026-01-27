@@ -16,7 +16,7 @@ export default async function ClientDashboard() {
     .single()
 
   if (!profile) redirect('/auth/user/signup')
-  if (profile.profile_type !== 'client') redirect('/dashboard')
+  if (profile.user_type !== 'client') redirect('/dashboard')
 
   // 데이터 로드
   const [myNeedsResult, receivedProposalsResult] = await Promise.all([

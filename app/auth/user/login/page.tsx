@@ -30,14 +30,14 @@ export default function UserLoginPage() {
       if (authError) throw authError
       if (!data.user) throw new Error('로그인에 실패했습니다')
 
-      // profile_type에 따라 리디렉션
+      // user_type에 따라 리디렉션
       const { data: profile } = await supabase
         .from('user_profiles')
-        .select('profile_type')
+        .select('user_type')
         .eq('user_id', data.user.id)
         .single()
 
-      if (profile?.profile_type === 'partner') {
+      if (profile?.user_type === 'partner') {
         router.push('/partner/dashboard')
       } else {
         router.push('/client/dashboard')

@@ -54,7 +54,7 @@ function SignupContent() {
         options: {
           data: {
             full_name: formData.fullName,
-            profile_type: profileType
+            user_type: profileType
           }
         }
       })
@@ -71,9 +71,8 @@ function SignupContent() {
         .insert({
           user_id: authData.user.id,
           email: formData.email,
-          full_name: formData.fullName,
-          profile_type: profileType,
-          ai_credits: 10000, // 신규 가입 시 10,000 크레딧 무료 제공 (= 10,000원)
+          display_name: formData.fullName,
+          user_type: profileType,
           onboarding_complete: profileType === 'client' // 클라이언트는 즉시 완료
         })
 

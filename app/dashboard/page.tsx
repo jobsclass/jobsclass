@@ -39,10 +39,10 @@ export default async function DashboardPage({
   }
 
   // 🚀 프로필 타입에 따라 대시보드 분기
-  if (profile.profile_type === 'partner') {
+  if (profile.user_type === 'partner') {
     redirect('/partner/dashboard')
   }
-  if (profile.profile_type === 'client') {
+  if (profile.user_type === 'client') {
     redirect('/client/dashboard')
   }
 

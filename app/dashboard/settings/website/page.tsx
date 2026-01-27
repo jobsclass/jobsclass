@@ -133,7 +133,7 @@ export default function WebsiteSettingsPage() {
           phone: profileInfo.phone,
           location: profileInfo.location,
           expertise: profileInfo.expertise,
-          profile_type: isTeam ? 'organization' : 'individual'
+          user_type: isTeam ? 'organization' : 'individual'
         })
         .eq('user_id', userId)
 
@@ -175,7 +175,7 @@ export default function WebsiteSettingsPage() {
 
         // 온보딩 데이터를 웹사이트 설정에 자동 반영
         if (profile) {
-          setIsTeam(profile.profile_type === 'organization')
+          setIsTeam(profile.user_type === 'organization')
           
           setBasicInfo(prev => ({
             ...prev,

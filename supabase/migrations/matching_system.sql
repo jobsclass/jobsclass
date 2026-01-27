@@ -118,6 +118,9 @@ CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON notifications(created
 
 -- client_needs: 모두 읽기, 본인만 생성/수정
 ALTER TABLE client_needs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view open needs" ON client_needs;
+DROP POLICY IF EXISTS "Clients can create needs" ON client_needs;
+DROP POLICY IF EXISTS "Clients can update own needs" ON client_needs;
 CREATE POLICY "Anyone can view open needs" ON client_needs 
   FOR SELECT USING (status = 'open' OR client_id = auth.uid());
 CREATE POLICY "Clients can create needs" ON client_needs 
@@ -127,6 +130,9 @@ CREATE POLICY "Clients can update own needs" ON client_needs
 
 -- partner_proposals: 니즈 작성자와 제안자만 조회
 ALTER TABLE partner_proposals ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view proposals for their needs or own proposals" ON partner_proposals;
+DROP POLICY IF EXISTS "Partners can create proposals" ON partner_proposals;
+DROP POLICY IF EXISTS "Partners can update own proposals" ON partner_proposals;
 CREATE POLICY "Users can view proposals for their needs or own proposals" ON partner_proposals 
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM client_needs WHERE id = need_id AND client_id = auth.uid())
@@ -139,6 +145,7 @@ CREATE POLICY "Partners can update own proposals" ON partner_proposals
 
 -- need_activities: 관련자만 조회
 ALTER TABLE need_activities ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view activities for their needs" ON need_activities;
 CREATE POLICY "Users can view activities for their needs" ON need_activities 
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM client_needs WHERE id = need_id AND client_id = auth.uid())
@@ -147,6 +154,8 @@ CREATE POLICY "Users can view activities for their needs" ON need_activities
 
 -- notifications: 본인 것만 조회/수정
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view own notifications" ON notifications;
+DROP POLICY IF EXISTS "Users can update own notifications" ON notifications;
 CREATE POLICY "Users can view own notifications" ON notifications 
   FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Users can update own notifications" ON notifications 

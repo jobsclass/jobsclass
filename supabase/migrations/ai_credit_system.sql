@@ -129,26 +129,31 @@ ADD COLUMN IF NOT EXISTS free_credits_used BOOLEAN DEFAULT false; -- 무료 크�
 
 -- ai_credits: 본인 것만 조회
 ALTER TABLE ai_credits ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view own credits" ON ai_credits;
 CREATE POLICY "Users can view own credits" ON ai_credits 
   FOR SELECT USING (auth.uid() = user_id);
 
 -- credit_transactions: 본인 것만 조회
 ALTER TABLE credit_transactions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view own transactions" ON credit_transactions;
 CREATE POLICY "Users can view own transactions" ON credit_transactions 
   FOR SELECT USING (auth.uid() = user_id);
 
 -- credit_packages: 모두 읽기 가능
 ALTER TABLE credit_packages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view credit packages" ON credit_packages;
 CREATE POLICY "Anyone can view credit packages" ON credit_packages 
   FOR SELECT USING (true);
 
 -- ai_feature_costs: 모두 읽기 가능
 ALTER TABLE ai_feature_costs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view AI feature costs" ON ai_feature_costs;
 CREATE POLICY "Anyone can view AI feature costs" ON ai_feature_costs 
   FOR SELECT USING (true);
 
 -- credit_purchases: 본인 것만 조회
 ALTER TABLE credit_purchases ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view own purchases" ON credit_purchases;
 CREATE POLICY "Users can view own purchases" ON credit_purchases 
   FOR SELECT USING (auth.uid() = user_id);
 

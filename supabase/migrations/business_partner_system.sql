@@ -155,15 +155,20 @@ ADD COLUMN IF NOT EXISTS partner_plan_id TEXT REFERENCES partner_plans(id); -- �
 
 -- partner_plans: 모두 읽기 가능
 ALTER TABLE partner_plans ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view partner plans" ON partner_plans;
 CREATE POLICY "Anyone can view partner plans" ON partner_plans FOR SELECT USING (true);
 
 -- partner_subscriptions: 본인 것만 조회
 ALTER TABLE partner_subscriptions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view own subscriptions" ON partner_subscriptions;
 CREATE POLICY "Users can view own subscriptions" ON partner_subscriptions 
   FOR SELECT USING (auth.uid() = user_id);
 
 -- conversations: 참여자만 조회
 ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view own conversations" ON conversations;
+DROP POLICY IF EXISTS "Users can create conversations" ON conversations;
+DROP POLICY IF EXISTS "Users can update own conversations" ON conversations;
 CREATE POLICY "Users can view own conversations" ON conversations 
   FOR SELECT USING (auth.uid() = partner_id OR auth.uid() = client_id);
 CREATE POLICY "Users can create conversations" ON conversations 
@@ -173,6 +178,8 @@ CREATE POLICY "Users can update own conversations" ON conversations
 
 -- messages: 대화 참여자만 조회/생성
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view messages in their conversations" ON messages;
+DROP POLICY IF EXISTS "Users can send messages in their conversations" ON messages;
 CREATE POLICY "Users can view messages in their conversations" ON messages 
   FOR SELECT USING (
     EXISTS (
@@ -193,6 +200,7 @@ CREATE POLICY "Users can send messages in their conversations" ON messages
 
 -- contact_detection_logs: 관리자만 조회
 ALTER TABLE contact_detection_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Only admins can view contact logs" ON contact_detection_logs;
 CREATE POLICY "Only admins can view contact logs" ON contact_detection_logs 
   FOR SELECT USING (
     EXISTS (

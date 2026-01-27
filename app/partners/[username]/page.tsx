@@ -5,15 +5,13 @@ import Link from 'next/link'
 import { Header } from '@/components/layout/Header'
 import { 
   MapPin, 
-  Mail, 
   Globe, 
   Star, 
   Users, 
-  Award,
-  Calendar,
-  Package,
   MessageCircle,
-  ExternalLink
+  ExternalLink,
+  BookOpen,
+  Briefcase
 } from 'lucide-react'
 
 type Partner = {
@@ -37,10 +35,29 @@ type Service = {
   title: string
   description: string
   price: number
-  category: string
+  service_type: string
   thumbnail_url?: string
-  rating_average: number
+  view_count: number
   purchase_count: number
+}
+
+type BlogPost = {
+  id: string
+  title: string
+  excerpt?: string
+  featured_image_url?: string
+  created_at: string
+  is_published: boolean
+}
+
+type Portfolio = {
+  id: string
+  title: string
+  description: string
+  thumbnail_url?: string
+  client?: string
+  category?: string
+  created_at: string
 }
 
 type Review = {
@@ -58,6 +75,8 @@ export default function PartnerPage({ params }: { params: Promise<{ username: st
   const [username, setUsername] = useState<string>('')
   const [partner, setPartner] = useState<Partner | null>(null)
   const [services, setServices] = useState<Service[]>([])
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
   const [activeSection, setActiveSection] = useState('profile')
@@ -78,14 +97,27 @@ export default function PartnerPage({ params }: { params: Promise<{ username: st
       setPartner(profileData.partner)
 
       // Fetch partner services
-      const servicesRes = await fetch(`/api/products?partnerId=${profileData.partner.id}&status=published`)
+      const servicesRes = await fetch(`/api/products?userId=${profileData.partner.id}&isPublished=true`)
       if (servicesRes.ok) {
         const servicesData = await servicesRes.json()
         setServices(servicesData.products || [])
       }
 
-      // Fetch reviews (TODO: create reviews API)
-      // For now, mock data
+      // Fetch blog posts
+      const blogRes = await fetch(`/api/blog/public?userId=${profileData.partner.id}`)
+      if (blogRes.ok) {
+        const blogData = await blogRes.json()
+        setBlogPosts(blogData.posts || [])
+      }
+
+      // Fetch portfolios
+      const portfolioRes = await fetch(`/api/portfolio/public?userId=${profileData.partner.id}`)
+      if (portfolioRes.ok) {
+        const portfolioData = await portfolioRes.json()
+        setPortfolios(portfolioData.items || [])
+      }
+
+      // Reviews are TODO
       setReviews([])
     } catch (error) {
       console.error('Error fetching partner data:', error)
@@ -138,8 +170,9 @@ export default function PartnerPage({ params }: { params: Promise<{ username: st
             {[
               { id: 'profile', label: '프로필' },
               { id: 'services', label: '서비스' },
+              { id: 'portfolio', label: '포트폴리오' },
+              { id: 'blog', label: '블로그' },
               { id: 'reviews', label: '리뷰' },
-              { id: 'contact', label: '연락처' },
             ].map((item) => (
               <button
                 key={item.id}
@@ -283,17 +316,86 @@ export default function PartnerPage({ params }: { params: Promise<{ username: st
                       </span>
                       <div className="flex items-center gap-4 text-sm text-gray-500">
                         <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                          <span>{service.rating_average.toFixed(1)}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
                           <Users className="w-4 h-4" />
-                          <span>{service.purchase_count}</span>
+                          <span>{service.purchase_count || 0}</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Portfolio Section */}
+      <section id="portfolio" className="py-16 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+            <Briefcase className="w-8 h-8" />
+            포트폴리오
+          </h2>
+          
+          {portfolios.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
+              <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-500">아직 등록된 포트폴리오가 없습니다.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {portfolios.map((item) => (
+                <div key={item.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all">
+                  {item.thumbnail_url && (
+                    <div className="aspect-video bg-gray-200">
+                      <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">{item.description}</p>
+                    {item.client && (
+                      <p className="text-xs text-blue-600">클라이언트: {item.client}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Blog Section */}
+      <section id="blog" className="py-16 px-4 bg-white/50">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+            <BookOpen className="w-8 h-8" />
+            블로그
+          </h2>
+          
+          {blogPosts.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              아직 작성된 글이 없습니다.
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {blogPosts.map((post) => (
+                <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all">
+                  {post.featured_image_url && (
+                    <div className="aspect-video bg-gray-200">
+                      <img src={post.featured_image_url} alt={post.title} className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{post.title}</h3>
+                    {post.excerpt && (
+                      <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                    )}
+                    <p className="text-sm text-gray-500">
+                      {new Date(post.created_at).toLocaleDateString('ko-KR')}
+                    </p>
+                  </div>
+                </div>
               ))}
             </div>
           )}
@@ -348,8 +450,8 @@ export default function PartnerPage({ params }: { params: Promise<{ username: st
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-16 px-4 bg-white/50">
+      {/* CTA Section */}
+      <section className="py-16 px-4 bg-white/50">
         <div className="container mx-auto max-w-5xl">
           <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl shadow-xl p-8 md:p-12 text-white text-center">
             <h2 className="text-3xl font-bold mb-4">지금 바로 시작하세요</h2>
@@ -357,16 +459,12 @@ export default function PartnerPage({ params }: { params: Promise<{ username: st
               {partner.display_name}님과 함께 성장하세요
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="#services"
-                onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection('services')
-                }}
+              <button
+                onClick={() => scrollToSection('services')}
                 className="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-colors"
               >
                 서비스 둘러보기
-              </Link>
+              </button>
               {partner.website_url && (
                 <a
                   href={partner.website_url}

@@ -234,6 +234,9 @@ EXECUTE FUNCTION notify_new_proposal();
 -- ============================================
 -- 9. 트리거: 제안 수락 시 알림
 -- ============================================
+DROP TRIGGER IF EXISTS trigger_notify_proposal_accepted ON partner_proposals;
+DROP FUNCTION IF EXISTS notify_proposal_accepted();
+
 CREATE OR REPLACE FUNCTION notify_proposal_accepted()
 RETURNS TRIGGER AS $$
 DECLARE

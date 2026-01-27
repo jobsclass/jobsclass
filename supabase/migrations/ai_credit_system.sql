@@ -161,6 +161,9 @@ CREATE POLICY "Users can view own purchases" ON credit_purchases
 -- ============================================
 -- 8. 트리거: 크레딧 거래 시 잔액 업데이트
 -- ============================================
+DROP TRIGGER IF EXISTS trigger_update_credit_balance ON credit_transactions;
+DROP FUNCTION IF EXISTS update_credit_balance();
+
 CREATE OR REPLACE FUNCTION update_credit_balance()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -195,6 +198,9 @@ EXECUTE FUNCTION update_credit_balance();
 -- ============================================
 -- 9. 트리거: 신규 가입 시 무료 크레딧 지급
 -- ============================================
+DROP TRIGGER IF EXISTS trigger_give_welcome_credits ON user_profiles;
+DROP FUNCTION IF EXISTS give_welcome_credits();
+
 CREATE OR REPLACE FUNCTION give_welcome_credits()
 RETURNS TRIGGER AS $$
 BEGIN

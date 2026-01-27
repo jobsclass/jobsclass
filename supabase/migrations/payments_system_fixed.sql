@@ -50,13 +50,13 @@ ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "orders_select_policy" ON orders;
 CREATE POLICY "orders_select_policy" ON orders
   FOR SELECT USING (
-    buyer_id = auth.uid() OR 
+    orders.buyer_id = auth.uid() OR 
     product_id IN (SELECT id FROM products WHERE user_id = auth.uid())
   );
 
 DROP POLICY IF EXISTS "orders_insert_policy" ON orders;
 CREATE POLICY "orders_insert_policy" ON orders
-  FOR INSERT WITH CHECK (buyer_id = auth.uid());
+  FOR INSERT WITH CHECK (orders.buyer_id = auth.uid());
 
 COMMENT ON TABLE orders IS '서비스 구매 주문 (정액제)';
 

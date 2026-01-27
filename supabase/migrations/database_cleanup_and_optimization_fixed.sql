@@ -18,9 +18,9 @@ CREATE INDEX IF NOT EXISTS idx_products_user_published ON products(user_id, is_p
 -- 가격 범위 검색 최적화
 CREATE INDEX IF NOT EXISTS idx_products_price_range ON products(price) WHERE price IS NOT NULL;
 
--- 전문 검색 (Full-text search)
+-- 전문 검색 (Full-text search) - simple 사용 (korean 대신)
 CREATE INDEX IF NOT EXISTS idx_products_search ON products 
-USING gin(to_tsvector('korean', COALESCE(title, '') || ' ' || COALESCE(description, '')));
+USING gin(to_tsvector('simple', COALESCE(title, '') || ' ' || COALESCE(description, '')));
 
 -- ============================================
 -- 2. 검색 함수 추가
@@ -70,8 +70,8 @@ BEGIN
     AND (max_price IS NULL OR p.price <= max_price)
     AND (
       search_query IS NULL OR
-      to_tsvector('korean', COALESCE(p.title, '') || ' ' || COALESCE(p.description, ''))
-      @@ plainto_tsquery('korean', search_query)
+      to_tsvector('simple', COALESCE(p.title, '') || ' ' || COALESCE(p.description, ''))
+      @@ plainto_tsquery('simple', search_query)
     )
   ORDER BY
     CASE WHEN sort_by = 'created_at' AND sort_order = 'DESC' THEN p.created_at END DESC,

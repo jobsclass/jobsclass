@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const { data: item, error: updateError } = await supabase
-      .from('portfolio_items')
+      .from('portfolios')
       .update(updateData)
       .eq('id', id)
       .eq('user_id', user.id)
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { data: item, error: fetchError } = await supabase
-      .from('portfolio_items')
+      .from('portfolios')
       .select('*')
       .eq('id', itemId)
       .eq('user_id', user.id)

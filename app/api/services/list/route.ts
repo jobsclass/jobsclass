@@ -14,11 +14,11 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // 서비스 목록 조회 (partner_id 기준)
+    // 서비스 목록 조회 (user_id 기준)
     const { data: services, error: servicesError } = await supabase
-      .from('services')
+      .from('products')
       .select('*')
-      .eq('partner_id', user.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
 
     if (servicesError) {

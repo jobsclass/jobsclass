@@ -14,7 +14,7 @@ export async function GET(
       .from('user_profiles')
       .select('*')
       .eq('username', username)
-      .eq('role', 'partner')
+      .eq('user_type', 'partner')
       .single()
 
     if (error || !partner) {

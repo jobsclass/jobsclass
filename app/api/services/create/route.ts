@@ -75,9 +75,9 @@ export async function POST(request: Request) {
 
     // Slug 중복 확인
     const { data: existingService } = await supabase
-      .from('services')
+      .from('products')
       .select('id')
-      .eq('partner_id', user.id)
+      .eq('user_id', user.id)
       .eq('slug', slug)
       .single()
 
@@ -90,9 +90,9 @@ export async function POST(request: Request) {
 
     // 서비스 생성
     const { data, error } = await supabase
-      .from('services')
+      .from('products')
       .insert({
-        partner_id: user.id,
+        user_id: user.id,
         
         // 서비스 타입
         service_type: serviceType,

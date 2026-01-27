@@ -26,10 +26,10 @@ export async function DELETE(request: NextRequest) {
 
     // 서비스 삭제 (본인 것만)
     const { error: deleteError } = await supabase
-      .from('services')
+      .from('products')
       .delete()
       .eq('id', serviceId)
-      .eq('partner_id', user.id)
+      .eq('user_id', user.id)
 
     if (deleteError) {
       console.error('Delete error:', deleteError)

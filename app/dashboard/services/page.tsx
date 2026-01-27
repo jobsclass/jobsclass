@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 interface Service {
   id: string
   title: string
-  service_category: string
+  service_type: string
   price: number
   is_published: boolean
   thumbnail_url?: string
@@ -58,7 +58,7 @@ export default function ServicesPage() {
 
   const filteredServices = services.filter(service => {
     const matchesSearch = service.title.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = categoryFilter === '전체' || service.service_category === categoryFilter
+    const matchesCategory = categoryFilter === '전체' || service.service_type === categoryFilter
     return matchesSearch && matchesCategory
   })
 
@@ -166,7 +166,7 @@ export default function ServicesPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className="px-3 py-1 bg-primary-500/20 text-primary-300 text-sm rounded-lg">
-                      {service.service_category || '미분류'}
+                      {service.service_type || '미분류'}
                     </span>
                   </td>
                   <td className="px-6 py-4">

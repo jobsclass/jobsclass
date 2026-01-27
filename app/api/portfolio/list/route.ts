@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     // 포트폴리오 목록 조회
     const { data: items, error: itemsError } = await supabase
-      .from('portfolio_items')
+      .from('portfolios')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })

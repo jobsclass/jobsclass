@@ -94,13 +94,13 @@ export default function MarketplacePage() {
         .from('products')
         .select(`
           *,
-          user_profiles!products_partner_id_fkey (
+          user_profiles!products_user_id_fkey (
             display_name,
             username,
             partner_success_rate
           )
         `)
-        .eq('status', 'active')
+        .eq('is_published', true)
 
       if (selectedCategory !== 'all') {
         query = query.eq('category', selectedCategory)

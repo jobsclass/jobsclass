@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // slug 중복 확인
     const { data: existingItem } = await supabase
-      .from('portfolio_items')
+      .from('portfolios')
       .select('id')
       .eq('user_id', user.id)
       .eq('slug', slug)
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // 포트폴리오 항목 저장
     const { data: item, error: insertError } = await supabase
-      .from('portfolio_items')
+      .from('portfolios')
       .insert({
         user_id: user.id,
         title,

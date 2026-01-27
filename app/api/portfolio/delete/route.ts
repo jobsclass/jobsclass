@@ -26,7 +26,7 @@ export async function DELETE(request: NextRequest) {
 
     // 항목 삭제 (본인 것만)
     const { error: deleteError } = await supabase
-      .from('portfolio_items')
+      .from('portfolios')
       .delete()
       .eq('id', itemId)
       .eq('user_id', user.id)

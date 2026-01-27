@@ -330,7 +330,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="py-12 px-4 border-t border-white/10">
         <div className="container mx-auto max-w-7xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
               <h4 className="text-white font-bold mb-4">서비스</h4>
               <ul className="space-y-2 text-gray-400">
@@ -340,32 +340,24 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-4">지원</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">고객센터</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">이용가이드</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-              </ul>
-            </div>
-            <div>
               <h4 className="text-white font-bold mb-4">회사</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">소개</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">채용</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">파트너십</a></li>
+                <li><Link href="/#about" className="hover:text-white transition-colors">소개</Link></li>
+                <li><Link href="/#pricing" className="hover:text-white transition-colors">가격 정책</Link></li>
+                <li><Link href="/#services" className="hover:text-white transition-colors">서비스 타입</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-4">법적고지</h4>
+              <h4 className="text-white font-bold mb-4">문의</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">이용약관</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">개인정보처리방침</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">사업자정보</a></li>
+                <li className="text-sm">이메일: support@jobsclass.com</li>
+                <li className="text-sm">운영시간: 평일 10:00-18:00</li>
               </ul>
             </div>
           </div>
-          <div className="text-center text-gray-500 text-sm">
-            © 2025 JobsClass. All rights reserved.
+          <div className="text-center text-gray-500 text-sm pt-8 border-t border-white/10">
+            <p>© 2025 JobsClass. All rights reserved.</p>
+            <p className="mt-2 text-xs">사업자등록번호: 준비중 | 통신판매업신고: 준비중</p>
           </div>
         </div>
       </footer>

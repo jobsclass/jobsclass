@@ -208,7 +208,7 @@ function SignupContent() {
                 )}
               </div>
               <p className="text-xs text-gray-400">
-                가입 시 <strong className="text-primary-400">100 AI 크레딧</strong>이 무료로 제공됩니다! 🎉
+                가입 시 <strong className="text-primary-400">100 크레딧</strong>이 무료로 제공됩니다! 🎉
               </p>
             </div>
 

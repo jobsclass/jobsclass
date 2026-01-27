@@ -73,7 +73,7 @@ export default async function PartnerDashboard({
               <div>
                 <h3 className="text-lg font-bold text-green-400 mb-1">등록 완료!</h3>
                 <p className="text-sm text-gray-300">
-                  사업자 정보가 제출되었습니다. 승인 후 100 AI 크레딧이 지급됩니다! 🎉
+                  사업자 정보가 제출되었습니다. 승인 후 100 크레딧이 지급됩니다! 🎉
                 </p>
               </div>
             </div>
@@ -106,7 +106,7 @@ export default async function PartnerDashboard({
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-primary-400" />
-              <span className="text-xs text-gray-400">AI 크레딧</span>
+              <span className="text-xs text-gray-400">크레딧</span>
             </div>
             <p className="text-xl md:text-2xl font-bold">{stats.aiCredits}</p>
             <Link href="#" className="text-xs text-primary-400 hover:underline mt-1 inline-block">

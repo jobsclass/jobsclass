@@ -57,7 +57,7 @@ export default function HomePage() {
             </div>
             <div className="grid md:grid-cols-3 gap-4 text-sm">
               <div className="bg-gray-900/50 rounded-lg p-4">
-                <div className="text-yellow-400 font-bold mb-1">100 AI 크레딧</div>
+                <div className="text-yellow-400 font-bold mb-1">100 크레딧</div>
                 <div className="text-gray-400">무료 제공</div>
               </div>
               <div className="bg-gray-900/50 rounded-lg p-4">

@@ -164,6 +164,9 @@ CREATE POLICY "Users can update own notifications" ON notifications
 -- ============================================
 -- 7. 트리거: 제안 수 자동 업데이트
 -- ============================================
+DROP TRIGGER IF EXISTS trigger_update_need_proposal_count ON partner_proposals;
+DROP FUNCTION IF EXISTS update_need_proposal_count();
+
 CREATE OR REPLACE FUNCTION update_need_proposal_count()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -189,6 +192,9 @@ EXECUTE FUNCTION update_need_proposal_count();
 -- ============================================
 -- 8. 트리거: 제안 시 알림 생성
 -- ============================================
+DROP TRIGGER IF EXISTS trigger_notify_new_proposal ON partner_proposals;
+DROP FUNCTION IF EXISTS notify_new_proposal();
+
 CREATE OR REPLACE FUNCTION notify_new_proposal()
 RETURNS TRIGGER AS $$
 DECLARE

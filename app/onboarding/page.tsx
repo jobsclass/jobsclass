@@ -243,7 +243,7 @@ export default function OnboardingPage() {
           <p className="text-sm text-blue-300">
             ℹ️ 관리자 승인 후 24시간 내에 이메일로 알림을 받으실 수 있습니다.
             <br />
-            승인 완료 시 <strong>100 AI 크레딧</strong>이 무료로 제공됩니다! 🎉
+            승인 완료 시 <strong>100 크레딧</strong>이 무료로 제공됩니다! 🎉
           </p>
         </div>
       </div>

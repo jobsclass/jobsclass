@@ -212,6 +212,9 @@ CREATE POLICY "Only admins can view contact logs" ON contact_detection_logs
 -- ============================================
 -- 9. 트리거: 대화 업데이트
 -- ============================================
+DROP TRIGGER IF EXISTS trigger_update_conversation_on_message ON messages;
+DROP FUNCTION IF EXISTS update_conversation_on_message();
+
 CREATE OR REPLACE FUNCTION update_conversation_on_message()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -241,6 +244,9 @@ EXECUTE FUNCTION update_conversation_on_message();
 -- ============================================
 -- 10. 트리거: 메시지 읽음 처리
 -- ============================================
+DROP TRIGGER IF EXISTS trigger_mark_message_as_read ON messages;
+DROP FUNCTION IF EXISTS mark_message_as_read();
+
 CREATE OR REPLACE FUNCTION mark_message_as_read()
 RETURNS TRIGGER AS $$
 BEGIN

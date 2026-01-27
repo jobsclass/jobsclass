@@ -195,7 +195,7 @@ export default function ProposeNeedPage({
             <Sparkles className="w-5 h-5 text-primary-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-white">AI 크레딧 차감</span>
+                <span className="text-sm font-semibold text-white">크레딧 차감</span>
                 <span className="text-lg font-bold text-primary-400">{creditCost} 크레딧</span>
               </div>
               <p className="text-xs text-gray-400">

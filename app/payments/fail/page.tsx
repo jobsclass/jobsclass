@@ -1,10 +1,11 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { XCircle } from 'lucide-react'
 
-export default function PaymentFailPage() {
+function PaymentFailContent() {
   const searchParams = useSearchParams()
   const message = searchParams.get('message') || '결제가 취소되었습니다'
   const code = searchParams.get('code')
@@ -36,5 +37,17 @@ export default function PaymentFailPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PaymentFailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-400"></div>
+      </div>
+    }>
+      <PaymentFailContent />
+    </Suspense>
   )
 }

@@ -4,7 +4,17 @@
 -- ============================================
 
 -- ============================================
--- 1. products 테이블 최종 구조 확정
+-- 1. 누락된 컬럼 먼저 추가
+-- ============================================
+ALTER TABLE products
+ADD COLUMN IF NOT EXISTS partner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+ADD COLUMN IF NOT EXISTS category TEXT,
+ADD COLUMN IF NOT EXISTS product_type TEXT,
+ADD COLUMN IF NOT EXISTS service_type TEXT,
+ADD COLUMN IF NOT EXISTS pricing_model TEXT DEFAULT 'fixed';
+
+-- ============================================
+-- 2. products 테이블 최종 구조 확정
 -- ============================================
 -- 이미 존재하는 products 테이블을 JobsClass 표준으로 사용
 -- services 테이블은 레거시로 처리 (사용 안 함)

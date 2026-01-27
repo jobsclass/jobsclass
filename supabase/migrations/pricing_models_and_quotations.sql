@@ -3,6 +3,13 @@
 -- ============================================
 
 -- ============================================
+-- 0. 필요한 컬럼 먼저 추가
+-- ============================================
+ALTER TABLE products
+ADD COLUMN IF NOT EXISTS partner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+ADD COLUMN IF NOT EXISTS price NUMERIC(12, 2);
+
+-- ============================================
 -- 1. pricing_model ENUM 생성
 -- ============================================
 DO $$ 

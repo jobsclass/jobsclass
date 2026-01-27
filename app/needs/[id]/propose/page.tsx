@@ -186,7 +186,7 @@ export default function ProposeNeedPage({
 
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">제안서 작성</h1>
-          <p className="text-gray-400">니즈: {need.title}</p>
+          <p className="text-gray-400">서비스 요청: {need.title}</p>
         </div>
 
         {/* 크레딧 안내 */}

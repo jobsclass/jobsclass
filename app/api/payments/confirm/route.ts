@@ -1,153 +1,116 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
-/**
- * POST /api/payments/confirm
- * Toss Payments 결제 승인
- * 
- * Toss Payments에서 리다이렉트된 후 호출됨
- * Query params: paymentKey, orderId, amount
- */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    
-    const body = await request.json()
-    const { paymentKey, orderId, amount } = body
+    const { paymentKey, orderId, amount } = await request.json()
 
-    // 필수 필드 검증
     if (!paymentKey || !orderId || !amount) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: '필수 파라미터가 누락되었습니다' },
         { status: 400 }
       )
     }
 
-    // Toss Payments Secret Key
-    const secretKey = process.env.TOSS_SECRET_KEY
-    if (!secretKey) {
-      console.error('TOSS_SECRET_KEY is not configured')
-      return NextResponse.json(
-        { error: 'Payment system is not configured. Please add TOSS_SECRET_KEY to environment variables.' },
-        { status: 500 }
-      )
-    }
+    // Toss Payments 서버에 결제 승인 요청
+    const tossResponse = await fetch(
+      'https://api.tosspayments.com/v1/payments/confirm',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${Buffer.from(
+            process.env.TOSS_SECRET_KEY + ':'
+          ).toString('base64')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          paymentKey,
+          orderId,
+          amount: parseInt(amount),
+        }),
+      }
+    )
 
-    // 주문 조회 (order_number 기준)
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .select('*')
-      .eq('order_number', orderId)
-      .single()
-
-    if (orderError || !order) {
-      return NextResponse.json(
-        { error: 'Order not found' },
-        { status: 404 }
-      )
-    }
-
-    // 금액 검증
-    if (parseFloat(amount) !== order.total_amount) {
-      return NextResponse.json(
-        { error: 'Amount mismatch' },
-        { status: 400 }
-      )
-    }
-
-    // 이미 결제 완료된 주문인지 확인
-    if (order.status === 'paid') {
-      return NextResponse.json(
-        { error: 'Order is already paid' },
-        { status: 400 }
-      )
-    }
-
-    // Toss Payments API 호출 - 결제 승인
-    const tossResponse = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${Buffer.from(`${secretKey}:`).toString('base64')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        paymentKey,
-        orderId,
-        amount,
-      }),
-    })
-
-    const tossData = await tossResponse.json()
+    const payment = await tossResponse.json()
 
     if (!tossResponse.ok) {
-      console.error('Toss Payments error:', tossData)
+      console.error('Toss 결제 승인 실패:', payment)
       return NextResponse.json(
-        { 
-          error: tossData.message || 'Payment confirmation failed',
-          code: tossData.code,
-        },
+        { error: payment.message || '결제 승인에 실패했습니다' },
         { status: tossResponse.status }
       )
     }
 
-    // 결제 정보 저장
-    const { data: payment, error: paymentError } = await supabase
-      .from('payments')
+    // Supabase에 주문 정보 저장
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_KEY!
+    )
+
+    // 주문 번호에서 product_id 추출 (URL 파라미터로 전달된 경우)
+    const url = new URL(request.url)
+    const productId = url.searchParams.get('productId')
+
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
       .insert({
-        order_id: order.id,
+        order_number: orderId,
+        buyer_id: payment.customerId || null,
+        product_id: productId,
+        amount: payment.totalAmount,
+        payment_method: payment.method,
         payment_key: paymentKey,
-        method: tossData.method || '카드',
-        amount: parseFloat(amount),
-        status: 'done',
-        approved_at: new Date().toISOString(),
-        toss_response: tossData, // 전체 응답 저장
+        status: 'paid',
+        paid_at: payment.approvedAt,
+        toss_response: payment,
       })
       .select()
       .single()
 
-    if (paymentError) {
-      console.error('Payment record error:', paymentError)
-      // 결제는 성공했지만 DB 저장 실패 - 수동 처리 필요
+    if (orderError) {
+      console.error('주문 저장 오류:', orderError)
       return NextResponse.json(
-        { 
-          error: 'Payment succeeded but failed to save record',
-          paymentKey,
-          orderId,
-        },
+        { error: '주문 정보 저장에 실패했습니다' },
         { status: 500 }
       )
     }
 
-    // 주문 상태 업데이트
-    const { error: updateError } = await supabase
-      .from('orders')
-      .update({ 
-        status: 'paid',
-        paid_at: new Date().toISOString(),
+    // 크레딧 충전인 경우 (product_id가 없으면 크레딧 충전)
+    if (!productId && payment.customerId) {
+      const creditAmount = Math.floor(payment.totalAmount / 10)
+      let bonus = 0
+
+      // 보너스 계산
+      if (payment.totalAmount >= 100000) {
+        bonus = Math.floor(creditAmount * 0.2)
+      } else if (payment.totalAmount >= 50000) {
+        bonus = Math.floor(creditAmount * 0.1)
+      }
+
+      const totalCredits = creditAmount + bonus
+
+      // charge_credits 함수 호출
+      const { error: creditError } = await supabase.rpc('charge_credits', {
+        p_user_id: payment.customerId,
+        p_amount: totalCredits,
+        p_order_id: order.id,
+        p_description: `크레딧 충전 (₩${payment.totalAmount.toLocaleString()})`,
       })
-      .eq('id', order.id)
 
-    if (updateError) {
-      console.error('Order update error:', updateError)
+      if (creditError) {
+        console.error('크레딧 충전 오류:', creditError)
+      }
     }
-
-    // TODO: 이메일 알림 발송
-    // TODO: AI 사용량 로그 기록 (FREE 플랜 → STARTER 전환 시)
 
     return NextResponse.json({
       success: true,
       payment,
-      order: {
-        ...order,
-        status: 'paid',
-      },
-      message: 'Payment confirmed successfully',
+      order,
     })
-
   } catch (error: any) {
-    console.error('Server error:', error)
+    console.error('결제 처리 오류:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: error.message || '결제 처리 중 오류가 발생했습니다' },
       { status: 500 }
     )
   }

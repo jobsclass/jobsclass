@@ -42,20 +42,28 @@ interface Need {
 
 const categories = [
   { id: 'all', name: '전체', icon: '🎯' },
-  { id: 'design', name: '디자인', icon: '🎨' },
-  { id: 'development', name: '개발', icon: '💻' },
-  { id: 'marketing', name: '마케팅', icon: '📈' },
-  { id: 'writing', name: '콘텐츠', icon: '✍️' },
-  { id: 'business', name: '비즈니스', icon: '💼' },
-  { id: 'education', name: '교육', icon: '📚' },
+  { id: 'development', name: '개발 & 기술', icon: '💻' },
+  { id: 'design', name: '디자인 & 크리에이티브', icon: '🎨' },
+  { id: 'marketing', name: '마케팅 & 세일즈', icon: '📢' },
+  { id: 'business', name: '비즈니스 & 전략', icon: '📊' },
+  { id: 'content', name: '콘텐츠 & 크리에이터', icon: '✍️' },
+  { id: 'education', name: '교육 & 멘토링', icon: '📚' },
+  { id: 'lifestyle', name: '라이프스타일 & 웰니스', icon: '🧘' },
+  { id: 'writing', name: '크리에이티브 라이팅', icon: '✒️' },
 ]
 
 const serviceTypes = [
-  { id: 'all', name: '전체' },
-  { id: 'course', name: '온라인 강의' },
-  { id: 'mentoring', name: '1:1 멘토링' },
-  { id: 'consulting', name: '컨설팅' },
-  { id: 'content', name: '디지털 콘텐츠' },
+  { id: 'all', name: '전체', icon: '🎯' },
+  { id: 'online_course', name: '온라인 강의', icon: '🎓' },
+  { id: 'one_on_one_mentoring', name: '1:1 멘토링', icon: '👥' },
+  { id: 'group_coaching', name: '그룹 코칭', icon: '👨‍👩‍👧‍👦' },
+  { id: 'digital_product', name: '디지털 콘텐츠', icon: '📄' },
+  { id: 'project_service', name: '프로젝트 대행', icon: '🔧' },
+  { id: 'consulting', name: '컨설팅', icon: '💼' },
+  { id: 'agency_service', name: '대행 서비스', icon: '📢' },
+  { id: 'premium_membership', name: '프리미엄 멤버십', icon: '⭐' },
+  { id: 'live_workshop', name: '라이브 워크샵', icon: '🎯' },
+  { id: 'promotion_service', name: '홍보/마케팅 서비스', icon: '📣' },
 ]
 
 export default function MarketplacePage() {
@@ -83,23 +91,23 @@ export default function MarketplacePage() {
     try {
       setLoading(true)
       let query = supabase
-        .from('services')
+        .from('products')
         .select(`
           *,
-          user_profiles!services_user_id_fkey (
+          user_profiles!products_partner_id_fkey (
             display_name,
             username,
             partner_success_rate
           )
         `)
-        .eq('status', 'published')
+        .eq('status', 'active')
 
       if (selectedCategory !== 'all') {
         query = query.eq('category', selectedCategory)
       }
 
       if (selectedType !== 'all') {
-        query = query.eq('type', selectedType)
+        query = query.eq('service_type', selectedType)
       }
 
       if (sortBy === 'latest') {
@@ -145,7 +153,7 @@ export default function MarketplacePage() {
       if (error) throw error
       setNeeds(data || [])
     } catch (error) {
-      console.error('니즈 로드 오류:', error)
+      console.error('서비스 요청 로드 오류:', error)
     } finally {
       setLoading(false)
     }
@@ -182,8 +190,11 @@ export default function MarketplacePage() {
             </Link>
 
             <div className="flex items-center gap-3">
+              <Link href="/marketplace/products/new" className="btn-primary text-sm">
+                서비스 등록
+              </Link>
               <Link href="/needs/new" className="btn-secondary text-sm">
-                니즈 등록하기
+                서비스 요청 등록
               </Link>
               <Link href="/dashboard" className="btn-ghost text-sm">
                 대시보드
@@ -198,7 +209,7 @@ export default function MarketplacePage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={activeTab === 'services' ? '어떤 서비스를 찾으시나요?' : '어떤 니즈를 찾으시나요?'}
+              placeholder={activeTab === 'services' ? '어떤 서비스를 찾으시나요?' : '어떤 서비스 요청을 찾으시나요?'}
               className="w-full pl-12 pr-4 py-3 bg-dark-900/50 border border-dark-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
             />
           </div>
@@ -225,7 +236,7 @@ export default function MarketplacePage() {
               }`}
             >
               <FileText className="w-5 h-5" />
-              니즈 ({needs.length})
+              서비스 요청 ({needs.length})
             </button>
           </div>
         </div>
@@ -266,13 +277,16 @@ export default function MarketplacePage() {
                       <button
                         key={type.id}
                         onClick={() => setSelectedType(type.id)}
-                        className={`w-full text-left px-4 py-2 rounded-lg transition-all ${
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all ${
                           selectedType === type.id
-                            ? 'bg-primary-500/20 text-primary-300 font-medium'
+                            ? 'bg-primary-500 text-white'
                             : 'text-gray-400 hover:bg-dark-800'
                         }`}
                       >
-                        {type.name}
+                        <span className="text-lg">{type.icon}</span>
+                        <span className={`text-sm ${selectedType === type.id ? 'font-semibold' : 'font-medium'}`}>
+                          {type.name}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -310,7 +324,7 @@ export default function MarketplacePage() {
                 <span className="text-white font-semibold">
                   {activeTab === 'services' ? filteredServices.length : filteredNeeds.length}
                 </span>
-                개의 {activeTab === 'services' ? '서비스' : '니즈'}
+                개의 {activeTab === 'services' ? '서비스' : '서비스 요청'}
               </p>
 
               <div className="flex items-center gap-2">
@@ -361,7 +375,7 @@ export default function MarketplacePage() {
               filteredServices.length === 0 ? (
                 <div className="text-center py-20">
                   <p className="text-gray-400 mb-4">등록된 서비스가 없습니다</p>
-                  <Link href="/dashboard/products/new" className="btn-primary inline-flex items-center gap-2">
+                  <Link href="/marketplace/products/new" className="btn-primary inline-flex items-center gap-2">
                     서비스 등록하기
                     <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -387,8 +401,9 @@ export default function MarketplacePage() {
                             {categories.find(c => c.id === service.category)?.icon || '🎯'}
                           </div>
                         )}
-                        <div className="absolute top-3 right-3 px-3 py-1 bg-dark-900/80 backdrop-blur-sm rounded-full text-xs text-white font-medium">
-                          {serviceTypes.find(t => t.id === service.type)?.name}
+                        <div className="absolute top-3 right-3 px-3 py-1 bg-dark-900/80 backdrop-blur-sm rounded-full text-xs text-white font-medium flex items-center gap-1">
+                          <span>{serviceTypes.find(t => t.id === service.type)?.icon}</span>
+                          <span>{serviceTypes.find(t => t.id === service.type)?.name}</span>
                         </div>
                       </div>
 
@@ -445,9 +460,9 @@ export default function MarketplacePage() {
               // 니즈 그리드
               filteredNeeds.length === 0 ? (
                 <div className="text-center py-20">
-                  <p className="text-gray-400 mb-4">등록된 니즈가 없습니다</p>
+                  <p className="text-gray-400 mb-4">등록된 서비스 요청이 없습니다</p>
                   <Link href="/needs/new" className="btn-primary inline-flex items-center gap-2">
-                    니즈 등록하기
+                    서비스 요청 등록하기
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>

@@ -73,7 +73,7 @@ function SignupContent() {
           email: formData.email,
           full_name: formData.fullName,
           profile_type: profileType,
-          ai_credits: 100, // 신규 가입 시 100 크레딧 무료 제공
+          ai_credits: 10000, // 신규 가입 시 10,000 크레딧 무료 제공 (= 10,000원)
           onboarding_complete: profileType === 'client' // 클라이언트는 즉시 완료
         })
 
@@ -88,8 +88,8 @@ function SignupContent() {
         .insert({
           user_id: authData.user.id,
           type: 'bonus',
-          amount: 100,
-          balance_after: 100,
+          amount: 10000,
+          balance_after: 10000,
           description: '신규 가입 축하 크레딧',
           metadata: { source: 'signup_bonus' }
         })
@@ -208,7 +208,7 @@ function SignupContent() {
                 )}
               </div>
               <p className="text-xs text-gray-400">
-                가입 시 <strong className="text-primary-400">100 크레딧</strong>이 무료로 제공됩니다! 🎉
+                가입 시 <strong className="text-primary-400">10,000 크레딧</strong>이 무료로 제공됩니다! 🎉
               </p>
             </div>
 

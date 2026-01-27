@@ -94,7 +94,7 @@ export default function NeedDetailPage({
       if (error) throw error
       setNeed(data)
     } catch (error) {
-      console.error('니즈 로드 오류:', error)
+      console.error('서비스 요청 로드 오류:', error)
     } finally {
       setLoading(false)
     }
@@ -173,7 +173,7 @@ export default function NeedDetailPage({
     return (
       <div className="min-h-screen bg-dark-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-400 mb-4">니즈를 찾을 수 없습니다</p>
+          <p className="text-gray-400 mb-4">서비스 요청를 찾을 수 없습니다</p>
           <Link href="/marketplace" className="btn-primary">
             마켓플레이스로 돌아가기
           </Link>

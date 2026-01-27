@@ -30,17 +30,17 @@ export default function UserLoginPage() {
       if (authError) throw authError
       if (!data.user) throw new Error('로그인에 실패했습니다')
 
-      // role에 따라 리디렉션
+      // profile_type에 따라 리디렉션
       const { data: profile } = await supabase
         .from('user_profiles')
-        .select('role')
+        .select('profile_type')
         .eq('user_id', data.user.id)
         .single()
 
-      if (profile?.role === 'partner') {
-        router.push('/dashboard')
+      if (profile?.profile_type === 'partner') {
+        router.push('/partner/dashboard')
       } else {
-        router.push('/marketplace')
+        router.push('/client/dashboard')
       }
     } catch (err: any) {
       console.error('Login error:', err)

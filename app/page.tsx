@@ -66,7 +66,7 @@ export default function HomePage() {
               </div>
               <div className="bg-gray-900/50 rounded-lg p-4">
                 <div className="text-yellow-400 font-bold mb-1">양방향 매칭</div>
-                <div className="text-gray-400">니즈 & 제안</div>
+                <div className="text-gray-400">서비스 요청 & 제안</div>
               </div>
             </div>
           </div>
@@ -94,56 +94,56 @@ export default function HomePage() {
       <section className="py-16 px-4 border-t border-white/10">
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-12">
-            다양한 지식 서비스 카테고리
+            다양한 서비스 카테고리
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
             <Link href="/marketplace?category=development" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
               <div className="text-3xl mb-3">💻</div>
-              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">개발</h3>
-              <p className="text-xs text-gray-400">웹/앱 개발, 시스템</p>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">개발 & 기술</h3>
+              <p className="text-xs text-gray-400">웹/앱 개발, AI/ML</p>
             </Link>
 
             <Link href="/marketplace?category=design" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
               <div className="text-3xl mb-3">🎨</div>
-              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">디자인</h3>
-              <p className="text-xs text-gray-400">UI/UX, 그래픽</p>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">디자인 & 크리에이티브</h3>
+              <p className="text-xs text-gray-400">UI/UX, 영상 편집</p>
             </Link>
 
             <Link href="/marketplace?category=marketing" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
               <div className="text-3xl mb-3">📢</div>
-              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">마케팅</h3>
-              <p className="text-xs text-gray-400">SNS, 콘텐츠</p>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">마케팅 & 세일즈</h3>
+              <p className="text-xs text-gray-400">SNS, 광고 대행</p>
             </Link>
 
             <Link href="/marketplace?category=business" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
               <div className="text-3xl mb-3">📊</div>
-              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">비즈니스</h3>
-              <p className="text-xs text-gray-400">컨설팅, 전략</p>
-            </Link>
-
-            <Link href="/marketplace?category=education" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
-              <div className="text-3xl mb-3">📚</div>
-              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">교육</h3>
-              <p className="text-xs text-gray-400">강의, 멘토링</p>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">비즈니스 & 전략</h3>
+              <p className="text-xs text-gray-400">컨설팅, 창업 지원</p>
             </Link>
 
             <Link href="/marketplace?category=content" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
               <div className="text-3xl mb-3">✍️</div>
-              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">콘텐츠</h3>
-              <p className="text-xs text-gray-400">글쓰기, 번역</p>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">콘텐츠 & 크리에이터</h3>
+              <p className="text-xs text-gray-400">유튜브, 블로그</p>
             </Link>
 
-            <Link href="/marketplace?category=video" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
-              <div className="text-3xl mb-3">🎬</div>
-              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">영상</h3>
-              <p className="text-xs text-gray-400">편집, 촬영</p>
+            <Link href="/marketplace?category=education" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">📚</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">교육 & 멘토링</h3>
+              <p className="text-xs text-gray-400">커리어 코칭, 강의</p>
             </Link>
 
-            <Link href="/marketplace?category=etc" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
-              <div className="text-3xl mb-3">🔧</div>
-              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">기타</h3>
-              <p className="text-xs text-gray-400">다양한 서비스</p>
+            <Link href="/marketplace?category=lifestyle" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">🧘</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">라이프스타일 & 웰니스</h3>
+              <p className="text-xs text-gray-400">헬스, 재테크</p>
+            </Link>
+
+            <Link href="/marketplace?category=writing" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-primary-500/50 transition-all group">
+              <div className="text-3xl mb-3">✒️</div>
+              <h3 className="font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">크리에이티브 라이팅</h3>
+              <p className="text-xs text-gray-400">카피라이팅, 번역</p>
             </Link>
           </div>
 
@@ -194,7 +194,7 @@ export default function HomePage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary-400 font-bold">2.</span>
-                  <span>서비스 등록 또는 니즈에 제안</span>
+                  <span>서비스 등록 또는 서비스 요청에 제안</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary-400 font-bold">3.</span>
@@ -222,7 +222,7 @@ export default function HomePage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-400 font-bold">2.</span>
-                  <span>서비스 구매 또는 니즈 등록</span>
+                  <span>서비스 구매 또는 서비스 요청 등록</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-400 font-bold">3.</span>

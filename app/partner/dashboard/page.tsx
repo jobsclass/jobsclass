@@ -1,250 +1,382 @@
-import { createClient } from '@/lib/supabase/server'
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { Plus, Sparkles, Clock, TrendingUp, Bell, CheckCircle } from 'lucide-react'
+'use client';
 
-export default async function PartnerDashboard({
-  searchParams
-}: {
-  searchParams: Promise<{ welcome?: string }>
-}) {
-  const supabase = await createClient()
-  
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/user/login')
+import { useEffect, useState } from 'react';
+import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import {
+  ChartBarIcon,
+  CurrencyDollarIcon,
+  ShoppingBagIcon,
+  ChatBubbleLeftRightIcon,
+  ClockIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
 
-  const { data: profile } = await supabase
-    .from('user_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
+interface DashboardStats {
+  total_services: number;
+  active_services: number;
+  total_sales: number;
+  pending_quotations: number;
+  total_reviews: number;
+  average_rating: number;
+  this_month_earnings: number;
+  total_earnings: number;
+}
 
-  if (!profile) redirect('/auth/user/signup')
-  if (profile.profile_type !== 'partner') redirect('/dashboard')
+interface Service {
+  id: string;
+  title: string;
+  service_type: string;
+  price: number;
+  status: string;
+  created_at: string;
+  view_count: number;
+  purchase_count: number;
+}
 
-  const isVerified = profile.business_verified === true
-  const params = await searchParams
-  const showWelcome = params.welcome === 'true'
+interface Quotation {
+  id: string;
+  title: string;
+  description: string;
+  budget_range: string;
+  status: string;
+  created_at: string;
+  client: {
+    name: string;
+  };
+}
 
-  // 데이터 로드
-  const [myProductsResult, myProposalsResult, matchingNeedsResult] = await Promise.all([
-    supabase
-      .from('products')
-      .select('id, title, price, status')
-      .eq('partner_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(3),
-    
-    supabase
-      .from('partner_proposals')
-      .select(`id, title, status, client_needs(id, title)`)
-      .eq('partner_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(3),
-    
-    supabase
-      .from('client_needs')
-      .select('id, title, budget_min, budget_max, deadline')
-      .eq('status', 'open')
-      .order('created_at', { ascending: false })
-      .limit(6)
-  ])
+export default function PartnerDashboard() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [recentServices, setRecentServices] = useState<Service[]>([]);
+  const [recentQuotations, setRecentQuotations] = useState<Quotation[]>([]);
 
-  const myProducts = myProductsResult.data || []
-  const myProposals = myProposalsResult.data || []
-  const matchingNeeds = matchingNeedsResult.data || []
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
 
-  const stats = {
-    aiCredits: profile.ai_credits || 0,
-    totalRevenue: profile.total_revenue || 0,
-    activeProducts: myProducts.filter((p: any) => p.status === 'active').length,
-    pendingProposals: myProposals.filter((p: any) => p.status === 'pending').length
+  async function loadDashboardData() {
+    try {
+      setLoading(true);
+
+      // Get current user
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/auth/login');
+        return;
+      }
+
+      // Load stats
+      const { data: services } = await supabase
+        .from('products')
+        .select('*')
+        .eq('partner_id', user.id);
+
+      const { data: quotations } = await supabase
+        .from('quotation_requests')
+        .select('*, user_profiles!client_id(name)')
+        .eq('partner_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      const { data: transactions } = await supabase
+        .from('payment_transactions')
+        .select('amount, status, created_at')
+        .eq('partner_id', user.id)
+        .eq('status', 'completed');
+
+      // Calculate stats
+      const activeServices = services?.filter((s) => s.status === 'active').length || 0;
+      const totalSales = transactions?.length || 0;
+      const totalEarnings =
+        transactions?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
+
+      const thisMonth = new Date();
+      thisMonth.setDate(1);
+      thisMonth.setHours(0, 0, 0, 0);
+
+      const thisMonthEarnings =
+        transactions
+          ?.filter((t) => new Date(t.created_at) >= thisMonth)
+          .reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
+
+      const pendingQuotations =
+        quotations?.filter((q) => q.status === 'pending').length || 0;
+
+      setStats({
+        total_services: services?.length || 0,
+        active_services: activeServices,
+        total_sales: totalSales,
+        pending_quotations: pendingQuotations,
+        total_reviews: 0, // TODO: Implement reviews
+        average_rating: 0, // TODO: Implement reviews
+        this_month_earnings: thisMonthEarnings,
+        total_earnings: totalEarnings,
+      });
+
+      setRecentServices(services?.slice(0, 5) || []);
+      setRecentQuotations(quotations || []);
+    } catch (error) {
+      console.error('Failed to load dashboard:', error);
+    } finally {
+      setLoading(false);
+    }
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-400"></div>
+      </div>
+    );
+  }
+
+  const serviceTypeLabels: Record<string, string> = {
+    online_course: '온라인 강의',
+    one_on_one_mentoring: '1:1 멘토링',
+    group_coaching: '그룹 코칭',
+    digital_product: '디지털 콘텐츠',
+    project_service: '프로젝트 대행',
+    consulting: '컨설팅',
+    agency_service: '대행 서비스',
+    premium_membership: '프리미엄 멤버십',
+    live_workshop: '라이브 워크샵',
+    promotion_service: '홍보/마케팅 서비스',
+  };
+
+  const statusLabels: Record<string, { label: string; color: string }> = {
+    active: { label: '활성', color: 'bg-green-500' },
+    pending: { label: '대기', color: 'bg-yellow-500' },
+    draft: { label: '임시저장', color: 'bg-gray-500' },
+    inactive: { label: '비활성', color: 'bg-red-500' },
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
-        
-        {/* 환영 메시지 */}
-        {showWelcome && (
-          <div className="mb-6 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-4 md:p-6">
-            <div className="flex items-start gap-3">
-              <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="text-lg font-bold text-green-400 mb-1">등록 완료!</h3>
-                <p className="text-sm text-gray-300">
-                  사업자 정보가 제출되었습니다. 승인 후 100 크레딧이 지급됩니다! 🎉
-                </p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-white">파트너 대시보드</h1>
+            <p className="text-gray-300 mt-2">서비스 현황과 매출을 한눈에 확인하세요</p>
           </div>
-        )}
-
-        {/* 헤더 */}
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold mb-1">안녕하세요, {profile.full_name}님! 👋</h1>
-          <p className="text-gray-400 text-sm md:text-base">오늘도 멋진 서비스를 만들어봅시다</p>
+          <Link
+            href="/marketplace/products/new"
+            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />새 서비스 등록
+          </Link>
         </div>
 
-        {/* 검증 대기 알림 */}
-        {!isVerified && (
-          <div className="mb-6 bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <Clock className="w-6 h-6 text-amber-400 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold text-amber-400 mb-1">검증 대기 중</h3>
-                <p className="text-sm text-gray-300">
-                  승인 완료 후 서비스 등록 및 제안서 제출이 가능합니다
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 통계 카드 */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-primary-400" />
-              <span className="text-xs text-gray-400">크레딧</span>
-            </div>
-            <p className="text-xl md:text-2xl font-bold">{stats.aiCredits}</p>
-            <Link href="#" className="text-xs text-primary-400 hover:underline mt-1 inline-block">
-              충전하기 →
-            </Link>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-green-400" />
-              <span className="text-xs text-gray-400">총 매출</span>
-            </div>
-            <p className="text-xl md:text-2xl font-bold">₩{(stats.totalRevenue / 10000).toFixed(0)}만</p>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-5 h-5 text-blue-400" />
-              <span className="text-xs text-gray-400">활성 서비스</span>
-            </div>
-            <p className="text-xl md:text-2xl font-bold">{stats.activeProducts}</p>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="w-5 h-5 text-orange-400" />
-              <span className="text-xs text-gray-400">대기 제안</span>
-            </div>
-            <p className="text-xl md:text-2xl font-bold">{stats.pendingProposals}</p>
-          </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatCard
+            icon={<ShoppingBagIcon className="h-6 w-6" />}
+            title="등록된 서비스"
+            value={stats?.total_services || 0}
+            subtitle={`활성: ${stats?.active_services || 0}개`}
+            color="from-blue-500 to-cyan-500"
+          />
+          <StatCard
+            icon={<CurrencyDollarIcon className="h-6 w-6" />}
+            title="이번 달 수익"
+            value={`₩${(stats?.this_month_earnings || 0).toLocaleString()}`}
+            subtitle={`총 수익: ₩${(stats?.total_earnings || 0).toLocaleString()}`}
+            color="from-green-500 to-emerald-500"
+          />
+          <StatCard
+            icon={<ChartBarIcon className="h-6 w-6" />}
+            title="총 판매"
+            value={stats?.total_sales || 0}
+            subtitle="완료된 거래"
+            color="from-purple-500 to-pink-500"
+          />
+          <StatCard
+            icon={<ChatBubbleLeftRightIcon className="h-6 w-6" />}
+            title="대기 중인 견적"
+            value={stats?.pending_quotations || 0}
+            subtitle="응답 필요"
+            color="from-orange-500 to-red-500"
+          />
         </div>
 
-        {/* 내 서비스 */}
-        <div className="mb-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 md:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg md:text-xl font-bold">내 서비스</h2>
-            <Link
-              href={isVerified ? "/marketplace/products/new" : "#"}
-              onClick={(e) => {
-                if (!isVerified) {
-                  e.preventDefault()
-                  alert('사업자 검증 완료 후 서비스 등록이 가능합니다')
-                }
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 rounded-lg text-sm font-semibold transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              등록
-            </Link>
-          </div>
-
-          {myProducts.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-400 text-sm mb-4">아직 등록된 서비스가 없습니다</p>
-              <Link
-                href={isVerified ? "/marketplace/products/new" : "#"}
-                onClick={(e) => {
-                  if (!isVerified) {
-                    e.preventDefault()
-                    alert('사업자 검증 완료 후 서비스 등록이 가능합니다')
-                  }
-                }}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-lg font-semibold transition-colors text-sm"
-              >
-                <Plus className="w-5 h-5" />
-                첫 서비스 만들기
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {myProducts.map((product: any) => (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Recent Services */}
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+            <h2 className="text-xl font-bold text-white mb-4">최근 등록 서비스</h2>
+            {recentServices.length === 0 ? (
+              <div className="text-center py-8 text-gray-400">
+                등록된 서비스가 없습니다.
+                <br />
                 <Link
-                  key={product.id}
-                  href={`/marketplace/products/${product.id}`}
-                  className="block p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
+                  href="/marketplace/products/new"
+                  className="text-purple-400 hover:text-purple-300 underline mt-2 inline-block"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold truncate">{product.title}</h3>
-                      <p className="text-sm text-gray-400">₩{product.price.toLocaleString()}</p>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
-                      product.status === 'active' 
-                        ? 'bg-green-500/20 text-green-400' 
-                        : 'bg-gray-500/20 text-gray-400'
-                    }`}>
-                      {product.status === 'active' ? '판매중' : '준비중'}
+                  첫 서비스를 등록해보세요
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {recentServices.map((service) => (
+                  <div
+                    key={service.id}
+                    className="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition cursor-pointer"
+                    onClick={() => router.push(`/marketplace/products/${service.id}`)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span
+                            className={`inline-block w-2 h-2 rounded-full ${
+                              statusLabels[service.status]?.color || 'bg-gray-500'
+                            }`}
+                          ></span>
+                          <h3 className="font-semibold text-white text-sm">
+                            {service.title}
+                          </h3>
+                        </div>
+                        <p className="text-xs text-gray-400">
+                          {serviceTypeLabels[service.service_type] || service.service_type}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-white font-bold">
+                          ₩{service.price.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          조회 {service.view_count || 0} · 판매{' '}
+                          {service.purchase_count || 0}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 새로운 니즈 */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 md:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-lg md:text-xl font-bold">새로운 니즈</h2>
-              <p className="text-xs md:text-sm text-gray-400 mt-1">클라이언트가 찾는 서비스에 제안하세요</p>
-            </div>
-            <Link
-              href="/marketplace?tab=needs"
-              className="text-primary-400 hover:text-primary-300 text-sm font-semibold whitespace-nowrap"
-            >
-              전체 보기 →
-            </Link>
+                ))}
+              </div>
+            )}
           </div>
 
-          {matchingNeeds.length === 0 ? (
-            <div className="text-center py-8">
-              <Bell className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-              <p className="text-gray-400 text-sm">현재 매칭 가능한 니즈가 없습니다</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {matchingNeeds.map((need: any) => (
-                <Link
-                  key={need.id}
-                  href={`/needs/${need.id}`}
-                  className="p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
-                >
-                  <h3 className="font-semibold mb-2 line-clamp-2">{need.title}</h3>
-                  <div className="flex items-center justify-between text-xs text-gray-400">
-                    <span>₩{(need.budget_min / 10000).toFixed(0)}~{(need.budget_max / 10000).toFixed(0)}만</span>
-                    {need.deadline && (
-                      <span className="text-orange-400">
-                        {new Date(need.deadline).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}까지
+          {/* Recent Quotations */}
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+            <h2 className="text-xl font-bold text-white mb-4">최근 견적 요청</h2>
+            {recentQuotations.length === 0 ? (
+              <div className="text-center py-8 text-gray-400">
+                받은 견적 요청이 없습니다.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {recentQuotations.map((quotation) => (
+                  <div
+                    key={quotation.id}
+                    className="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-white text-sm flex-1">
+                        {quotation.title}
+                      </h3>
+                      {quotation.status === 'pending' && (
+                        <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 text-xs rounded-full">
+                          대기중
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-400 mb-2 line-clamp-2">
+                      {quotation.description}
+                    </p>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-400">
+                        {quotation.client?.name || '익명'}
                       </span>
-                    )}
+                      <span className="text-purple-400">{quotation.budget_range}</span>
+                    </div>
                   </div>
-                </Link>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mt-8 bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+          <h2 className="text-xl font-bold text-white mb-4">빠른 작업</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <QuickActionButton
+              href="/marketplace/products/new"
+              icon={<PlusIcon className="h-6 w-6" />}
+              label="서비스 등록"
+            />
+            <QuickActionButton
+              href="/partner/services"
+              icon={<ShoppingBagIcon className="h-6 w-6" />}
+              label="서비스 관리"
+            />
+            <QuickActionButton
+              href="/partner/quotations"
+              icon={<ChatBubbleLeftRightIcon className="h-6 w-6" />}
+              label="견적 관리"
+            />
+            <QuickActionButton
+              href="/partner/earnings"
+              icon={<CurrencyDollarIcon className="h-6 w-6" />}
+              label="수익 조회"
+            />
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
+}
+
+function StatCard({
+  icon,
+  title,
+  value,
+  subtitle,
+  color,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  value: string | number;
+  subtitle: string;
+  color: string;
+}) {
+  return (
+    <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+      <div className={`inline-flex p-3 rounded-lg bg-gradient-to-br ${color} mb-4`}>
+        <div className="text-white">{icon}</div>
+      </div>
+      <h3 className="text-gray-300 text-sm mb-1">{title}</h3>
+      <p className="text-2xl font-bold text-white mb-1">{value}</p>
+      <p className="text-xs text-gray-400">{subtitle}</p>
+    </div>
+  );
+}
+
+function QuickActionButton({
+  href,
+  icon,
+  label,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex flex-col items-center justify-center p-4 bg-white/5 hover:bg-white/10 rounded-lg transition group"
+    >
+      <div className="text-purple-400 group-hover:text-purple-300 mb-2">{icon}</div>
+      <span className="text-sm text-gray-300 group-hover:text-white transition">
+        {label}
+      </span>
+    </Link>
+  );
 }

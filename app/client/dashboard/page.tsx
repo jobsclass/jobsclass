@@ -79,16 +79,16 @@ export default async function ClientDashboard() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="w-5 h-5 text-purple-400" />
-              <span className="text-xs text-gray-400">총 니즈</span>
+              <span className="text-xs text-gray-400">총 서비스 요청</span>
             </div>
             <p className="text-xl md:text-2xl font-bold">{stats.totalNeeds}</p>
           </div>
         </div>
 
-        {/* 내 니즈 */}
+        {/* 내 서비스 요청 */}
         <div className="mb-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 md:p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg md:text-xl font-bold">내 니즈</h2>
+            <h2 className="text-lg md:text-xl font-bold">내 서비스 요청</h2>
             <Link
               href="/needs/new"
               className="flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 rounded-lg text-sm font-semibold transition-colors"
@@ -106,7 +106,7 @@ export default async function ClientDashboard() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-lg font-semibold transition-colors text-sm"
               >
                 <Plus className="w-5 h-5" />
-                니즈 등록하기
+                서비스 요청 등록하기
               </Link>
             </div>
           ) : (
@@ -148,7 +148,7 @@ export default async function ClientDashboard() {
             <div className="text-center py-8">
               <Bell className="w-12 h-12 text-gray-500 mx-auto mb-4" />
               <p className="text-gray-400 text-sm">아직 받은 제안서가 없습니다</p>
-              <p className="text-xs text-gray-500 mt-2">니즈를 등록하면 파트너가 제안서를 보내드립니다</p>
+              <p className="text-xs text-gray-500 mt-2">서비스 요청를 등록하면 파트너가 제안서를 보내드립니다</p>
             </div>
           ) : (
             <div className="space-y-3">

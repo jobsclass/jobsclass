@@ -102,7 +102,7 @@ export default function CreateNeedPage() {
 
     setLoading(true)
     try {
-      // 니즈 생성
+      // 서비스 요청 생성
       const { data: need, error } = await supabase
         .from('client_needs')
         .insert({
@@ -124,10 +124,10 @@ export default function CreateNeedPage() {
       // TODO: AI 매칭 실행
       // 유사한 서비스 찾기
 
-      alert('니즈가 등록되었습니다! 파트너들이 곧 제안을 보낼 것입니다.')
+      alert('서비스 요청이 등록되었습니다! 파트너들이 곧 제안을 보낼 것입니다.')
       router.push(`/needs/${need.id}`)
     } catch (error) {
-      console.error('니즈 등록 오류:', error)
+      console.error('서비스 요청 등록 오류:', error)
       alert('등록 중 오류가 발생했습니다.')
     } finally {
       setLoading(false)
@@ -143,7 +143,7 @@ export default function CreateNeedPage() {
             <button onClick={() => router.back()} className="text-gray-400 hover:text-white">
               ← 뒤로
             </button>
-            <h1 className="text-xl font-bold text-white">니즈 등록</h1>
+            <h1 className="text-xl font-bold text-white">서비스 요청 등록</h1>
           </div>
         </div>
       </header>

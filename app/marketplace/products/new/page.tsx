@@ -69,13 +69,12 @@ export default function NewProductPage() {
       if (!user) throw new Error('로그인이 필요합니다')
 
       const insertData: any = {
-        partner_id: user.id,
+        user_id: user.id,
         service_type: serviceType,
-        category,
         title,
         description,
         pricing_model: pricingModel,
-        status: 'active'
+        is_published: true
       }
 
       if (pricingModel === 'fixed') {

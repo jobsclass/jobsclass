@@ -5,6 +5,9 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { CheckCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 function PaymentSuccessContent() {
   const searchParams = useSearchParams()
   const router = useRouter()

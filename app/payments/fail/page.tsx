@@ -5,6 +5,9 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { XCircle } from 'lucide-react'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
 function PaymentFailContent() {
   const searchParams = useSearchParams()
   const message = searchParams.get('message') || '결제가 취소되었습니다'

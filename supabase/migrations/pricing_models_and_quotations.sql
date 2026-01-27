@@ -43,7 +43,7 @@ COMMENT ON COLUMN products.price_range_max IS '최대 가격 (협의 시 참고)
 CREATE TABLE IF NOT EXISTS quotation_requests (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-  client_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
+  client_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   
   -- 프로젝트 정보
   project_title TEXT NOT NULL,
@@ -97,7 +97,7 @@ CREATE POLICY "quotation_requests_update_policy" ON quotation_requests
 CREATE TABLE IF NOT EXISTS quotations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   request_id UUID REFERENCES quotation_requests(id) ON DELETE CASCADE,
-  partner_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
+  partner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   
   -- 견적 정보
   quotation_number TEXT UNIQUE, -- QT-2024-0001 형식
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS contracts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   quotation_id UUID REFERENCES quotations(id) ON DELETE RESTRICT,
   client_id UUID REFERENCES user_profiles(id) ON DELETE RESTRICT,
-  partner_id UUID REFERENCES user_profiles(id) ON DELETE RESTRICT,
+  partner_id UUID REFERENCES auth.users(id) ON DELETE RESTRICT,
   
   -- 계약 정보
   contract_number TEXT UNIQUE, -- CT-2024-0001 형식

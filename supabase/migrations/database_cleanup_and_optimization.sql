@@ -16,13 +16,13 @@ COMMENT ON TABLE products IS 'JobsClass 메인 서비스/상품 테이블 (표�
 -- ============================================
 
 -- 자주 사용되는 필터링 컬럼
-CREATE INDEX IF NOT EXISTS idx_products_status_active ON products(status) WHERE status = 'active';
-CREATE INDEX IF NOT EXISTS idx_products_category_type ON products(category, service_type);
+CREATE INDEX IF NOT EXISTS idx_products_published ON products(is_published) WHERE is_published = true;
+CREATE INDEX IF NOT EXISTS idx_products_category_type ON products(category, product_type);
 CREATE INDEX IF NOT EXISTS idx_products_pricing_model ON products(pricing_model);
 CREATE INDEX IF NOT EXISTS idx_products_created_at_desc ON products(created_at DESC);
 
 -- 파트너별 서비스 조회 최적화
-CREATE INDEX IF NOT EXISTS idx_products_partner_status ON products(partner_id, status);
+CREATE INDEX IF NOT EXISTS idx_products_partner_published ON products(partner_id, is_published);
 
 -- 가격 범위 검색 최적화
 CREATE INDEX IF NOT EXISTS idx_products_price_range ON products(price) WHERE price IS NOT NULL;

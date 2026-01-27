@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS orders (
   order_number TEXT UNIQUE NOT NULL,
   
   -- 구매자
-  buyer_id UUID REFERENCES user_profiles(id) ON DELETE SET NULL,
+  buyer_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   
   -- 상품 (정액제 서비스)
   product_id UUID REFERENCES products(id) ON DELETE SET NULL,

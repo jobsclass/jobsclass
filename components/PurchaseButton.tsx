@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'use client'
+import { useState } from 'react'
 import { loadTossPayments } from '@tosspayments/payment-sdk'
 import { Loader2, ShoppingCart } from 'lucide-react'
 

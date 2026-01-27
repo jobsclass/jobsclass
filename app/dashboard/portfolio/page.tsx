@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Plus, Briefcase, Edit, Trash2, Eye } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Plus, Briefcase, Edit, Trash2, Eye, ArrowLeft, Home } from 'lucide-react'
 
 interface PortfolioItem {
   id: string
@@ -16,6 +17,7 @@ interface PortfolioItem {
 }
 
 export default function PortfolioPage() {
+  const router = useRouter()
   const [items, setItems] = useState<PortfolioItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -61,6 +63,24 @@ export default function PortfolioPage() {
 
   return (
     <div className="space-y-6">
+      {/* Back Button */}
+      <div className="flex items-center gap-4 mb-4">
+        <button
+          onClick={() => router.push('/partner/dashboard')}
+          className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-all"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>대시보드</span>
+        </button>
+        <button
+          onClick={() => router.push('/')}
+          className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-all"
+        >
+          <Home className="w-4 h-4" />
+          <span>홈</span>
+        </button>
+      </div>
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">포트폴리오 관리</h1>

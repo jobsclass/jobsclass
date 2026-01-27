@@ -11,7 +11,8 @@ import {
   MessageCircle,
   ExternalLink,
   BookOpen,
-  Briefcase
+  Briefcase,
+  ArrowLeft
 } from 'lucide-react'
 
 type Partner = {
@@ -162,6 +163,17 @@ export default function PartnerPage({ params }: { params: Promise<{ username: st
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <Header />
+      
+      {/* Back Button */}
+      <div className="container mx-auto px-4 py-3">
+        <Link 
+          href="/marketplace"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white rounded-lg text-gray-600 hover:text-gray-900 transition-all shadow-sm"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>마켓플레이스로</span>
+        </Link>
+      </div>
       
       {/* Sticky Navigation */}
       <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm">

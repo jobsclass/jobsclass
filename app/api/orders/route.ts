@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     // 서비스 정보 조회
     const { data: service, error: serviceError } = await supabase
-      .from('services')
+      .from('products')
       .select('*')
       .eq('id', serviceId)
       .single()
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
       })
       .select(`
         *,
-        service:services(id, title, thumbnail_url, partner_id),
+        service:products(id, title, image_url, user_id),
         customer:customers(id, name, email)
       `)
       .single()
@@ -170,7 +170,7 @@ export async function GET(request: Request) {
       .from('orders')
       .select(`
         *,
-        service:services(id, title, thumbnail_url, base_price),
+        service:products(id, title, image_url, price),
         customer:customers(id, name, email, phone)
       `)
       .order('created_at', { ascending: false })
@@ -180,7 +180,7 @@ export async function GET(request: Request) {
       query = query.eq('customers.user_id', user.id)
     } else if (role === 'partner') {
       // 파트너: 자신의 서비스에 대한 주문 조회
-      query = query.eq('services.partner_id', user.id)
+      query = query.eq('products.user_id', user.id)
     }
 
     if (status) {

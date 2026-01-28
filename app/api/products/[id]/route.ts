@@ -30,7 +30,7 @@ export async function GET(
     const supabase = await createServerClient()
 
     const { data: product, error } = await supabase
-      .from('services')
+      .from('products')
       .select(`
         *,
         user_profiles!inner(id, display_name, username, avatar_url)
@@ -47,7 +47,7 @@ export async function GET(
 
     // Increment view count
     await supabase
-      .from('services')
+      .from('products')
       .update({ view_count: (product.view_count || 0) + 1 })
       .eq('id', id)
 
@@ -84,7 +84,7 @@ export async function PATCH(
 
     // Check if product belongs to user
     const { data: existingProduct, error: fetchError } = await supabase
-      .from('services')
+      .from('products')
       .select('user_id')
       .eq('id', id)
       .single()
@@ -105,7 +105,7 @@ export async function PATCH(
 
     // Update product
     const { data: product, error: updateError } = await supabase
-      .from('services')
+      .from('products')
       .update({
         ...body,
         updated_at: new Date().toISOString(),
@@ -154,7 +154,7 @@ export async function DELETE(
 
     // Check if product belongs to user
     const { data: existingProduct, error: fetchError } = await supabase
-      .from('services')
+      .from('products')
       .select('user_id')
       .eq('id', id)
       .single()
@@ -175,7 +175,7 @@ export async function DELETE(
 
     // Delete product
     const { error: deleteError } = await supabase
-      .from('services')
+      .from('products')
       .delete()
       .eq('id', id)
 

@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     const supabase = await createServerClient()
     let query = supabase
-      .from('services')
+      .from('products')
       .select('*, user_profiles!inner(display_name, username)')
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
 
     // Create product
     const { data: product, error: productError } = await supabase
-      .from('services')
+      .from('products')
       .insert({
         user_id: user.userId as string,
         title,

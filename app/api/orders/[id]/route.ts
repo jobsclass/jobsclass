@@ -27,15 +27,15 @@ export async function GET(
       .from('orders')
       .select(`
         *,
-        service:services(
+        service:products(
           id,
           title,
           slug,
           description,
-          thumbnail_url,
-          base_price,
+          image_url,
+          price,
           discount_price,
-          partner_id
+          user_id
         ),
         customer:customers(id, name, email, phone, user_id),
         payments(*)
@@ -53,7 +53,7 @@ export async function GET(
 
     // 권한 확인: 본인의 주문이거나 서비스 제공자인 경우만
     const isCustomer = order.customer?.user_id === user.id
-    const isPartner = order.service?.partner_id === user.id
+    const isPartner = order.service?.user_id === user.id
 
     if (!isCustomer && !isPartner) {
       return NextResponse.json(
@@ -112,7 +112,7 @@ export async function PATCH(
     // 기존 주문 조회
     const { data: existingOrder, error: fetchError } = await supabase
       .from('orders')
-      .select('*, service:services(partner_id)')
+      .select('*, service:products(user_id)')
       .eq('id', id)
       .single()
 
@@ -124,7 +124,7 @@ export async function PATCH(
     }
 
     // 권한 확인: 서비스 제공자만 상태 변경 가능
-    if (existingOrder.service?.partner_id !== user.id) {
+    if (existingOrder.service?.user_id !== user.id) {
       return NextResponse.json(
         { error: 'Forbidden' },
         { status: 403 }
@@ -187,7 +187,7 @@ export async function DELETE(
     // 기존 주문 조회
     const { data: existingOrder, error: fetchError } = await supabase
       .from('orders')
-      .select('*, service:services(partner_id), customer:customers(user_id)')
+      .select('*, service:products(user_id), customer:customers(user_id)')
       .eq('id', id)
       .single()
 
@@ -200,7 +200,7 @@ export async function DELETE(
 
     // 권한 확인
     const isCustomer = existingOrder.customer?.user_id === user.id
-    const isPartner = existingOrder.service?.partner_id === user.id
+    const isPartner = existingOrder.service?.user_id === user.id
 
     if (!isCustomer && !isPartner) {
       return NextResponse.json(

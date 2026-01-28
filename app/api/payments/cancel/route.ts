@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         order:orders(
           *,
           customer:customers(user_id),
-          service:services(partner_id)
+          service:products(user_id)
         )
       `)
       .eq('payment_key', paymentKey)

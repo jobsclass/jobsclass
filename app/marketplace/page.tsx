@@ -81,6 +81,27 @@ export default function MarketplacePage() {
   const [sortBy, setSortBy] = useState<'latest' | 'popular' | 'rating'>('latest')
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000])
   const [showFilters, setShowFilters] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
+
+  // 현재 로그인한 사용자 확인
+  useEffect(() => {
+    checkUser()
+  }, [])
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    setCurrentUser(user)
+  }
+
+  // 서비스 등록 버튼 클릭 핸들러
+  const handleServiceRegistration = () => {
+    if (!currentUser) {
+      alert('로그인이 필요합니다')
+      router.push('/auth/user/login')
+      return
+    }
+    router.push('/marketplace/products/new')
+  }
 
   useEffect(() => {
     if (activeTab === 'services') {
@@ -211,9 +232,12 @@ export default function MarketplacePage() {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
-              <Link href="/marketplace/products/new" className="px-3 py-2 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg text-white text-sm font-medium hover:shadow-lg transition-all">
+              <button 
+                onClick={handleServiceRegistration}
+                className="px-3 py-2 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg text-white text-sm font-medium hover:shadow-lg transition-all"
+              >
                 서비스 등록
-              </Link>
+              </button>
               <Link href="/dashboard" className="px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white text-sm transition-colors">
                 대시보드
               </Link>
@@ -318,12 +342,13 @@ export default function MarketplacePage() {
           </div>
 
           {/* Category Chips (Horizontal Scroll) */}
-          <div className="flex items-center gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide">
-            {categories.map(cat => (
+          <div className="relative">
+            <div className="flex items-center gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+              {categories.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all flex-shrink-0 ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all flex-shrink-0 snap-start ${
                   selectedCategory === cat.id
                     ? 'bg-gradient-to-r from-primary-500 to-purple-500 text-white shadow-lg'
                     : 'bg-white/5 text-gray-400 hover:bg-white/10'
@@ -333,6 +358,7 @@ export default function MarketplacePage() {
                 <span className="text-sm font-medium">{cat.name}</span>
               </button>
             ))}
+            </div>
           </div>
         </div>
 
@@ -445,10 +471,13 @@ export default function MarketplacePage() {
               </div>
               <h3 className="text-xl font-bold text-white mb-2">등록된 서비스가 없습니다</h3>
               <p className="text-gray-400 mb-6">첫 번째 서비스를 등록해보세요</p>
-              <Link href="/marketplace/products/new" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-purple-500 rounded-xl text-white font-semibold hover:shadow-lg transition-all">
+              <button 
+                onClick={handleServiceRegistration}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-purple-500 rounded-xl text-white font-semibold hover:shadow-lg transition-all"
+              >
                 서비스 등록하기
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

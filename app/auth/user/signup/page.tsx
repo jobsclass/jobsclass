@@ -47,6 +47,19 @@ function SignupContent() {
     setError('')
 
     try {
+      // 0. 이메일 중복 체크
+      const { data: existingUser, error: checkError } = await supabase
+        .from('user_profiles')
+        .select('email')
+        .eq('email', formData.email)
+        .single()
+
+      if (existingUser) {
+        setError('이미 등록된 이메일입니다')
+        setLoading(false)
+        return
+      }
+
       // 1. Supabase Auth 회원가입
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
@@ -66,11 +79,17 @@ function SignupContent() {
       }
 
       // 2. user_profiles 테이블에 프로필 생성
+      // username 생성: 이메일의 @ 앞 부분 + 랜덤 4자리 숫자
+      const emailPrefix = formData.email.split('@')[0]
+      const randomNum = Math.floor(1000 + Math.random() * 9000)
+      const generatedUsername = `${emailPrefix}${randomNum}`
+
       const { error: profileError } = await supabase
         .from('user_profiles')
         .insert({
           user_id: authData.user.id,
           email: formData.email,
+          username: generatedUsername,
           display_name: formData.fullName,
           user_type: profileType,
           onboarding_complete: profileType === 'client' // 클라이언트는 즉시 완료

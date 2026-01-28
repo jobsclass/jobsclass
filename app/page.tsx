@@ -340,7 +340,7 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-4">회사</h4>
+              <h4 className="text-white font-bold mb-4">서비스 소개</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/#about" className="hover:text-white transition-colors">소개</Link></li>
                 <li><Link href="/#pricing" className="hover:text-white transition-colors">가격 정책</Link></li>

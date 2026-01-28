@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9-가-힣]/g, '')
 
-      await supabase.from('services').insert({
+      await supabase.from('products').insert({
         user_id: user.id,
         title: service.title,
         slug: slug,

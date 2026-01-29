@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { CheckCircle, XCircle, Clock, FileText, DollarSign, Users, TrendingUp } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, FileText, DollarSign, Users, TrendingUp, Settings, ArrowRight } from 'lucide-react'
 
 interface Partner {
   user_id: string
@@ -21,86 +21,78 @@ interface Partner {
 }
 
 export default function AdminPage() {
-  const router = useRouter()
   const supabase = createClient()
   
-  const [currentUser, setCurrentUser] = useState<any>(null)
   const [pendingPartners, setPendingPartners] = useState<Partner[]>([])
-  const [allPartners, setAllPartners] = useState<Partner[]>([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
     totalPartners: 0,
+    totalClients: 0,
+    totalServices: 0,
     pendingVerifications: 0,
     totalRevenue: 0,
-    totalOrders: 0
+    totalOrders: 0,
+    activeServices: 0,
+    draftServices: 0
   })
 
   useEffect(() => {
-    checkAdmin()
+    loadData()
   }, [])
-
-  const checkAdmin = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/auth/user/login')
-        return
-      }
-
-      const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single()
-
-      if (profile?.role !== 'admin') {
-        alert('관리자만 접근할 수 있습니다.')
-        router.push('/dashboard')
-        return
-      }
-
-      setCurrentUser(profile)
-      loadData()
-    } catch (error) {
-      console.error('관리자 확인 오류:', error)
-      router.push('/dashboard')
-    }
-  }
 
   const loadData = async () => {
     try {
       setLoading(true)
 
+      // 파트너 통계
+      const { data: partners, count: partnerCount } = await supabase
+        .from('user_profiles')
+        .select('*, user_type', { count: 'exact' })
+        .eq('user_type', 'partner')
+
+      // 클라이언트 통계
+      const { count: clientCount } = await supabase
+        .from('user_profiles')
+        .select('user_id', { count: 'exact' })
+        .eq('user_type', 'client')
+
       // 대기 중인 파트너
       const { data: pending } = await supabase
         .from('user_profiles')
         .select('*')
-        .eq('role', 'partner')
+        .eq('user_type', 'partner')
         .eq('verification_status', 'pending')
         .order('created_at', { ascending: false })
+        .limit(10)
 
       setPendingPartners(pending || [])
 
-      // 전체 파트너
-      const { data: all } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('role', 'partner')
-        .order('created_at', { ascending: false })
+      // 서비스 통계
+      const { data: services } = await supabase
+        .from('products')
+        .select('status')
 
-      setAllPartners(all || [])
+      const totalServices = services?.length || 0
+      const activeServices = services?.filter(s => s.status === 'published').length || 0
+      const draftServices = services?.filter(s => s.status === 'draft').length || 0
 
-      // 통계
-      const totalPartners = all?.length || 0
-      const pendingCount = pending?.length || 0
-      const totalRevenue = all?.reduce((sum, p) => sum + (p.total_revenue || 0), 0) || 0
-      const totalOrders = all?.reduce((sum, p) => sum + (p.total_orders || 0), 0) || 0
+      // 주문 및 매출 통계
+      const { data: orders } = await supabase
+        .from('orders')
+        .select('amount, status')
+
+      const totalOrders = orders?.length || 0
+      const totalRevenue = orders?.filter(o => o.status === 'paid').reduce((sum, o) => sum + (o.amount || 0), 0) || 0
 
       setStats({
-        totalPartners,
-        pendingVerifications: pendingCount,
+        totalPartners: partnerCount || 0,
+        totalClients: clientCount || 0,
+        totalServices,
+        pendingVerifications: pending?.length || 0,
         totalRevenue,
-        totalOrders
+        totalOrders,
+        activeServices,
+        draftServices
       })
     } catch (error) {
       console.error('데이터 로드 오류:', error)
@@ -157,27 +149,30 @@ export default function AdminPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <StatCard
             icon={Users}
-            title="전체 파트너"
+            title="파트너"
             value={stats.totalPartners}
+            subtitle={`대기 ${stats.pendingVerifications}명`}
             color="blue"
           />
           <StatCard
-            icon={Clock}
-            title="승인 대기"
-            value={stats.pendingVerifications}
-            color="orange"
+            icon={Users}
+            title="클라이언트"
+            value={stats.totalClients}
+            color="purple"
+          />
+          <StatCard
+            icon={FileText}
+            title="서비스"
+            value={stats.totalServices}
+            subtitle={`활성 ${stats.activeServices} / 초안 ${stats.draftServices}`}
+            color="green"
           />
           <StatCard
             icon={DollarSign}
             title="총 매출"
-            value={`₩${stats.totalRevenue.toLocaleString()}`}
-            color="green"
-          />
-          <StatCard
-            icon={TrendingUp}
-            title="총 주문"
-            value={stats.totalOrders}
-            color="purple"
+            value={`₩${(stats.totalRevenue / 10000).toFixed(1)}만`}
+            subtitle={`주문 ${stats.totalOrders}건`}
+            color="orange"
           />
         </div>
 
@@ -211,66 +206,28 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* 전체 파트너 목록 */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">전체 파트너</h2>
-          </div>
-          <div className="p-6">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead>
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      파트너
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      사업자번호
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      상태
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      크레딧
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      매출
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      가입일
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {allPartners.map(partner => (
-                    <tr key={partner.user_id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{partner.display_name}</div>
-                          <div className="text-sm text-gray-500">{partner.email}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {partner.business_number}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <StatusBadge status={partner.verification_status} />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {partner.ai_credits || 0} 크레딧
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ₩{(partner.total_revenue || 0).toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(partner.created_at).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        {/* 빠른 액션 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <QuickActionCard
+            title="파트너 관리"
+            description="전체 파트너 목록 및 상세 관리"
+            href="/admin/partners"
+            icon={Users}
+            count={stats.totalPartners}
+          />
+          <QuickActionCard
+            title="서비스 관리"
+            description="등록된 서비스 승인 및 관리"
+            href="/admin/services"
+            icon={FileText}
+            count={stats.totalServices}
+          />
+          <QuickActionCard
+            title="설정"
+            description="푸터 정보 및 사이트 설정"
+            href="/admin/settings/footer"
+            icon={Settings}
+          />
         </div>
       </div>
     </div>
@@ -278,7 +235,19 @@ export default function AdminPage() {
 }
 
 // 통계 카드
-function StatCard({ icon: Icon, title, value, color }: { icon: any; title: string; value: string | number; color: 'blue' | 'orange' | 'green' | 'purple' }) {
+function StatCard({ 
+  icon: Icon, 
+  title, 
+  value, 
+  subtitle,
+  color 
+}: { 
+  icon: any; 
+  title: string; 
+  value: string | number; 
+  subtitle?: string;
+  color: 'blue' | 'orange' | 'green' | 'purple' 
+}) {
   const colors = {
     blue: 'bg-blue-500',
     orange: 'bg-orange-500',
@@ -289,15 +258,52 @@ function StatCard({ icon: Icon, title, value, color }: { icon: any; title: strin
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex items-center gap-4">
-        <div className={`${colors[color]} w-12 h-12 rounded-lg flex items-center justify-center`}>
+        <div className={`${colors[color]} w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0`}>
           <Icon className="w-6 h-6 text-white" />
         </div>
-        <div>
-          <p className="text-sm text-gray-600">{title}</p>
+        <div className="flex-1">
+          <p className="text-sm text-gray-600 mb-1">{title}</p>
           <p className="text-2xl font-bold text-gray-900">{value}</p>
+          {subtitle && (
+            <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+          )}
         </div>
       </div>
     </div>
+  )
+}
+
+// 빠른 액션 카드
+function QuickActionCard({ 
+  title, 
+  description, 
+  href, 
+  icon: Icon, 
+  count 
+}: { 
+  title: string; 
+  description: string; 
+  href: string; 
+  icon: any; 
+  count?: number 
+}) {
+  return (
+    <Link
+      href={href}
+      className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow group"
+    >
+      <div className="flex items-start justify-between mb-4">
+        <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center">
+          <Icon className="w-6 h-6 text-primary-600" />
+        </div>
+        <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-primary-600 transition-colors" />
+      </div>
+      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+      <p className="text-sm text-gray-600">{description}</p>
+      {count !== undefined && (
+        <p className="text-2xl font-bold text-primary-600 mt-4">{count}</p>
+      )}
+    </Link>
   )
 }
 

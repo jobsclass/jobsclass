@@ -41,30 +41,23 @@ interface Need {
   }
 }
 
+import { getAllServiceTypes, getAllCategories } from '@/lib/constants/services'
+
 const categories = [
   { id: 'all', name: '전체', icon: '🎯' },
-  { id: 'development', name: '개발 & 기술', icon: '💻' },
-  { id: 'design', name: '디자인 & 크리에이티브', icon: '🎨' },
-  { id: 'marketing', name: '마케팅 & 세일즈', icon: '📢' },
-  { id: 'business', name: '비즈니스 & 전략', icon: '📊' },
-  { id: 'content', name: '콘텐츠 & 크리에이터', icon: '✍️' },
-  { id: 'education', name: '교육 & 멘토링', icon: '📚' },
-  { id: 'lifestyle', name: '라이프스타일 & 웰니스', icon: '🧘' },
-  { id: 'writing', name: '크리에이티브 라이팅', icon: '✒️' },
+  ...getAllCategories().map(cat => ({
+    id: cat.id,
+    name: cat.name,
+    icon: cat.emoji
+  }))
 ]
 
 const serviceTypes = [
   { id: 'all', name: '전체' },
-  { id: 'online_course', name: '온라인 강의' },
-  { id: 'one_on_one_mentoring', name: '1:1 멘토링' },
-  { id: 'group_coaching', name: '그룹 코칭' },
-  { id: 'digital_product', name: '디지털 콘텐츠' },
-  { id: 'project_service', name: '프로젝트 대행' },
-  { id: 'consulting', name: '컨설팅' },
-  { id: 'agency_service', name: '대행 서비스' },
-  { id: 'premium_membership', name: '프리미엄 멤버십' },
-  { id: 'live_workshop', name: '라이브 워크샵' },
-  { id: 'promotion_service', name: '홍보/마케팅' },
+  ...getAllServiceTypes().map(type => ({
+    id: type.id,
+    name: type.name
+  }))
 ]
 
 export default function MarketplacePage() {

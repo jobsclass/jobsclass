@@ -9,25 +9,8 @@ import AIImageGenerator from '@/components/AIImageGenerator'
 
 import { getAllServiceTypes, getAllCategories } from '@/lib/constants/services'
 
-// 서비스 타입 (6가지)
-const serviceTypes = getAllServiceTypes().map(type => ({
-  id: type.id,
-  icon: ShoppingCart,
-  title: `${type.icon} ${type.name}`,
-  subtitle: type.description,
-  description: type.description,
-  examples: []
-}))
-
-// 카테고리 (8개)
-const serviceCategories = getAllCategories().map(cat => ({
-  value: cat.id,
-  label: `${cat.emoji} ${cat.name}`,
-  description: cat.description
-}))
-
-// 판매 방식 (추가)
-const saleTypes = [
+// 판매 방식 (Step 0에서 선택)
+const serviceTypes = [
   {
     id: 'direct_sale',
     icon: ShoppingCart,
@@ -53,6 +36,16 @@ const saleTypes = [
     examples: ['기업 컨설팅', '맞춤 개발', '프로젝트 의뢰']
   }
 ]
+
+// 카테고리 (Step 1에서 선택 - 8개)
+const serviceCategories = getAllCategories().map(cat => ({
+  value: cat.id,
+  label: `${cat.emoji} ${cat.name}`,
+  description: cat.description
+}))
+
+// 서비스 타입 (6가지 - API 제출 시 사용)
+const productTypes = getAllServiceTypes()
 
 export default function NewServicePage() {
   const router = useRouter()

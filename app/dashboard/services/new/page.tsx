@@ -7,8 +7,27 @@ import Link from 'next/link'
 import FileUpload from '@/components/FileUpload'
 import AIImageGenerator from '@/components/AIImageGenerator'
 
-// 서비스 타입
-const serviceTypes = [
+import { getAllServiceTypes, getAllCategories } from '@/lib/constants/services'
+
+// 서비스 타입 (6가지)
+const serviceTypes = getAllServiceTypes().map(type => ({
+  id: type.id,
+  icon: ShoppingCart,
+  title: `${type.icon} ${type.name}`,
+  subtitle: type.description,
+  description: type.description,
+  examples: []
+}))
+
+// 카테고리 (8개)
+const serviceCategories = getAllCategories().map(cat => ({
+  value: cat.id,
+  label: `${cat.emoji} ${cat.name}`,
+  description: cat.description
+}))
+
+// 판매 방식 (추가)
+const saleTypes = [
   {
     id: 'direct_sale',
     icon: ShoppingCart,
@@ -33,22 +52,6 @@ const serviceTypes = [
     description: '맞춤형 컨설팅, B2B 서비스',
     examples: ['기업 컨설팅', '맞춤 개발', '프로젝트 의뢰']
   }
-]
-
-// 🎓 지식 서비스 카테고리 (직관적으로!)
-const serviceCategories = [
-  { value: 'online_course', label: '💻 온라인 강의', description: '동영상 강의 콘텐츠' },
-  { value: 'offline_course', label: '📚 오프라인 강의/강연', description: '대면 강의 및 강연' },
-  { value: 'coaching', label: '🎯 1:1 코칭/멘토링', description: '개인 맞춤 코칭' },
-  { value: 'bootcamp', label: '🏃 부트캠프/그룹 프로그램', description: '집중 트레이닝' },
-  { value: 'consulting', label: '💼 컨설팅', description: '전문가 상담 서비스' },
-  { value: 'development', label: '🛠️ 개발 대행', description: '웹/앱 개발 서비스' },
-  { value: 'marketing', label: '📊 마케팅 대행', description: 'SNS/광고 마케팅' },
-  { value: 'design', label: '🎨 디자인 대행', description: '브랜드/그래픽 디자인' },
-  { value: 'content', label: '📝 콘텐츠 제작', description: '영상/글 콘텐츠' },
-  { value: 'ebook', label: '📖 전자책/가이드', description: 'PDF/전자책 형태' },
-  { value: 'digital_product', label: '📦 디지털 상품', description: '템플릿, 툴킷 등' },
-  { value: 'other', label: '🔧 기타 서비스', description: '기타 지식 서비스' },
 ]
 
 export default function NewServicePage() {

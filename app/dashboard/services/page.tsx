@@ -5,13 +5,15 @@ import Link from 'next/link'
 import { Plus, Search, Eye, Edit, Trash2, Package, ArrowLeft, Home } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
+import { getAllServiceTypes } from '@/lib/constants/services'
+
 interface Service {
   id: string
   title: string
-  service_type: string
-  price: number
-  is_published: boolean
-  thumbnail_url?: string
+  type: string  // service_type → type
+  base_price: number  // price → base_price
+  status: string  // is_published → status
+  image_url?: string  // thumbnail_url → image_url
   created_at: string
 }
 
@@ -56,9 +58,11 @@ export default function ServicesPage() {
     }
   }
 
+  const serviceTypes = getAllServiceTypes()
+
   const filteredServices = services.filter(service => {
     const matchesSearch = service.title.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = categoryFilter === '전체' || service.service_type === categoryFilter
+    const matchesCategory = categoryFilter === '전체' || service.type === categoryFilter
     return matchesSearch && matchesCategory
   })
 
@@ -121,19 +125,10 @@ export default function ServicesPage() {
           onChange={(e) => setCategoryFilter(e.target.value)}
           className="px-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-primary-500"
         >
-          <option>전체</option>
-          <option>온라인 강의</option>
-          <option>오프라인 강의/강연</option>
-          <option>1:1 코칭/멘토링</option>
-          <option>부트캠프/그룹 프로그램</option>
-          <option>컨설팅</option>
-          <option>개발 대행</option>
-          <option>마케팅 대행</option>
-          <option>디자인 대행</option>
-          <option>콘텐츠 제작</option>
-          <option>전자책/가이드</option>
-          <option>디지털 상품</option>
-          <option>기타 서비스</option>
+          <option value="전체">전체</option>
+          {serviceTypes.map(type => (
+            <option key={type.id} value={type.id}>{type.name}</option>
+          ))}
         </select>
       </div>
 
@@ -175,8 +170,8 @@ export default function ServicesPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gray-800 rounded-lg overflow-hidden">
-                        {service.thumbnail_url && (
-                          <img src={service.thumbnail_url} alt="" className="w-full h-full object-cover" />
+                        {service.image_url && (
+                          <img src={service.image_url} alt="" className="w-full h-full object-cover" />
                         )}
                       </div>
                       <span className="text-white font-medium">{service.title}</span>
@@ -184,19 +179,19 @@ export default function ServicesPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className="px-3 py-1 bg-primary-500/20 text-primary-300 text-sm rounded-lg">
-                      {service.service_type || '미분류'}
+                      {serviceTypes.find(t => t.id === service.type)?.name || service.type || '미분류'}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-white font-medium">{service.price.toLocaleString()}원</span>
+                    <span className="text-white font-medium">{(service.base_price || 0).toLocaleString()}원</span>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 text-sm rounded-lg ${
-                      service.is_published 
+                      service.status === 'published' 
                         ? 'bg-green-500/20 text-green-300' 
                         : 'bg-yellow-500/20 text-yellow-300'
                     }`}>
-                      {service.is_published ? '판매중' : '준비중'}
+                      {service.status === 'published' ? '판매중' : service.status === 'draft' ? '초안' : '보관됨'}
                     </span>
                   </td>
                   <td className="px-6 py-4">

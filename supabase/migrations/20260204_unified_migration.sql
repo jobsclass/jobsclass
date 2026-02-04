@@ -59,7 +59,7 @@ BEGIN
     ALTER TABLE user_profiles ADD COLUMN subscription_status TEXT DEFAULT 'active';
   END IF;
   
-  RAISE NOTICE '✅ user_profiles 업데이트 완료';
+  RAISE NOTICE 'user_profiles updated successfully';
 END $$;
 
 -- ============================================
@@ -152,13 +152,13 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'services' AND column_name = 'partner_id') THEN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'services' AND column_name = 'user_id') THEN
       ALTER TABLE services RENAME COLUMN user_id TO partner_id;
-      RAISE NOTICE '✅ user_id → partner_id 변경';
+      RAISE NOTICE 'user_id renamed to partner_id';
     ELSE
       ALTER TABLE services ADD COLUMN partner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
     END IF;
   END IF;
 
-  RAISE NOTICE '✅ services 테이블 업데이트 완료';
+  RAISE NOTICE 'services table updated successfully';
 END $$;
 
 -- Indexes for services
@@ -179,7 +179,7 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'carts' AND column_name = 'service_id') THEN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'carts' AND column_name = 'product_id') THEN
       ALTER TABLE carts RENAME COLUMN product_id TO service_id;
-      RAISE NOTICE '✅ carts: product_id → service_id 변경';
+      RAISE NOTICE 'carts: product_id renamed to service_id';
     ELSE
       ALTER TABLE carts ADD COLUMN service_id UUID REFERENCES services(id) ON DELETE CASCADE;
     END IF;
@@ -189,13 +189,13 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'carts' AND column_name = 'client_id') THEN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'carts' AND column_name = 'user_id') THEN
       ALTER TABLE carts RENAME COLUMN user_id TO client_id;
-      RAISE NOTICE '✅ carts: user_id → client_id 변경';
+      RAISE NOTICE 'carts: user_id renamed to client_id';
     ELSE
       ALTER TABLE carts ADD COLUMN client_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
     END IF;
   END IF;
 
-  RAISE NOTICE '✅ carts 테이블 업데이트 완료';
+  RAISE NOTICE 'carts table updated successfully';
 END $$;
 
 CREATE INDEX IF NOT EXISTS idx_carts_client_id ON carts(client_id);
@@ -211,7 +211,7 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'service_id') THEN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'product_id') THEN
       ALTER TABLE orders RENAME COLUMN product_id TO service_id;
-      RAISE NOTICE '✅ orders: product_id → service_id 변경';
+      RAISE NOTICE 'orders: product_id renamed to service_id';
     ELSE
       ALTER TABLE orders ADD COLUMN service_id UUID REFERENCES services(id) ON DELETE CASCADE;
     END IF;
@@ -248,7 +248,7 @@ BEGIN
     ALTER TABLE orders ADD COLUMN order_number TEXT UNIQUE;
   END IF;
 
-  RAISE NOTICE '✅ orders 테이블 업데이트 완료';
+  RAISE NOTICE 'orders table updated successfully';
 END $$;
 
 CREATE INDEX IF NOT EXISTS idx_orders_client_id ON orders(client_id);
@@ -329,13 +329,13 @@ CREATE POLICY "Buyers manage own reviews" ON service_reviews FOR ALL USING (buye
 DO $$ 
 BEGIN
   RAISE NOTICE '';
-  RAISE NOTICE '✅✅✅ JobsClass 통합 완료! ✅✅✅';
+  RAISE NOTICE 'JobsClass Integration Complete!';
   RAISE NOTICE '';
-  RAISE NOTICE '업데이트:';
-  RAISE NOTICE '  - user_profiles: 9개 필드 추가';
-  RAISE NOTICE '  - services: JobsClass v2.0 필드 추가';
-  RAISE NOTICE '  - carts: product_id → service_id';
-  RAISE NOTICE '  - orders: 10% 수수료 필드 추가';
-  RAISE NOTICE '  - service_reviews: 생성';
+  RAISE NOTICE 'Updated:';
+  RAISE NOTICE '  - user_profiles: 9 fields added';
+  RAISE NOTICE '  - services: JobsClass v2.0 fields added';
+  RAISE NOTICE '  - carts: product_id renamed to service_id';
+  RAISE NOTICE '  - orders: 10%% commission fields added';
+  RAISE NOTICE '  - service_reviews: created';
   RAISE NOTICE '';
 END $$;

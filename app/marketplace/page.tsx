@@ -33,6 +33,7 @@ interface Service {
   rating_count: number;
   purchase_count: number;
   partner_id: string;
+  created_at: string;
   partner_profiles?: {
     display_name: string;
     avatar_url: string | null;

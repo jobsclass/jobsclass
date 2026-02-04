@@ -236,3 +236,15 @@ export function generateOrderNumber(): string {
   const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
   return `JC-${dateStr}-${randomStr}`;
 }
+
+// ============================================
+// 배열 반환 함수 (레거시 호환)
+// ============================================
+
+export function getAllServiceTypes(): JobsClassServiceType[] {
+  return JOBSCLASS_SERVICE_TYPES;
+}
+
+export function getAllCategories(): JobsClassCategory[] {
+  return JOBSCLASS_CATEGORIES;
+}

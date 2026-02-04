@@ -210,13 +210,23 @@ export const generateOrderNumber = (): string => {
 }
 
 // 플랫폼 수수료 계산 (10%)
-export const calculatePlatformFee = (amount: number): {
+export const PLATFORM_FEE_RATE = 0.10; // 10%
+
+export const calculatePlatformFee = (amount: number): number => {
+  return Math.round(amount * PLATFORM_FEE_RATE);
+}
+
+export const calculatePartnerAmount = (amount: number): number => {
+  return amount - calculatePlatformFee(amount);
+}
+
+export const calculateFeeBreakdown = (amount: number): {
   amount: number
   platform_fee: number
   partner_amount: number
 } => {
-  const platform_fee = Math.round(amount * 0.1)
-  const partner_amount = amount - platform_fee
+  const platform_fee = calculatePlatformFee(amount)
+  const partner_amount = calculatePartnerAmount(amount)
   
   return {
     amount,

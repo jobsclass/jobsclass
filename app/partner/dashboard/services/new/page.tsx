@@ -17,10 +17,10 @@ export default function NewServicePage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState({
     // Step 1: 서비스 타입
-    service_type: '' as JobsClassServiceType | '',
+    service_type: '',
     
     // Step 2: 카테고리
-    category: '' as JobsClassCategory | '',
+    category: '',
     subcategory: '',
     
     // Step 3: 기본 정보

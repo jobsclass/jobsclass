@@ -1,644 +1,431 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
-import { Search, Filter, Star, TrendingUp, Clock, MapPin, ArrowRight, Package, FileText, ChevronLeft, X, Home } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import {
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  StarIcon,
+  ShoppingCartIcon,
+  HeartIcon,
+} from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { 
+  JOBSCLASS_CATEGORIES, 
+  JOBSCLASS_SERVICE_TYPES,
+  type JobsClassServiceType 
+} from '@/lib/constants/jobsclass';
 
 interface Service {
-  id: string
-  title: string
-  description: string
-  price: number
-  category: string
-  type: string
-  image_url?: string
-  rating: number
-  review_count: number
-  user_profiles: {
-    display_name: string
-    username: string
-    partner_success_rate: number
-  }
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail_url: string | null;
+  category: string;
+  subcategory: string | null;
+  service_type: string;
+  price: number;
+  original_price: number | null;
+  currency: string;
+  rating_average: number;
+  rating_count: number;
+  purchase_count: number;
+  partner_id: string;
+  partner_profiles?: {
+    display_name: string;
+    avatar_url: string | null;
+    rating_average: number;
+  };
 }
-
-interface Need {
-  id: string
-  title: string
-  description: string
-  category: string
-  budget_min: number
-  budget_max: number
-  deadline: string
-  location: string
-  status: string
-  proposal_count: number
-  created_at: string
-  client_id: string
-  user_profiles: {
-    display_name: string
-  }
-}
-
-import { getAllServiceTypes, getAllCategories } from '@/lib/constants/services'
-
-const categories = [
-  { id: 'all', name: '전체', icon: '🎯' },
-  ...getAllCategories().map(cat => ({
-    id: cat.id,
-    name: cat.name,
-    icon: cat.emoji
-  }))
-]
-
-const serviceTypes = [
-  { id: 'all', name: '전체' },
-  ...getAllServiceTypes().map(type => ({
-    id: type.id,
-    name: type.name
-  }))
-]
 
 export default function MarketplacePage() {
-  const router = useRouter()
-  const supabase = createClient()
-  
-  const [activeTab, setActiveTab] = useState<'services' | 'needs'>('services')
-  const [services, setServices] = useState<Service[]>([])
-  const [needs, setNeeds] = useState<Need[]>([])
-  const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState('all')
-  const [selectedType, setSelectedType] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState<'latest' | 'popular' | 'rating'>('latest')
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000])
-  const [showFilters, setShowFilters] = useState(false)
-  const [currentUser, setCurrentUser] = useState<any>(null)
-
-  // 현재 로그인한 사용자 확인
-  useEffect(() => {
-    checkUser()
-  }, [])
-
-  const checkUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    setCurrentUser(user)
-  }
-
-  // 서비스 등록 버튼 클릭 핸들러
-  const handleServiceRegistration = () => {
-    if (!currentUser) {
-      alert('로그인이 필요합니다')
-      router.push('/auth/user/login')
-      return
-    }
-    router.push('/marketplace/products/new')
-  }
+  const supabase = createClient();
+  const [services, setServices] = useState<Service[]>([]);
+  const [filteredServices, setFilteredServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'latest' | 'popular' | 'price-low' | 'price-high'>('latest');
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (activeTab === 'services') {
-      loadServices()
-    } else {
-      loadNeeds()
-    }
-  }, [activeTab, selectedCategory, selectedType, sortBy])
+    loadServices();
+  }, []);
 
-  const loadServices = async () => {
+  useEffect(() => {
+    filterAndSortServices();
+  }, [services, searchQuery, selectedCategory, selectedType, sortBy]);
+
+  async function loadServices() {
     try {
-      setLoading(true)
-      let query = supabase
-        .from('products')
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('services')
         .select(`
           *,
-          user_profiles!products_user_id_fkey (
+          partner_profiles!services_partner_id_fkey(
             display_name,
-            username,
-            partner_success_rate
+            avatar_url,
+            rating_average
           )
         `)
         .eq('is_published', true)
+        .eq('is_active', true);
 
-      if (selectedCategory !== 'all') {
-        query = query.eq('category', selectedCategory)
-      }
-
-      if (selectedType !== 'all') {
-        query = query.eq('service_type', selectedType)
-      }
-
-      if (sortBy === 'latest') {
-        query = query.order('created_at', { ascending: false })
-      } else if (sortBy === 'popular') {
-        query = query.order('view_count', { ascending: false })
-      } else if (sortBy === 'rating') {
-        query = query.order('rating', { ascending: false })
-      }
-
-      const { data, error } = await query.limit(50)
-
-      if (error) throw error
-      setServices(data || [])
+      if (error) throw error;
+      setServices(data || []);
     } catch (error) {
-      console.error('서비스 로드 오류:', error)
+      console.error('Failed to load services:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  const loadNeeds = async () => {
-    try {
-      setLoading(true)
-      let query = supabase
-        .from('client_needs')
-        .select(`
-          *,
-          user_profiles!client_needs_client_id_fkey (
-            display_name
-          )
-        `)
-        .eq('status', 'open')
+  function filterAndSortServices() {
+    let filtered = [...services];
 
-      if (selectedCategory !== 'all') {
-        query = query.eq('category', selectedCategory)
-      }
-
-      query = query.order('created_at', { ascending: false })
-
-      const { data, error } = await query.limit(50)
-
-      if (error) throw error
-      setNeeds(data || [])
-    } catch (error) {
-      console.error('서비스 요청 로드 오류:', error)
-    } finally {
-      setLoading(false)
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (s) =>
+          s.title.toLowerCase().includes(query) ||
+          s.description.toLowerCase().includes(query) ||
+          s.partner_profiles?.display_name?.toLowerCase().includes(query)
+      );
     }
+
+    // Category filter
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter((s) => s.category === selectedCategory);
+    }
+
+    // Type filter
+    if (selectedType !== 'all') {
+      filtered = filtered.filter((s) => s.service_type === selectedType);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'popular':
+          return (b.purchase_count || 0) - (a.purchase_count || 0);
+        case 'price-low':
+          return a.price - b.price;
+        case 'price-high':
+          return b.price - a.price;
+        case 'latest':
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
+
+    setFilteredServices(filtered);
   }
 
-  const filteredServices = services.filter(service => {
-    if (searchQuery && !service.title.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false
-    }
-    if (service.price < priceRange[0] || service.price > priceRange[1]) {
-      return false
-    }
-    return true
-  })
+  function toggleFavorite(serviceId: string) {
+    setFavorites((prev) => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(serviceId)) {
+        newFavorites.delete(serviceId);
+      } else {
+        newFavorites.add(serviceId);
+      }
+      return newFavorites;
+    });
+  }
 
-  const filteredNeeds = needs.filter(need => {
-    if (searchQuery && !need.title.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false
-    }
-    return true
-  })
+  function getServiceTypeInfo(typeId: string): JobsClassServiceType | undefined {
+    return JOBSCLASS_SERVICE_TYPES.find((t) => t.id === typeId);
+  }
 
-  const resetFilters = () => {
-    setSelectedCategory('all')
-    setSelectedType('all')
-    setPriceRange([0, 1000000])
-    setSearchQuery('')
+  function getCategoryInfo(categoryId: string) {
+    return JOBSCLASS_CATEGORIES.find((c) => c.id === categoryId);
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-400"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Compact Header */}
-      <header className="bg-gray-900/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Logo & Back Button */}
-            <div className="flex items-center gap-4">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">J</span>
-                </div>
-                <span className="text-xl font-bold text-white hidden sm:block">JobsClass</span>
-              </Link>
-              <button
-                onClick={() => router.push('/')}
-                className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-sm"
-              >
-                <Home className="w-4 h-4" />
-                <span className="hidden sm:inline">홈</span>
-              </button>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      {/* Header */}
+      <div className="bg-black/30 backdrop-blur-lg border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                지식서비스 마켓플레이스
+              </h1>
+              <p className="text-gray-300">
+                전문가의 노하우를 배우고, 함께 성장하세요
+              </p>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={handleServiceRegistration}
-                className="px-3 py-2 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg text-white text-sm font-medium hover:shadow-lg transition-all"
-              >
-                서비스 등록
-              </button>
-              <Link href="/dashboard" className="px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white text-sm transition-colors">
-                대시보드
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-6">
-        {/* Tabs */}
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => setActiveTab('services')}
-            className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
-              activeTab === 'services'
-                ? 'bg-gradient-to-r from-primary-500 to-purple-500 text-white shadow-lg shadow-primary-500/30'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10'
-            }`}
-          >
-            <Package className="w-5 h-5" />
-            <span>서비스</span>
-            <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs">{services.length}</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('needs')}
-            className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
-              activeTab === 'needs'
-                ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10'
-            }`}
-          >
-            <FileText className="w-5 h-5" />
-            <span>서비스 요청</span>
-            <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs">{needs.length}</span>
-          </button>
-        </div>
-
-        {/* Compact Search & Filter Bar */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 mb-6">
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={activeTab === 'services' ? '어떤 서비스를 찾으시나요?' : '어떤 요청을 찾으시나요?'}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-900/50 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
-              />
-            </div>
-
-            {/* Filter Button */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900/50 border border-white/10 hover:border-primary-500/50 rounded-xl text-white transition-all"
+            <Link
+              href="/cart"
+              className="relative inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition"
             >
-              <Filter className="w-5 h-5" />
-              <span>필터</span>
-              {(selectedCategory !== 'all' || selectedType !== 'all') && (
-                <span className="px-2 py-0.5 bg-primary-500 rounded-full text-xs">●</span>
-              )}
-            </button>
-
-            {/* Sort Buttons */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setSortBy('latest')}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  sortBy === 'latest'
-                    ? 'bg-primary-500 text-white'
-                    : 'bg-gray-900/50 text-gray-400 hover:bg-gray-800'
-                }`}
-              >
-                최신순
-              </button>
-              {activeTab === 'services' && (
-                <>
-                  <button
-                    onClick={() => setSortBy('popular')}
-                    className={`hidden sm:block px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                      sortBy === 'popular'
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-gray-900/50 text-gray-400 hover:bg-gray-800'
-                    }`}
-                  >
-                    인기순
-                  </button>
-                  <button
-                    onClick={() => setSortBy('rating')}
-                    className={`hidden sm:block px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                      sortBy === 'rating'
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-gray-900/50 text-gray-400 hover:bg-gray-800'
-                    }`}
-                  >
-                    평점순
-                  </button>
-                </>
-              )}
-            </div>
+              <ShoppingCartIcon className="h-5 w-5 mr-2" />
+              장바구니
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                0
+              </span>
+            </Link>
           </div>
 
-          {/* Category Chips (Horizontal Scroll) */}
+          {/* Search Bar */}
           <div className="relative">
-            <div className="flex items-center gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
-              {categories.map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all flex-shrink-0 snap-start ${
-                  selectedCategory === cat.id
-                    ? 'bg-gradient-to-r from-primary-500 to-purple-500 text-white shadow-lg'
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                }`}
-              >
-                <span>{cat.icon}</span>
-                <span className="text-sm font-medium">{cat.name}</span>
-              </button>
-            ))}
-            </div>
+            <MagnifyingGlassIcon className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="어떤 서비스를 찾고 계신가요?"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
           </div>
         </div>
-
-        {/* Filter Modal/Drawer */}
-        {showFilters && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowFilters(false)}>
-            <div 
-              className="bg-gray-900 border border-white/10 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-md max-h-[80vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-white/10 sticky top-0 bg-gray-900 z-10">
-                <h3 className="text-xl font-bold text-white">필터</h3>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={resetFilters}
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
-                  >
-                    초기화
-                  </button>
-                  <button
-                    onClick={() => setShowFilters(false)}
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                  >
-                    <X className="w-5 h-5 text-gray-400" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-6 space-y-6">
-                {/* Service Type Filter */}
-                {activeTab === 'services' && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-white mb-3">서비스 유형</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {serviceTypes.map(type => (
-                        <button
-                          key={type.id}
-                          onClick={() => setSelectedType(type.id)}
-                          className={`px-3 py-2 rounded-lg text-sm transition-all ${
-                            selectedType === type.id
-                              ? 'bg-primary-500 text-white'
-                              : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                          }`}
-                        >
-                          {type.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Price Range */}
-                {activeTab === 'services' && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-white mb-3">가격 범위</h4>
-                    <div className="space-y-4">
-                      <input
-                        type="range"
-                        min="0"
-                        max="1000000"
-                        step="10000"
-                        value={priceRange[1]}
-                        onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                        className="w-full accent-primary-500"
-                      />
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-400">₩0</span>
-                        <span className="text-white font-semibold">₩{priceRange[1].toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Apply Button */}
-              <div className="p-6 border-t border-white/10 sticky bottom-0 bg-gray-900">
-                <button
-                  onClick={() => setShowFilters(false)}
-                  className="w-full py-3 bg-gradient-to-r from-primary-500 to-purple-500 rounded-xl text-white font-semibold hover:shadow-lg transition-all"
-                >
-                  필터 적용
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Results Count */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-400">
-            <span className="text-white font-semibold text-lg">
-              {activeTab === 'services' ? filteredServices.length : filteredNeeds.length}
-            </span>
-            <span className="ml-1">개의 {activeTab === 'services' ? '서비스' : '요청'}</span>
-          </p>
-        </div>
-
-        {/* Content Grid */}
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-          </div>
-        ) : activeTab === 'services' ? (
-          // 서비스 그리드
-          filteredServices.length === 0 ? (
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-16 text-center">
-              <div className="w-20 h-20 bg-primary-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Package className="w-10 h-10 text-primary-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">등록된 서비스가 없습니다</h3>
-              <p className="text-gray-400 mb-6">첫 번째 서비스를 등록해보세요</p>
-              <button 
-                onClick={handleServiceRegistration}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-purple-500 rounded-xl text-white font-semibold hover:shadow-lg transition-all"
-              >
-                서비스 등록하기
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredServices.map(service => (
-                <Link
-                  key={service.id}
-                  href={`/marketplace/products/${service.id}`}
-                  className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:scale-[1.02] hover:border-primary-500/50 transition-all group"
-                >
-                  {/* Service Image */}
-                  <div className="relative h-48 bg-gradient-to-br from-primary-900/20 to-purple-900/20">
-                    {service.image_url ? (
-                      <img
-                        src={service.image_url}
-                        alt={service.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-6xl">
-                        {categories.find(c => c.id === service.category)?.icon || '🎯'}
-                      </div>
-                    )}
-                    <div className="absolute top-3 right-3 px-3 py-1 bg-gray-900/80 backdrop-blur-sm rounded-full text-xs text-white font-medium">
-                      {serviceTypes.find(t => t.id === service.type)?.name || '서비스'}
-                    </div>
-                  </div>
-
-                  {/* Service Info */}
-                  <div className="p-5">
-                    <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-primary-400 transition-colors">
-                      {service.title}
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-4 line-clamp-2">
-                      {service.description}
-                    </p>
-
-                    {/* Partner Info */}
-                    <div className="flex items-center gap-2 mb-4 pb-4 border-b border-white/10">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-purple-400 flex items-center justify-center text-white text-sm font-bold">
-                        {service.user_profiles.display_name[0]}
-                      </div>
-                      <span className="text-sm text-gray-400">
-                        {service.user_profiles.display_name}
-                      </span>
-                      {service.user_profiles.partner_success_rate > 0 && (
-                        <span className="text-xs text-green-400 ml-auto">
-                          ✓ {service.user_profiles.partner_success_rate}%
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Stats & Price */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 text-sm text-gray-400">
-                        <span className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                          {service.rating || 0}
-                        </span>
-                        <span>({service.review_count || 0})</span>
-                      </div>
-                      <div className="text-xl font-bold text-primary-400">
-                        ₩{service.price.toLocaleString()}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )
-        ) : (
-          // 니즈 그리드
-          filteredNeeds.length === 0 ? (
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-16 text-center">
-              <div className="w-20 h-20 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-10 h-10 text-green-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">등록된 요청이 없습니다</h3>
-              <p className="text-gray-400 mb-6">첫 번째 요청을 등록해보세요</p>
-              <Link href="/needs/new" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-white font-semibold hover:shadow-lg transition-all">
-                서비스 요청 등록하기
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredNeeds.map(need => (
-                <Link
-                  key={need.id}
-                  href={`/needs/${need.id}`}
-                  className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:scale-[1.02] hover:border-green-500/50 transition-all group"
-                >
-                  {/* Need Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">
-                        {categories.find(c => c.id === need.category)?.icon || '🎯'}
-                      </span>
-                      <span className="text-xs px-2 py-1 bg-primary-500/20 text-primary-300 rounded-full">
-                        {categories.find(c => c.id === need.category)?.name}
-                      </span>
-                    </div>
-                    <span className="text-xs px-2 py-1 bg-green-500/20 text-green-300 rounded-full">
-                      제안 {need.proposal_count}개
-                    </span>
-                  </div>
-
-                  {/* Need Title */}
-                  <h3 className="text-lg font-semibold text-white mb-3 line-clamp-2 group-hover:text-green-400 transition-colors">
-                    {need.title}
-                  </h3>
-
-                  {/* Need Description */}
-                  <p className="text-sm text-gray-400 mb-4 line-clamp-3">
-                    {need.description}
-                  </p>
-
-                  {/* Need Info */}
-                  <div className="space-y-2 text-sm text-gray-500 mb-4 pb-4 border-b border-white/10">
-                    {need.budget_min > 0 && (
-                      <div className="flex items-center gap-2">
-                        <span>💰</span>
-                        <span>
-                          ₩{need.budget_min.toLocaleString()} ~ ₩{need.budget_max.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-                    {need.deadline && (
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        <span>{new Date(need.deadline).toLocaleDateString()}</span>
-                      </div>
-                    )}
-                    {need.location && (
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>{need.location}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Client Info */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">
-                        {need.user_profiles.display_name[0]}
-                      </div>
-                      <span className="text-xs text-gray-400">
-                        {need.user_profiles.display_name}
-                      </span>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-green-400 group-hover:translate-x-1 transition-all" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )
-        )}
       </div>
 
-      <style jsx global>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar Filters */}
+          <aside className="lg:w-64 flex-shrink-0">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 sticky top-4">
+              <div className="flex items-center gap-2 mb-4">
+                <FunnelIcon className="h-5 w-5 text-purple-400" />
+                <h2 className="text-lg font-bold text-white">필터</h2>
+              </div>
+
+              {/* Category Filter */}
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-300 mb-3">카테고리</h3>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setSelectedCategory('all')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition ${
+                      selectedCategory === 'all'
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-300 hover:bg-white/5'
+                    }`}
+                  >
+                    전체
+                  </button>
+                  {JOBSCLASS_CATEGORIES.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.id)}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition flex items-center gap-2 ${
+                        selectedCategory === category.id
+                          ? 'bg-purple-600 text-white'
+                          : 'text-gray-300 hover:bg-white/5'
+                      }`}
+                    >
+                      <span>{category.emoji}</span>
+                      <span>{category.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Service Type Filter */}
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-300 mb-3">서비스 유형</h3>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setSelectedType('all')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition ${
+                      selectedType === 'all'
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-300 hover:bg-white/5'
+                    }`}
+                  >
+                    전체
+                  </button>
+                  {JOBSCLASS_SERVICE_TYPES.map((type) => (
+                    <button
+                      key={type.id}
+                      onClick={() => setSelectedType(type.id)}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition flex items-center gap-2 ${
+                        selectedType === type.id
+                          ? 'bg-purple-600 text-white'
+                          : 'text-gray-300 hover:bg-white/5'
+                      }`}
+                    >
+                      <span>{type.icon}</span>
+                      <span>{type.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sort */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-300 mb-3">정렬</h3>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="latest">최신순</option>
+                  <option value="popular">인기순</option>
+                  <option value="price-low">가격 낮은순</option>
+                  <option value="price-high">가격 높은순</option>
+                </select>
+              </div>
+            </div>
+          </aside>
+
+          {/* Services Grid */}
+          <main className="flex-1">
+            <div className="mb-6 flex items-center justify-between">
+              <p className="text-gray-300">
+                <span className="font-semibold text-white">{filteredServices.length}</span>개의
+                서비스
+              </p>
+            </div>
+
+            {filteredServices.length === 0 ? (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-12 border border-white/20 text-center">
+                <p className="text-gray-300 text-lg mb-2">검색 결과가 없습니다</p>
+                <p className="text-gray-400 text-sm">다른 검색어나 필터를 시도해보세요</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredServices.map((service) => (
+                  <ServiceCard
+                    key={service.id}
+                    service={service}
+                    isFavorite={favorites.has(service.id)}
+                    onToggleFavorite={() => toggleFavorite(service.id)}
+                    getServiceTypeInfo={getServiceTypeInfo}
+                  />
+                ))}
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
     </div>
-  )
+  );
+}
+
+interface ServiceCardProps {
+  service: Service;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  getServiceTypeInfo: (typeId: string) => JobsClassServiceType | undefined;
+}
+
+function ServiceCard({ service, isFavorite, onToggleFavorite, getServiceTypeInfo }: ServiceCardProps) {
+  const typeInfo = getServiceTypeInfo(service.service_type);
+  const hasDiscount = service.original_price && service.original_price > service.price;
+  const discountRate = hasDiscount
+    ? Math.round(((service.original_price! - service.price) / service.original_price!) * 100)
+    : 0;
+
+  return (
+    <div className="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden border border-white/20 hover:border-purple-500/50 transition group">
+      <Link href={`/services/${service.slug}`}>
+        <div className="relative aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+          {service.thumbnail_url ? (
+            <img
+              src={service.thumbnail_url}
+              alt={service.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-4xl">
+              {typeInfo?.icon}
+            </div>
+          )}
+          {hasDiscount && (
+            <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+              {discountRate}% OFF
+            </div>
+          )}
+        </div>
+      </Link>
+
+      <div className="p-4">
+        {/* Service Type Badge */}
+        <div className="flex items-center justify-between mb-2">
+          <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full">
+            <span>{typeInfo?.icon}</span>
+            <span>{typeInfo?.name}</span>
+          </span>
+          <button
+            onClick={onToggleFavorite}
+            className="text-gray-400 hover:text-red-500 transition"
+          >
+            {isFavorite ? (
+              <HeartSolidIcon className="h-5 w-5 text-red-500" />
+            ) : (
+              <HeartIcon className="h-5 w-5" />
+            )}
+          </button>
+        </div>
+
+        {/* Title */}
+        <Link href={`/services/${service.slug}`}>
+          <h3 className="text-white font-semibold mb-2 line-clamp-2 group-hover:text-purple-300 transition">
+            {service.title}
+          </h3>
+        </Link>
+
+        {/* Partner Info */}
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-xs font-bold">
+            {service.partner_profiles?.display_name?.charAt(0).toUpperCase() || 'P'}
+          </div>
+          <span className="text-sm text-gray-300">
+            {service.partner_profiles?.display_name || '파트너'}
+          </span>
+        </div>
+
+        {/* Rating */}
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-1">
+            <StarIcon className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+            <span className="text-sm font-semibold text-white">
+              {service.rating_average?.toFixed(1) || '0.0'}
+            </span>
+          </div>
+          <span className="text-xs text-gray-400">
+            ({service.rating_count || 0})
+          </span>
+          <span className="text-xs text-gray-400">
+            · {service.purchase_count || 0}명 구매
+          </span>
+        </div>
+
+        {/* Price */}
+        <div className="flex items-end justify-between">
+          <div>
+            {hasDiscount && (
+              <p className="text-xs text-gray-400 line-through">
+                ₩{service.original_price!.toLocaleString()}
+              </p>
+            )}
+            <p className="text-xl font-bold text-white">
+              ₩{service.price.toLocaleString()}
+            </p>
+          </div>
+          <Link
+            href={`/services/${service.slug}`}
+            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm rounded-lg hover:from-purple-700 hover:to-pink-700 transition"
+          >
+            자세히 보기
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }

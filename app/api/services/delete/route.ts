@@ -1,5 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 
 export async function DELETE(request: NextRequest) {
   try {
@@ -14,22 +14,23 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
+    // URL 파라미터에서 ID 가져오기
     const { searchParams } = new URL(request.url)
-    const serviceId = searchParams.get('id')
+    const id = searchParams.get('id')
 
-    if (!serviceId) {
+    if (!id) {
       return NextResponse.json(
         { error: '서비스 ID가 필요합니다' },
         { status: 400 }
       )
     }
 
-    // 서비스 삭제 (본인 것만)
+    // 서비스 소유권 확인 및 삭제
     const { error: deleteError } = await supabase
-      .from('products')
+      .from('services')
       .delete()
-      .eq('id', serviceId)
-      .eq('user_id', user.id)
+      .eq('id', id)
+      .eq('partner_id', user.id) // 본인 서비스만 삭제 가능
 
     if (deleteError) {
       console.error('Delete error:', deleteError)
@@ -39,9 +40,13 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Unexpected error:', error)
+    return NextResponse.json({
+      success: true,
+      message: '서비스가 삭제되었습니다',
+    })
+
+  } catch (error: any) {
+    console.error('서비스 삭제 에러:', error)
     return NextResponse.json(
       { error: '서버 오류가 발생했습니다' },
       { status: 500 }

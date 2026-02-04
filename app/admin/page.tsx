@@ -69,12 +69,12 @@ export default function AdminPage() {
 
       // 서비스 통계
       const { data: services } = await supabase
-        .from('products')
-        .select('status')
+        .from('services')
+        .select('is_published')
 
       const totalServices = services?.length || 0
-      const activeServices = services?.filter(s => s.status === 'published').length || 0
-      const draftServices = services?.filter(s => s.status === 'draft').length || 0
+      const activeServices = services?.filter(s => s.is_published === true).length || 0
+      const draftServices = services?.filter(s => s.is_published === false).length || 0
 
       // 주문 및 매출 통계
       const { data: orders } = await supabase

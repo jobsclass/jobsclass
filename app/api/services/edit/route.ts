@@ -26,10 +26,10 @@ export async function PUT(request: NextRequest) {
 
     // 서비스 업데이트 (본인 것만)
     const { data: service, error: updateError } = await supabase
-      .from('products')
+      .from('services')
       .update(updateData)
       .eq('id', id)
-      .eq('user_id', user.id)
+      .eq('partner_id', user.id)
       .select()
       .single()
 
@@ -76,10 +76,10 @@ export async function GET(request: NextRequest) {
 
     // 서비스 조회
     const { data: service, error: fetchError } = await supabase
-      .from('products')
+      .from('services')
       .select('*')
       .eq('id', serviceId)
-      .eq('user_id', user.id)
+      .eq('partner_id', user.id)
       .single()
 
     if (fetchError) {

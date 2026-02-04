@@ -76,18 +76,18 @@ export default function PartnerDashboard() {
 
       // Load stats
       const { data: services } = await supabase
-        .from('products')
+        .from('services')
         .select('*')
-        .eq('user_id', user.id);
+        .eq('partner_id', user.id);
 
       const { data: quotations } = await supabase
         .from('quotation_requests')
         .select(`
           *,
           user_profiles!quotation_requests_client_id_fkey(display_name),
-          products!inner(user_id)
+          services!inner(partner_id)
         `)
-        .eq('products.user_id', user.id)
+        .eq('services.partner_id', user.id)
         .order('created_at', { ascending: false })
         .limit(5);
 
@@ -221,7 +221,7 @@ export default function PartnerDashboard() {
                 등록된 서비스가 없습니다.
                 <br />
                 <Link
-                  href="/marketplace/products/new"
+                  href="/partner/dashboard/services/new"
                   className="text-purple-400 hover:text-purple-300 underline mt-2 inline-block"
                 >
                   첫 서비스를 등록해보세요
@@ -233,7 +233,7 @@ export default function PartnerDashboard() {
                   <div
                     key={service.id}
                     className="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition cursor-pointer"
-                    onClick={() => router.push(`/marketplace/products/${service.id}`)}
+                    onClick={() => router.push(`/services/${service.id}`)}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -312,12 +312,12 @@ export default function PartnerDashboard() {
           <h2 className="text-xl font-bold text-white mb-4">빠른 작업</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <QuickActionButton
-              href="/marketplace/products/new"
+              href="/partner/dashboard/services/new"
               icon={<PlusIcon className="h-6 w-6" />}
               label="서비스 등록"
             />
             <QuickActionButton
-              href="/dashboard/services"
+              href="/partner/dashboard/services"
               icon={<ShoppingBagIcon className="h-6 w-6" />}
               label="서비스 관리"
             />

@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     // 서비스 정보 조회
     const { data: service, error: serviceError } = await supabase
-      .from('products')
+      .from('services')
       .select('*')
       .eq('id', serviceId)
       .single()
@@ -43,16 +43,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // 가격 검증 (서비스 타입이 direct_sale인지 확인)
-    if (service.service_type !== 'direct_sale') {
-      return NextResponse.json(
-        { error: 'This service is not available for direct purchase' },
-        { status: 400 }
-      )
-    }
-
-    // 금액 검증
-    const expectedAmount = service.base_price || 0
+    // 가격 검증
+    const expectedAmount = service.price || 0
     if (parseFloat(amount) !== expectedAmount) {
       return NextResponse.json(
         { error: 'Invalid amount' },

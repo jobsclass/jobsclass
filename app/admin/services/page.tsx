@@ -48,7 +48,7 @@ export default function AdminServicesPage() {
     try {
       setLoading(true)
       const { data, error } = await supabase
-        .from('products')
+        .from('services')
         .select(`
           *,
           user_profiles (
@@ -94,8 +94,8 @@ export default function AdminServicesPage() {
   const handleStatusChange = async (serviceId: string, newStatus: string) => {
     try {
       const { error } = await supabase
-        .from('products')
-        .update({ status: newStatus })
+        .from('services')
+        .update({ is_published: newStatus === 'published' })
         .eq('id', serviceId)
 
       if (error) throw error

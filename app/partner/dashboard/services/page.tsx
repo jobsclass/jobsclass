@@ -8,7 +8,7 @@ import { getAllServiceTypes, formatPrice, type JobsClassServiceType } from '@/li
 interface Service {
   id: string
   title: string
-  service_type: JobsClassServiceType
+  service_type: string
   price: number
   is_published: boolean
   thumbnail_url?: string

@@ -170,7 +170,7 @@ export default function ServicesListPage() {
               <option value="all">모든 유형</option>
               {serviceTypes.map((type) => (
                 <option key={type.id} value={type.id}>
-                  {type.label}
+                  {type.name}
                 </option>
               ))}
             </select>
@@ -237,7 +237,7 @@ export default function ServicesListPage() {
                         </h3>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <span className="px-2 py-1 bg-gray-100 rounded">
-                            {serviceTypes.find(t => t.id === service.service_type)?.label || service.service_type}
+                            {serviceTypes.find(t => t.id === service.service_type)?.name || service.service_type}
                           </span>
                           <span className="px-2 py-1 bg-gray-100 rounded">
                             {service.category}

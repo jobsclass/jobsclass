@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Plus, Search, Eye, Edit, Trash2, ArrowLeft } from 'lucide-react'
+import { Plus, Search, Eye, Edit, Trash2, ArrowLeft, Package } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { getAllServiceTypes } from '@/lib/constants/jobsclass'
 
